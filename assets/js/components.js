@@ -3,7 +3,8 @@
   const footerTarget = document.querySelector('[data-site-footer]');
   const path = window.location.pathname;
   const depth = path.includes('/ministries/') ? '../' : '';
-  const current = path.split('/').pop() || 'index.html';
+  const lastSegment = path.split('/').filter(Boolean).pop() || '';
+  const current = path.endsWith('/') ? 'index.html' : lastSegment;
 
   const navItems = [
     ['Home', 'index.html'],
