@@ -28,9 +28,8 @@
     });
   };
 
+  initNavigation();
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initNavigation);
-  } else {
-    initNavigation();
+    document.addEventListener('DOMContentLoaded', initNavigation, { once: true });
   }
 })();
