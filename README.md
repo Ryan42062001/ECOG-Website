@@ -49,4 +49,4 @@ The existing `everettchurchofgod.com` domain will remain untouched during develo
 
 ## Content note
 
-Service times and the street address in the initial framework were carried forward from the church's current public website and must be reconfirmed with church leadership before production launch. Other placeholder copy and sample sermon/event data are not production content.
+Service times and the street address in the initial framework were carried forward from the church's current public website and must be reconfirmed with church leadership before production launch. Other placeholder copy is not production content. The sermon and event data files are intentionally empty until verified church content is added in later phases.
