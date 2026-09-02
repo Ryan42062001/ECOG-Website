@@ -13,7 +13,7 @@ Create a stable, mobile-first foundation for the Everett Church of God replaceme
 - Homepage framework
 - New Here, About, Ministries, Messages, Events, Give, and Contact routes
 - Ministry routes for Children, Amplify Students, Men, Women, and Senior Adults
-- Structured placeholder data for sermons and events
+- Empty sermon and event data stores ready for verified content in later phases
 - Accessible skip links, keyboard-friendly navigation, reduced-motion support, and visible text links
 - Staging-safe robots configuration
 - Portable 404 page
@@ -25,8 +25,8 @@ Create a stable, mobile-first foundation for the Everett Church of God replaceme
 - Production sitemap/canonical URLs
 - Final church logo and photography
 - Final pastor/ministry copy
-- Live sermon integrations
-- Live event data
+- Verified sermon content and live sermon integrations
+- Verified event content and live event data
 - Giving-provider link
 - Contact form or external form provider
 - Analytics
@@ -34,6 +34,8 @@ Create a stable, mobile-first foundation for the Everett Church of God replaceme
 ## Launch safety
 
 The existing `everettchurchofgod.com` website and DNS are not modified by Phase 1.
+
+The sermon and event data files remain empty during foundation work so development placeholders cannot be mistaken for real church content.
 
 ## Phase 1 verification checklist
 
@@ -47,4 +49,5 @@ Before merging this branch:
 6. Confirm the 404 page works both on a GitHub project Pages URL and later at a root custom domain.
 7. Check browser console for JavaScript errors.
 8. Run an accessibility/performance pass (for example Lighthouse) before launch-quality signoff.
-9. Keep `robots.txt` blocked and do not add `CNAME` until production launch.
+9. Confirm `data/events.json` and `data/sermons.json` contain no unverified sample records.
+10. Keep `robots.txt` blocked and do not add `CNAME` until production launch.
