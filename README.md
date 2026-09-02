@@ -39,6 +39,10 @@ python -m http.server 8000
 
 Then visit `http://localhost:8000`.
 
+## Phase documentation
+
+- [`docs/phase-1-foundation.md`](docs/phase-1-foundation.md) — Phase 1 scope, launch-safety decisions, and verification checklist.
+
 ## Production domain
 
 The existing `everettchurchofgod.com` domain will remain untouched during development. A `CNAME` file will be added only during the launch phase.
