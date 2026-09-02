@@ -46,3 +46,7 @@ Then visit `http://localhost:8000`.
 ## Production domain
 
 The existing `everettchurchofgod.com` domain will remain untouched during development. A `CNAME` file will be added only during the launch phase.
+
+## Content note
+
+Service times and the street address in the initial framework were carried forward from the church's current public website and must be reconfirmed with church leadership before production launch. Other placeholder copy and sample sermon/event data are not production content.
