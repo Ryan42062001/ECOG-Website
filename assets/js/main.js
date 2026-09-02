@@ -28,6 +28,9 @@
     });
   };
 
-  document.addEventListener('ecog:components-ready', initNavigation);
-  document.addEventListener('DOMContentLoaded', initNavigation);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNavigation);
+  } else {
+    initNavigation();
+  }
 })();

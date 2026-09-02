@@ -73,6 +73,4 @@
         </div>
       </footer>`;
   }
-
-  document.dispatchEvent(new CustomEvent('ecog:components-ready'));
 })();
