@@ -1,27 +1,33 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const toggle = document.querySelector('.nav-toggle');
-  const menu = document.querySelector('#site-menu');
+(() => {
+  const initNavigation = () => {
+    const toggle = document.querySelector('.nav-toggle');
+    const menu = document.querySelector('#site-menu');
+    if (!toggle || !menu || toggle.dataset.initialized === 'true') return;
 
-  if (!toggle || !menu) return;
+    toggle.dataset.initialized = 'true';
 
-  const closeMenu = () => {
-    menu.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Open navigation menu');
+    const closeMenu = () => {
+      menu.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open navigation menu');
+    };
+
+    toggle.addEventListener('click', () => {
+      const open = !menu.classList.contains('is-open');
+      menu.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+    });
+
+    menu.addEventListener('click', (event) => {
+      if (event.target.closest('a')) closeMenu();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeMenu();
+    });
   };
 
-  toggle.addEventListener('click', () => {
-    const open = !menu.classList.contains('is-open');
-    menu.classList.toggle('is-open', open);
-    toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
-  });
-
-  menu.addEventListener('click', (event) => {
-    if (event.target.closest('a')) closeMenu();
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeMenu();
-  });
-});
+  document.addEventListener('ecog:components-ready', initNavigation);
+  document.addEventListener('DOMContentLoaded', initNavigation);
+})();
