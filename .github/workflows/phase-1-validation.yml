@@ -1,4 +1,4 @@
-name: Phase 1 Validation
+name: Site Validation
 
 on:
   pull_request:
@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Run Phase 1 static validation
+      - name: Run static validation
         shell: bash
         run: |
           node <<'NODE'
@@ -42,10 +42,12 @@ jobs:
           const required = [
             ...pages,
             'assets/css/main.css',
+            'assets/css/components.css',
             'assets/js/components.js',
             'assets/js/main.js',
             'data/events.json',
             'data/sermons.json',
+            'docs/phase-2-design-system.md',
             'robots.txt'
           ];
 
@@ -72,10 +74,25 @@ jobs:
             assert(html.includes('data-site-footer'), `${file}: missing shared footer target`);
           }
 
+          const home = read('index.html');
+          assert(home.includes('assets/css/components.css'), 'Homepage: Phase 2 component stylesheet missing');
+          assert(home.includes('cta-panel'), 'Homepage: Phase 2 CTA component missing');
+          assert(home.includes('feature-card__meta'), 'Homepage: Phase 2 card metadata treatment missing');
+
+          const mainCss = read('assets/css/main.css');
+          const componentCss = read('assets/css/components.css');
+          assert(mainCss.includes('--color-accent:#00c8ef'), 'Design system: ECOG cyan accent token missing');
+          assert(mainCss.includes(':focus-visible'), 'Design system: focus-visible treatment missing');
+          assert(mainCss.includes('prefers-reduced-motion:reduce'), 'Design system: reduced-motion treatment missing');
+          assert(componentCss.includes('.cta-panel'), 'Component system: CTA panel missing');
+          assert(componentCss.includes('.info-tile'), 'Component system: information tile missing');
+          assert(componentCss.includes('.location-card'), 'Component system: location card missing');
+
           const components = read('assets/js/components.js');
           const mainJs = read('assets/js/main.js');
           assert(components.includes("path.includes('/ministries/') ? '../' : ''"), 'Shared components: nested ministry depth handling missing');
           assert(components.includes('aria-current="page"'), 'Shared components: current-page accessibility state missing');
+          assert(components.includes('brand__cross'), 'Shared components: Phase 2 ECOG mark treatment missing');
           assert(mainJs.includes("event.key === 'Escape'"), 'Navigation: Escape-key close behavior missing');
           assert(mainJs.includes("window.innerWidth > 860"), 'Navigation: desktop reset behavior missing');
 
@@ -90,19 +107,19 @@ jobs:
           const robots = read('robots.txt');
           assert(/User-agent:\s*\*/i.test(robots), 'robots.txt: missing wildcard user-agent');
           assert(/Disallow:\s*\//i.test(robots), 'robots.txt: staging crawl block missing');
-          assert(!fs.existsSync(path.join(root, 'CNAME')), 'Production CNAME must not exist during Phase 1');
+          assert(!fs.existsSync(path.join(root, 'CNAME')), 'Production CNAME must not exist before launch');
 
           const notFound = read('404.html');
           assert(/name="robots"\s+content="noindex"/i.test(notFound), '404.html: missing noindex');
           assert(notFound.includes("location.hostname.endsWith('github.io')"), '404.html: GitHub Pages project-root handling missing');
 
           if (failures.length) {
-            console.error(`Phase 1 validation failed with ${failures.length} issue(s):`);
+            console.error(`Site validation failed with ${failures.length} issue(s):`);
             failures.forEach((failure) => console.error(`- ${failure}`));
             process.exit(1);
           }
 
-          console.log(`Phase 1 validation passed: ${pages.length} pages and ${required.length} required files checked.`);
+          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 2 design-system safeguards checked.`);
           NODE
 
       - name: Syntax-check JavaScript
