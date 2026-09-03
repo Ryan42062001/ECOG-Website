@@ -31,7 +31,7 @@ jobs:
           const topPages = ['index.html','new-here.html','about.html','ministries.html','messages.html','events.html','give.html','contact.html','404.html'];
           const ministryPages = ['ministries/children.html','ministries/students.html','ministries/men.html','ministries/women.html','ministries/senior-adults.html'];
           const pages = [...topPages, ...ministryPages];
-          const required = [...pages,'assets/css/main.css','assets/css/components.css','assets/css/ministries.css','assets/js/components.js','assets/js/main.js','data/events.json','data/sermons.json','docs/phase-2-design-system.md','robots.txt'];
+          const required = [...pages,'assets/css/main.css','assets/css/components.css','assets/css/ministries.css','assets/css/messages.css','assets/js/components.js','assets/js/main.js','assets/js/messages.js','data/events.json','data/sermons.json','docs/phase-2-design-system.md','robots.txt'];
           const failures = [];
           const assert = (condition, message) => { if (!condition) failures.push(message); };
           const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
@@ -112,7 +112,14 @@ jobs:
           assert(seniors.includes('Senior Adults Living Triumphantly'),'Senior Adults: ministry name missing');
           assert(/has included seasonal meals, trips, fellowship, and service projects/i.test(seniors),'Senior Adults: historical activity wording missing');
 
-          const mainCss = read('assets/css/main.css'); const componentCss = read('assets/css/components.css'); const ministryCss = read('assets/css/ministries.css');
+          const messages = read('messages.html');
+          assert(messages.includes('assets/css/messages.css'),'Messages: Phase 7 stylesheet missing');
+          assert(messages.includes('assets/js/messages.js'),'Messages: Phase 7 renderer missing');
+          for (const marker of ['data-messages-app','class="page-hero messages-hero"','data-featured-message','id="message-library"','data-message-count','data-message-library','messages-next']) assert(messages.includes(marker),`Messages: missing ${marker}`);
+          assert(messages.includes('Sunday at 9:30 AM'),'Messages: verified Sunday service time missing');
+          assert(!/sermon title|speaker name|message title/i.test(messages),'Messages: unverified sermon placeholder content detected');
+
+          const mainCss = read('assets/css/main.css'); const componentCss = read('assets/css/components.css'); const ministryCss = read('assets/css/ministries.css'); const messagesCss = read('assets/css/messages.css');
           assert(mainCss.includes('--color-accent:#00c8ef'),'Design system: ECOG cyan accent token missing');
           assert(mainCss.includes(':focus-visible'),'Design system: focus-visible treatment missing');
           assert(mainCss.includes('prefers-reduced-motion:reduce'),'Design system: reduced-motion treatment missing');
@@ -122,18 +129,42 @@ jobs:
           assert(ministryCss.includes('@media(max-width:620px)'),'Phase 6 CSS: small-screen breakpoint missing');
           assert(ministryCss.includes('.ministries-grid{grid-template-columns:1fr}'),'Phase 6 CSS: ministry card stacking missing');
           assert(/\.ministry-quick__grid(?:,\.ministry-quick__grid--two)?\{grid-template-columns:1fr\}/.test(ministryCss),'Phase 6 CSS: quick-info stacking missing');
+          for (const marker of ['.messages-hero','.messages-featured','.message-feature','.messages-grid','.message-card','.messages-empty','.messages-error','.messages-next']) assert(messagesCss.includes(marker),`Phase 7 CSS: missing ${marker}`);
+          assert(messagesCss.includes('@media(max-width:900px)'),'Phase 7 CSS: tablet breakpoint missing');
+          assert(messagesCss.includes('@media(max-width:620px)'),'Phase 7 CSS: mobile breakpoint missing');
+          assert(messagesCss.includes('.messages-grid{grid-template-columns:1fr}'),'Phase 7 CSS: message card stacking missing');
+          assert(messagesCss.includes('.messages-grid>.messages-empty,.messages-grid>.messages-error{grid-column:1/-1}'),'Phase 7 CSS: empty/error full-width layout missing');
 
-          const components = read('assets/js/components.js'); const mainJs = read('assets/js/main.js');
+          const components = read('assets/js/components.js'); const mainJs = read('assets/js/main.js'); const messagesJs = read('assets/js/messages.js');
           assert(components.includes("path.includes('/ministries/') ? '../' : ''"),'Shared components: nested ministry depth handling missing');
           assert(components.includes('aria-current="page"'),'Shared components: current-page accessibility state missing');
           assert(components.includes('brand__cross'),'Shared components: ECOG mark treatment missing');
           assert(components.includes('new Date().getFullYear()'),'Shared footer: dynamic current year missing');
           assert(mainJs.includes("event.key === 'Escape'"),'Navigation: Escape-key close behavior missing');
           assert(mainJs.includes('window.innerWidth > 860'),'Navigation: desktop reset behavior missing');
+          assert(messagesJs.includes("fetch('data/sermons.json'"),'Messages renderer: sermon data fetch missing');
+          assert(messagesJs.includes('escapeHtml'),'Messages renderer: output escaping missing');
+          assert(messagesJs.includes("['http:', 'https:'].includes(url.protocol)"),'Messages renderer: HTTP/HTTPS URL allowlist missing');
+          assert(messagesJs.includes('rel=\"noopener noreferrer\"'),'Messages renderer: external-link protection missing');
+          assert(messagesJs.includes('Array.isArray(data)'),'Messages renderer: sermon-array validation missing');
+          assert(messagesJs.includes('renderEmpty'),'Messages renderer: empty-state handling missing');
+          assert(messagesJs.includes('.catch(renderError)'),'Messages renderer: error-state handling missing');
 
-          for (const dataFile of ['data/events.json','data/sermons.json']) {
-            let data; try { data = JSON.parse(read(dataFile)); } catch (error) { failures.push(`${dataFile}: invalid JSON (${error.message})`); continue; }
-            assert(Array.isArray(data),`${dataFile}: root must be an array`); assert(Array.isArray(data) && data.length === 0,`${dataFile}: must remain empty until verified content is added`);
+          let eventsData; try { eventsData = JSON.parse(read('data/events.json')); } catch (error) { failures.push(`data/events.json: invalid JSON (${error.message})`); }
+          if (eventsData) { assert(Array.isArray(eventsData),'data/events.json: root must be an array'); assert(Array.isArray(eventsData) && eventsData.length === 0,'data/events.json: must remain empty until verified content is added'); }
+          let sermonData; try { sermonData = JSON.parse(read('data/sermons.json')); } catch (error) { failures.push(`data/sermons.json: invalid JSON (${error.message})`); }
+          if (sermonData) {
+            assert(Array.isArray(sermonData),'data/sermons.json: root must be an array');
+            if (Array.isArray(sermonData)) {
+              for (const [index, sermon] of sermonData.entries()) {
+                assert(sermon && typeof sermon === 'object' && !Array.isArray(sermon),`data/sermons.json[${index}]: must be an object`);
+                if (!sermon || typeof sermon !== 'object' || Array.isArray(sermon)) continue;
+                assert(typeof sermon.title === 'string' && sermon.title.trim().length > 0,`data/sermons.json[${index}]: title is required`);
+                if ('date' in sermon) assert(typeof sermon.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(sermon.date),`data/sermons.json[${index}]: date must use YYYY-MM-DD`);
+                if ('watchUrl' in sermon) { try { const url = new URL(sermon.watchUrl); assert(['http:','https:'].includes(url.protocol),`data/sermons.json[${index}]: watchUrl must use HTTP/HTTPS`); } catch { failures.push(`data/sermons.json[${index}]: watchUrl must be a valid absolute URL`); } }
+                for (const field of ['speaker','scripture','series','description']) if (field in sermon) assert(typeof sermon[field] === 'string',`data/sermons.json[${index}]: ${field} must be a string`);
+              }
+            }
           }
           const robots = read('robots.txt');
           assert(/User-agent:\s*\*/i.test(robots),'robots.txt: missing wildcard user-agent'); assert(/Disallow:\s*\//i.test(robots),'robots.txt: staging crawl block missing'); assert(!fs.existsSync(path.join(root,'CNAME')),'Production CNAME must not exist before launch');
@@ -141,10 +172,11 @@ jobs:
           assert(/name="robots"\s+content="noindex"/i.test(notFound),'404.html: missing noindex'); assert(notFound.includes("location.hostname.endsWith('github.io')"),'404.html: GitHub Pages project-root handling missing');
 
           if (failures.length) { console.error(`Site validation failed with ${failures.length} issue(s):`); failures.forEach((failure) => console.error(`- ${failure}`)); process.exit(1); }
-          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 3/4/5/6 safeguards checked.`);
+          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 3/4/5/6/7 safeguards checked.`);
           NODE
 
       - name: Syntax-check JavaScript
         run: |
           node --check assets/js/components.js
           node --check assets/js/main.js
+          node --check assets/js/messages.js
