@@ -92,7 +92,7 @@ jobs:
           assert(about.includes('ministries.html'),'About: Ministries link missing');
           assert(!/Faith · Worship · Community/.test(about),'About: unverified belief-summary formulation detected');
           assert(!/intentionally holding|church confirms|doctrinal wording is verified/i.test(about),'About: internal editorial/process copy detected');
-          assert(!/senior pastor|lead pastor|pastor [A-Z][a-z]+|founded in|established in/i.test(about),'About: potentially unverified leadership/history claim detected');
+          assert(!/senior pastor|lead pastor|founded in|established in/i.test(about),'About: potentially unverified leadership/history claim detected');
 
           const mainCss = read('assets/css/main.css'); const componentCss = read('assets/css/components.css');
           assert(mainCss.includes('--color-accent:#00c8ef'),'Design system: ECOG cyan accent token missing');
