@@ -85,7 +85,7 @@ jobs:
 
           const hub = read('ministries.html');
           assert(hub.includes('assets/css/ministries.css'),'Ministries: Phase 6 stylesheet missing');
-          for (const marker of ['ministry-hub-hero','id="ministry-groups"','ministry-grid','ministry-card']) assert(hub.includes(marker),`Ministries: missing ${marker}`);
+          for (const marker of ['ministries-hero','id="ministry-groups"','ministries-grid','ministry-card']) assert(hub.includes(marker),`Ministries: missing ${marker}`);
           for (const page of ministryPages) assert(hub.includes(page),`Ministries: link missing for ${page}`);
           for (const label of ['Children','Amplify Students','Guys Ministry','Women\'s Discipleship','Senior Adults']) assert(hub.includes(label),`Ministries: missing ${label}`);
           assert(hub.includes('Ages 5–12'),'Ministries: verified Children age range missing');
@@ -117,11 +117,11 @@ jobs:
           assert(mainCss.includes(':focus-visible'),'Design system: focus-visible treatment missing');
           assert(mainCss.includes('prefers-reduced-motion:reduce'),'Design system: reduced-motion treatment missing');
           for (const marker of ['.cta-panel','.info-tile','.location-card','.home-empty-state','.visit-hero','.visit-quick','.visit-steps','.visit-faq','.visit-final','.about-hero','.about-value-grid','.about-leader-placeholder','.about-beliefs']) assert(componentCss.includes(marker),`Component system: missing ${marker}`);
-          for (const marker of ['.ministry-hub-hero','.ministry-grid','.ministry-card','.ministry-hero','.ministry-quick','.ministry-photo','.ministry-next']) assert(ministryCss.includes(marker),`Phase 6 CSS: missing ${marker}`);
+          for (const marker of ['.ministries-hero','.ministries-grid','.ministry-card','.ministry-hero','.ministry-quick','.ministry-photo','.ministry-next']) assert(ministryCss.includes(marker),`Phase 6 CSS: missing ${marker}`);
           assert(ministryCss.includes('@media(max-width:860px)'),'Phase 6 CSS: tablet/mobile breakpoint missing');
           assert(ministryCss.includes('@media(max-width:620px)'),'Phase 6 CSS: small-screen breakpoint missing');
-          assert(ministryCss.includes('.ministry-grid{grid-template-columns:1fr}'),'Phase 6 CSS: ministry card stacking missing');
-          assert(ministryCss.includes('.ministry-quick__grid{grid-template-columns:1fr}'),'Phase 6 CSS: quick-info stacking missing');
+          assert(ministryCss.includes('.ministries-grid{grid-template-columns:1fr}'),'Phase 6 CSS: ministry card stacking missing');
+          assert(/\.ministry-quick__grid(?:,\.ministry-quick__grid--two)?\{grid-template-columns:1fr\}/.test(ministryCss),'Phase 6 CSS: quick-info stacking missing');
 
           const components = read('assets/js/components.js'); const mainJs = read('assets/js/main.js');
           assert(components.includes("path.includes('/ministries/') ? '../' : ''"),'Shared components: nested ministry depth handling missing');
