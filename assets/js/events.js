@@ -16,6 +16,10 @@
     const date = new Date(`${value}T12:00:00`);
     return Number.isNaN(date.getTime()) ? null : date;
   };
+  const todayDate = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  };
   const dateParts = (value) => {
     const date = parseDate(value);
     if (!date) return null;
@@ -26,9 +30,16 @@
       long: new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(date)
     };
   };
-  const normalize = (data) => Array.isArray(data) ? data
-    .filter((event) => event && typeof event === 'object' && typeof event.title === 'string' && event.title.trim() && parseDate(event.date))
-    .sort((a, b) => parseDate(a.date) - parseDate(b.date)) : [];
+  const normalize = (data) => {
+    const today = todayDate();
+    return Array.isArray(data) ? data
+      .filter((event) => {
+        if (!event || typeof event !== 'object' || typeof event.title !== 'string' || !event.title.trim()) return false;
+        const date = parseDate(event.date);
+        return date && date >= today;
+      })
+      .sort((a, b) => parseDate(a.date) - parseDate(b.date)) : [];
+  };
   const meta = (event) => [event.time, event.location].filter((item) => typeof item === 'string' && item.trim()).map((item) => `<span>${escapeHtml(item)}</span>`).join('');
   const action = (event, label = 'Event Details') => {
     const url = safeUrl(event.detailsUrl);
