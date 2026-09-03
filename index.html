@@ -7,6 +7,7 @@
   <title>Everett Church of God | Everett, PA</title>
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/events.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -78,21 +79,18 @@
       </div>
     </section>
 
-    <section class="section section-muted home-events-section">
+    <section class="section section-muted home-events-section" data-home-events>
       <div class="container">
         <div class="home-section-topline">
           <div class="section-heading">
             <p class="eyebrow">Upcoming events</p>
             <h2>Life is better together.</h2>
-            <p>Church gatherings and upcoming opportunities to connect will be featured here as the event calendar is finalized.</p>
+            <p>See upcoming opportunities to worship, connect, serve, and spend time together.</p>
           </div>
           <a class="text-link" href="events.html">View Events <span aria-hidden="true">→</span></a>
         </div>
-        <div class="home-empty-state">
-          <p class="eyebrow">Calendar coming soon</p>
-          <h3>More ways to connect are on the way.</h3>
-          <p>We are preparing the church calendar for the new website. Visit the Events page as verified dates are added.</p>
-          <a class="button button--secondary" href="events.html">Visit Events</a>
+        <div class="home-events-grid" data-home-event-list aria-live="polite">
+          <div class="home-empty-state"><p>Loading upcoming events…</p></div>
         </div>
       </div>
     </section>
@@ -131,5 +129,6 @@
   <div data-site-footer></div>
   <script src="assets/js/components.js" defer></script>
   <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/events.js" defer></script>
 </body>
 </html>
