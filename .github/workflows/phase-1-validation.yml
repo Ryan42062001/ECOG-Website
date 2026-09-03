@@ -75,9 +75,20 @@ jobs:
           }
 
           const home = read('index.html');
-          assert(home.includes('assets/css/components.css'), 'Homepage: Phase 2 component stylesheet missing');
-          assert(home.includes('cta-panel'), 'Homepage: Phase 2 CTA component missing');
-          assert(home.includes('feature-card__meta'), 'Homepage: Phase 2 card metadata treatment missing');
+          assert(home.includes('assets/css/components.css'), 'Homepage: component stylesheet missing');
+          assert(home.includes('class="hero section-dark"'), 'Homepage: visitor hero missing');
+          assert(home.includes('class="service-strip"'), 'Homepage: service strip missing');
+          assert(home.includes('home-welcome'), 'Homepage: New Here section missing');
+          assert(home.includes('home-ministry-grid'), 'Homepage: ministry section missing');
+          assert(home.includes('home-message-section'), 'Homepage: messages section missing');
+          assert(home.includes('home-events-section'), 'Homepage: events section missing');
+          assert(home.includes('home-location-section'), 'Homepage: location section missing');
+          assert(home.includes('home-final-cta'), 'Homepage: final visitor CTA missing');
+          assert(home.includes('11152 Lincoln Highway'), 'Homepage: verified street address missing');
+          assert(home.includes('Everett, PA 15537'), 'Homepage: verified city/state/ZIP missing');
+          assert(home.includes('Sunday Worship</span><strong>9:30 AM'), 'Homepage: Sunday service time missing');
+          assert(home.includes('Wednesday Bible Study</span><strong>7:00 PM'), 'Homepage: Wednesday service time missing');
+          assert(!/sermon title|event title/i.test(home), 'Homepage: unverified placeholder content detected');
 
           const mainCss = read('assets/css/main.css');
           const componentCss = read('assets/css/components.css');
@@ -87,12 +98,15 @@ jobs:
           assert(componentCss.includes('.cta-panel'), 'Component system: CTA panel missing');
           assert(componentCss.includes('.info-tile'), 'Component system: information tile missing');
           assert(componentCss.includes('.location-card'), 'Component system: location card missing');
+          assert(componentCss.includes('.home-empty-state'), 'Homepage: event empty-state styling missing');
+          assert(componentCss.includes('@media(max-width:860px)'), 'Homepage: tablet/mobile breakpoint missing');
+          assert(componentCss.includes('@media(max-width:620px)'), 'Homepage: small-screen breakpoint missing');
 
           const components = read('assets/js/components.js');
           const mainJs = read('assets/js/main.js');
           assert(components.includes("path.includes('/ministries/') ? '../' : ''"), 'Shared components: nested ministry depth handling missing');
           assert(components.includes('aria-current="page"'), 'Shared components: current-page accessibility state missing');
-          assert(components.includes('brand__cross'), 'Shared components: Phase 2 ECOG mark treatment missing');
+          assert(components.includes('brand__cross'), 'Shared components: ECOG mark treatment missing');
           assert(mainJs.includes("event.key === 'Escape'"), 'Navigation: Escape-key close behavior missing');
           assert(mainJs.includes("window.innerWidth > 860"), 'Navigation: desktop reset behavior missing');
 
@@ -119,7 +133,7 @@ jobs:
             process.exit(1);
           }
 
-          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 2 design-system safeguards checked.`);
+          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 3 homepage safeguards checked.`);
           NODE
 
       - name: Syntax-check JavaScript
