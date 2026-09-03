@@ -22,13 +22,19 @@
     return false;
   };
 
+  const brandMark = `
+    <span class="brand__mark" aria-hidden="true">
+      <span class="brand__cross"></span>
+      <span class="brand__initials">ECOG</span>
+    </span>`;
+
   if (headerTarget) {
     headerTarget.innerHTML = `
       <header class="site-header">
         <nav class="nav container" aria-label="Main navigation">
           <a class="brand" href="${depth}index.html" aria-label="Everett Church of God home">
-            <span class="brand__mark" aria-hidden="true">ECOG</span>
-            <span class="brand__text">Everett Church of God<small>Everett, Pennsylvania</small></span>
+            ${brandMark}
+            <span class="brand__text">Everett Church of God<small>Loving God. Loving People.</small></span>
           </a>
           <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation menu">
             <span></span><span></span><span></span>
@@ -36,7 +42,7 @@
           <ul class="nav__links" id="site-menu">
             ${navItems.map(([label, href]) => `<li><a href="${depth}${href}" ${isCurrent(href) ? 'aria-current="page"' : ''}>${label}</a></li>`).join('')}
           </ul>
-          <a class="button button--secondary button--small nav__cta" href="${depth}new-here.html">Plan Your Visit</a>
+          <a class="button button--primary button--small nav__cta" href="${depth}new-here.html">Plan Your Visit</a>
         </nav>
       </header>`;
   }
@@ -47,8 +53,11 @@
       <footer class="site-footer">
         <div class="container">
           <div class="footer-grid">
-            <div>
-              <h2>Everett Church of God</h2>
+            <div class="footer-brand">
+              <a class="brand brand--footer" href="${depth}index.html" aria-label="Everett Church of God home">
+                ${brandMark}
+                <span class="brand__text">Everett Church of God<small>Loving God. Loving People.</small></span>
+              </a>
               <p>11152 Lincoln Highway<br>Everett, PA 15537</p>
               <p>Sunday Worship · 9:30 AM<br>Wednesday Bible Study · 7:00 PM</p>
             </div>
@@ -70,7 +79,7 @@
               </ul>
             </div>
           </div>
-          <div class="footer-bottom">© ${year} Everett Church of God. All rights reserved.</div>
+          <div class="footer-bottom"><span>© ${year} Everett Church of God.</span><span>Everett, Pennsylvania</span></div>
         </div>
       </footer>`;
   }
