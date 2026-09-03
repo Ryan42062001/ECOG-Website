@@ -27,41 +27,18 @@ jobs:
           node <<'NODE'
           const fs = require('fs');
           const path = require('path');
-
           const root = process.cwd();
-          const topPages = [
-            'index.html', 'new-here.html', 'about.html', 'ministries.html',
-            'messages.html', 'events.html', 'give.html', 'contact.html', '404.html'
-          ];
-          const ministryPages = [
-            'ministries/children.html', 'ministries/students.html',
-            'ministries/men.html', 'ministries/women.html',
-            'ministries/senior-adults.html'
-          ];
+          const topPages = ['index.html','new-here.html','about.html','ministries.html','messages.html','events.html','give.html','contact.html','404.html'];
+          const ministryPages = ['ministries/children.html','ministries/students.html','ministries/men.html','ministries/women.html','ministries/senior-adults.html'];
           const pages = [...topPages, ...ministryPages];
-          const required = [
-            ...pages,
-            'assets/css/main.css',
-            'assets/css/components.css',
-            'assets/js/components.js',
-            'assets/js/main.js',
-            'data/events.json',
-            'data/sermons.json',
-            'docs/phase-2-design-system.md',
-            'robots.txt'
-          ];
-
+          const required = [...pages,'assets/css/main.css','assets/css/components.css','assets/js/components.js','assets/js/main.js','data/events.json','data/sermons.json','docs/phase-2-design-system.md','robots.txt'];
           const failures = [];
           const assert = (condition, message) => { if (!condition) failures.push(message); };
           const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
-          for (const file of required) {
-            assert(fs.existsSync(path.join(root, file)), `Missing required file: ${file}`);
-          }
-
+          for (const file of required) assert(fs.existsSync(path.join(root,file)), `Missing required file: ${file}`);
           for (const file of pages.filter((p) => p !== '404.html')) {
-            const html = read(file);
-            const prefix = file.startsWith('ministries/') ? '../' : '';
+            const html = read(file); const prefix = file.startsWith('ministries/') ? '../' : '';
             assert(/<html\s+lang="en"/i.test(html), `${file}: missing lang=en`);
             assert(/<meta\s+name="viewport"/i.test(html), `${file}: missing viewport meta`);
             assert(/<title>[^<]+<\/title>/i.test(html), `${file}: missing title`);
@@ -75,94 +52,79 @@ jobs:
           }
 
           const home = read('index.html');
-          assert(home.includes('assets/css/components.css'), 'Homepage: component stylesheet missing');
-          assert(home.includes('class="hero section-dark"'), 'Homepage: visitor hero missing');
-          assert(home.includes('class="service-strip"'), 'Homepage: service strip missing');
-          assert(home.includes('home-welcome'), 'Homepage: New Here section missing');
-          assert(home.includes('home-ministry-grid'), 'Homepage: ministry section missing');
-          assert(home.includes('home-message-section'), 'Homepage: messages section missing');
-          assert(home.includes('home-events-section'), 'Homepage: events section missing');
-          assert(home.includes('home-location-section'), 'Homepage: location section missing');
-          assert(home.includes('home-final-cta'), 'Homepage: final visitor CTA missing');
-          assert(home.includes('11152 Lincoln Highway'), 'Homepage: verified street address missing');
-          assert(home.includes('Everett, PA 15537'), 'Homepage: verified city/state/ZIP missing');
-          assert(home.includes('Sunday Worship</span><strong>9:30 AM'), 'Homepage: Sunday service time missing');
-          assert(home.includes('Wednesday Bible Study</span><strong>7:00 PM'), 'Homepage: Wednesday service time missing');
-          assert(!/sermon title|event title/i.test(home), 'Homepage: unverified placeholder content detected');
+          assert(home.includes('assets/css/components.css'),'Homepage: component stylesheet missing');
+          assert(home.includes('class="hero section-dark"'),'Homepage: visitor hero missing');
+          assert(home.includes('class="service-strip"'),'Homepage: service strip missing');
+          assert(home.includes('home-welcome'),'Homepage: New Here section missing');
+          assert(home.includes('home-ministry-grid'),'Homepage: ministry section missing');
+          assert(home.includes('home-message-section'),'Homepage: messages section missing');
+          assert(home.includes('home-events-section'),'Homepage: events section missing');
+          assert(home.includes('home-location-section'),'Homepage: location section missing');
+          assert(home.includes('home-final-cta'),'Homepage: final visitor CTA missing');
+          assert(home.includes('11152 Lincoln Highway'),'Homepage: verified street address missing');
+          assert(home.includes('Everett, PA 15537'),'Homepage: verified city/state/ZIP missing');
+          assert(home.includes('Sunday Worship</span><strong>9:30 AM'),'Homepage: Sunday service time missing');
+          assert(home.includes('Wednesday Bible Study</span><strong>7:00 PM'),'Homepage: Wednesday service time missing');
+          assert(!/sermon title|event title/i.test(home),'Homepage: unverified placeholder content detected');
 
           const visit = read('new-here.html');
-          assert(visit.includes('assets/css/components.css'), 'New Here: component stylesheet missing');
-          assert(visit.includes('class="page-hero visit-hero"'), 'New Here: visitor hero missing');
-          assert(visit.includes('id="visit-details"'), 'New Here: visit-details anchor missing');
-          assert(visit.includes('visit-quick__grid'), 'New Here: quick visit information missing');
-          assert(visit.includes('visit-expect'), 'New Here: what-to-expect section missing');
-          assert(visit.includes('visit-steps'), 'New Here: first-visit steps missing');
-          assert(visit.includes('visit-kids'), 'New Here: family/children section missing');
-          assert(visit.includes('visit-preview'), 'New Here: message preview section missing');
-          assert(visit.includes('visit-faq'), 'New Here: FAQ missing');
-          assert(visit.includes('id="location"'), 'New Here: location anchor missing');
-          assert(visit.includes('visit-final'), 'New Here: final visitor CTA missing');
-          assert(visit.includes('Sunday Worship</span><strong>9:30 AM'), 'New Here: verified Sunday service time missing');
-          assert(visit.includes('Wednesday Bible Study</span><strong>7:00 PM'), 'New Here: verified Wednesday service time missing');
-          assert(visit.includes('11152 Lincoln Highway'), 'New Here: verified street address missing');
-          assert(visit.includes('Everett, PA 15537'), 'New Here: verified city/state/ZIP missing');
-          assert(visit.includes('ministries/children.html'), 'New Here: Children\'s Ministry link missing');
-          assert(visit.includes('messages.html'), 'New Here: Messages link missing');
-          assert(visit.includes('contact.html'), 'New Here: Contact link missing');
-          assert(visit.includes('google.com/maps/search/?api=1'), 'New Here: directions link missing');
-          assert(!/parking (lot|entrance)|check[- ]?in desk|nursery|childcare|dress code|service lasts|service length/i.test(visit), 'New Here: unverified visitor logistics detected');
+          assert(visit.includes('assets/css/components.css'),'New Here: component stylesheet missing');
+          for (const marker of ['class="page-hero visit-hero"','id="visit-details"','visit-quick__grid','visit-expect','visit-steps','visit-kids','visit-preview','visit-faq','id="location"','visit-final']) assert(visit.includes(marker),`New Here: missing ${marker}`);
+          assert(visit.includes('Sunday Worship</span><strong>9:30 AM'),'New Here: verified Sunday service time missing');
+          assert(visit.includes('Wednesday Bible Study</span><strong>7:00 PM'),'New Here: verified Wednesday service time missing');
+          assert(visit.includes('11152 Lincoln Highway'),'New Here: verified street address missing');
+          assert(visit.includes('Everett, PA 15537'),'New Here: verified city/state/ZIP missing');
+          assert(visit.includes('ministries/children.html'),'New Here: Children\'s Ministry link missing');
+          assert(visit.includes('messages.html'),'New Here: Messages link missing');
+          assert(visit.includes('contact.html'),'New Here: Contact link missing');
+          assert(visit.includes('google.com/maps/search/?api=1'),'New Here: directions link missing');
+          assert(!/parking (lot|entrance)|check[- ]?in desk|nursery|childcare|dress code|service lasts|service length/i.test(visit),'New Here: unverified visitor logistics detected');
 
-          const mainCss = read('assets/css/main.css');
-          const componentCss = read('assets/css/components.css');
-          assert(mainCss.includes('--color-accent:#00c8ef'), 'Design system: ECOG cyan accent token missing');
-          assert(mainCss.includes(':focus-visible'), 'Design system: focus-visible treatment missing');
-          assert(mainCss.includes('prefers-reduced-motion:reduce'), 'Design system: reduced-motion treatment missing');
-          assert(componentCss.includes('.cta-panel'), 'Component system: CTA panel missing');
-          assert(componentCss.includes('.info-tile'), 'Component system: information tile missing');
-          assert(componentCss.includes('.location-card'), 'Component system: location card missing');
-          assert(componentCss.includes('.home-empty-state'), 'Homepage: event empty-state styling missing');
-          assert(componentCss.includes('.visit-hero'), 'New Here: visitor hero styling missing');
-          assert(componentCss.includes('.visit-quick'), 'New Here: quick-information styling missing');
-          assert(componentCss.includes('.visit-steps'), 'New Here: first-visit step styling missing');
-          assert(componentCss.includes('.visit-faq'), 'New Here: FAQ styling missing');
-          assert(componentCss.includes('.visit-final'), 'New Here: final CTA styling missing');
-          assert(componentCss.includes('@media(max-width:860px)'), 'Responsive system: tablet/mobile breakpoint missing');
-          assert(componentCss.includes('@media(max-width:620px)'), 'Responsive system: small-screen breakpoint missing');
-          assert(componentCss.includes('.visit-quick__grid{grid-template-columns:1fr}'), 'New Here: small-screen quick-info stacking missing');
-          assert(componentCss.includes('.visit-steps{grid-template-columns:1fr}'), 'New Here: responsive first-visit step stacking missing');
+          const about = read('about.html');
+          assert(about.includes('assets/css/components.css'),'About: component stylesheet missing');
+          for (const marker of ['class="page-hero about-hero"','id="our-heart"','about-value-grid','about-leadership','about-leader-placeholder','about-beliefs','about-next']) assert(about.includes(marker),`About: missing ${marker}`);
+          assert(about.includes('A church family centered on Jesus.'),'About: hero message missing');
+          assert(about.includes('Loving God. Loving People.'),'About: church-heart message missing');
+          assert(about.includes('Pentecostal church'),'About: verified Pentecostal identity missing');
+          assert(about.includes('Sunday at 9:30 AM'),'About: verified Sunday service time missing');
+          assert(about.includes('11152 Lincoln Highway'),'About: verified street address missing');
+          assert(about.includes('new-here.html'),'About: Plan Your Visit link missing');
+          assert(about.includes('ministries.html'),'About: Ministries link missing');
+          assert(!/Faith · Worship · Community/.test(about),'About: unverified belief-summary formulation detected');
+          assert(!/intentionally holding|church confirms|doctrinal wording is verified/i.test(about),'About: internal editorial/process copy detected');
+          assert(!/senior pastor|lead pastor|founded in|established in/i.test(about),'About: potentially unverified leadership/history claim detected');
 
-          const components = read('assets/js/components.js');
-          const mainJs = read('assets/js/main.js');
-          assert(components.includes("path.includes('/ministries/') ? '../' : ''"), 'Shared components: nested ministry depth handling missing');
-          assert(components.includes('aria-current="page"'), 'Shared components: current-page accessibility state missing');
-          assert(components.includes('brand__cross'), 'Shared components: ECOG mark treatment missing');
-          assert(mainJs.includes("event.key === 'Escape'"), 'Navigation: Escape-key close behavior missing');
-          assert(mainJs.includes("window.innerWidth > 860"), 'Navigation: desktop reset behavior missing');
+          const mainCss = read('assets/css/main.css'); const componentCss = read('assets/css/components.css');
+          assert(mainCss.includes('--color-accent:#00c8ef'),'Design system: ECOG cyan accent token missing');
+          assert(mainCss.includes(':focus-visible'),'Design system: focus-visible treatment missing');
+          assert(mainCss.includes('prefers-reduced-motion:reduce'),'Design system: reduced-motion treatment missing');
+          for (const marker of ['.cta-panel','.info-tile','.location-card','.home-empty-state','.visit-hero','.visit-quick','.visit-steps','.visit-faq','.visit-final','.about-hero','.about-value-grid','.about-leader-placeholder','.about-beliefs']) assert(componentCss.includes(marker),`Component system: missing ${marker}`);
+          assert(componentCss.includes('@media(max-width:860px)'),'Responsive system: tablet/mobile breakpoint missing');
+          assert(componentCss.includes('@media(max-width:620px)'),'Responsive system: small-screen breakpoint missing');
+          assert(componentCss.includes('.visit-quick__grid{grid-template-columns:1fr}'),'New Here: small-screen quick-info stacking missing');
+          assert(componentCss.includes('.visit-steps{grid-template-columns:1fr}'),'New Here: responsive first-visit step stacking missing');
+          assert(componentCss.includes('.about-value-grid{grid-template-columns:1fr}'),'About: small-screen value-card stacking missing');
+          assert(componentCss.includes('.about-leader-placeholder{grid-template-columns:1fr}'),'About: responsive leadership stacking missing');
 
-          for (const dataFile of ['data/events.json', 'data/sermons.json']) {
-            let data;
-            try { data = JSON.parse(read(dataFile)); }
-            catch (error) { failures.push(`${dataFile}: invalid JSON (${error.message})`); continue; }
-            assert(Array.isArray(data), `${dataFile}: root must be an array`);
-            assert(Array.isArray(data) && data.length === 0, `${dataFile}: must remain empty until verified content is added`);
+          const components = read('assets/js/components.js'); const mainJs = read('assets/js/main.js');
+          assert(components.includes("path.includes('/ministries/') ? '../' : ''"),'Shared components: nested ministry depth handling missing');
+          assert(components.includes('aria-current="page"'),'Shared components: current-page accessibility state missing');
+          assert(components.includes('brand__cross'),'Shared components: ECOG mark treatment missing');
+          assert(components.includes('new Date().getFullYear()'),'Shared footer: dynamic current year missing');
+          assert(mainJs.includes("event.key === 'Escape'"),'Navigation: Escape-key close behavior missing');
+          assert(mainJs.includes('window.innerWidth > 860'),'Navigation: desktop reset behavior missing');
+
+          for (const dataFile of ['data/events.json','data/sermons.json']) {
+            let data; try { data = JSON.parse(read(dataFile)); } catch (error) { failures.push(`${dataFile}: invalid JSON (${error.message})`); continue; }
+            assert(Array.isArray(data),`${dataFile}: root must be an array`); assert(Array.isArray(data) && data.length === 0,`${dataFile}: must remain empty until verified content is added`);
           }
-
           const robots = read('robots.txt');
-          assert(/User-agent:\s*\*/i.test(robots), 'robots.txt: missing wildcard user-agent');
-          assert(/Disallow:\s*\//i.test(robots), 'robots.txt: staging crawl block missing');
-          assert(!fs.existsSync(path.join(root, 'CNAME')), 'Production CNAME must not exist before launch');
-
+          assert(/User-agent:\s*\*/i.test(robots),'robots.txt: missing wildcard user-agent'); assert(/Disallow:\s*\//i.test(robots),'robots.txt: staging crawl block missing'); assert(!fs.existsSync(path.join(root,'CNAME')),'Production CNAME must not exist before launch');
           const notFound = read('404.html');
-          assert(/name="robots"\s+content="noindex"/i.test(notFound), '404.html: missing noindex');
-          assert(notFound.includes("location.hostname.endsWith('github.io')"), '404.html: GitHub Pages project-root handling missing');
+          assert(/name="robots"\s+content="noindex"/i.test(notFound),'404.html: missing noindex'); assert(notFound.includes("location.hostname.endsWith('github.io')"),'404.html: GitHub Pages project-root handling missing');
 
-          if (failures.length) {
-            console.error(`Site validation failed with ${failures.length} issue(s):`);
-            failures.forEach((failure) => console.error(`- ${failure}`));
-            process.exit(1);
-          }
-
-          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 3/4 visitor safeguards checked.`);
+          if (failures.length) { console.error(`Site validation failed with ${failures.length} issue(s):`); failures.forEach((failure) => console.error(`- ${failure}`)); process.exit(1); }
+          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 3/4/5 safeguards checked.`);
           NODE
 
       - name: Syntax-check JavaScript
