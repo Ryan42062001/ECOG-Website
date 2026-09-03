@@ -90,6 +90,28 @@ jobs:
           assert(home.includes('Wednesday Bible Study</span><strong>7:00 PM'), 'Homepage: Wednesday service time missing');
           assert(!/sermon title|event title/i.test(home), 'Homepage: unverified placeholder content detected');
 
+          const visit = read('new-here.html');
+          assert(visit.includes('assets/css/components.css'), 'New Here: component stylesheet missing');
+          assert(visit.includes('class="page-hero visit-hero"'), 'New Here: visitor hero missing');
+          assert(visit.includes('id="visit-details"'), 'New Here: visit-details anchor missing');
+          assert(visit.includes('visit-quick__grid'), 'New Here: quick visit information missing');
+          assert(visit.includes('visit-expect'), 'New Here: what-to-expect section missing');
+          assert(visit.includes('visit-steps'), 'New Here: first-visit steps missing');
+          assert(visit.includes('visit-kids'), 'New Here: family/children section missing');
+          assert(visit.includes('visit-preview'), 'New Here: message preview section missing');
+          assert(visit.includes('visit-faq'), 'New Here: FAQ missing');
+          assert(visit.includes('id="location"'), 'New Here: location anchor missing');
+          assert(visit.includes('visit-final'), 'New Here: final visitor CTA missing');
+          assert(visit.includes('Sunday Worship</span><strong>9:30 AM'), 'New Here: verified Sunday service time missing');
+          assert(visit.includes('Wednesday Bible Study</span><strong>7:00 PM'), 'New Here: verified Wednesday service time missing');
+          assert(visit.includes('11152 Lincoln Highway'), 'New Here: verified street address missing');
+          assert(visit.includes('Everett, PA 15537'), 'New Here: verified city/state/ZIP missing');
+          assert(visit.includes('ministries/children.html'), 'New Here: Children\'s Ministry link missing');
+          assert(visit.includes('messages.html'), 'New Here: Messages link missing');
+          assert(visit.includes('contact.html'), 'New Here: Contact link missing');
+          assert(visit.includes('google.com/maps/search/?api=1'), 'New Here: directions link missing');
+          assert(!/parking (lot|entrance)|check[- ]?in desk|nursery|childcare|dress code|service lasts|service length/i.test(visit), 'New Here: unverified visitor logistics detected');
+
           const mainCss = read('assets/css/main.css');
           const componentCss = read('assets/css/components.css');
           assert(mainCss.includes('--color-accent:#00c8ef'), 'Design system: ECOG cyan accent token missing');
@@ -99,8 +121,15 @@ jobs:
           assert(componentCss.includes('.info-tile'), 'Component system: information tile missing');
           assert(componentCss.includes('.location-card'), 'Component system: location card missing');
           assert(componentCss.includes('.home-empty-state'), 'Homepage: event empty-state styling missing');
-          assert(componentCss.includes('@media(max-width:860px)'), 'Homepage: tablet/mobile breakpoint missing');
-          assert(componentCss.includes('@media(max-width:620px)'), 'Homepage: small-screen breakpoint missing');
+          assert(componentCss.includes('.visit-hero'), 'New Here: visitor hero styling missing');
+          assert(componentCss.includes('.visit-quick'), 'New Here: quick-information styling missing');
+          assert(componentCss.includes('.visit-steps'), 'New Here: first-visit step styling missing');
+          assert(componentCss.includes('.visit-faq'), 'New Here: FAQ styling missing');
+          assert(componentCss.includes('.visit-final'), 'New Here: final CTA styling missing');
+          assert(componentCss.includes('@media(max-width:860px)'), 'Responsive system: tablet/mobile breakpoint missing');
+          assert(componentCss.includes('@media(max-width:620px)'), 'Responsive system: small-screen breakpoint missing');
+          assert(componentCss.includes('.visit-quick__grid{grid-template-columns:1fr}'), 'New Here: small-screen quick-info stacking missing');
+          assert(componentCss.includes('.visit-steps{grid-template-columns:1fr}'), 'New Here: responsive first-visit step stacking missing');
 
           const components = read('assets/js/components.js');
           const mainJs = read('assets/js/main.js');
@@ -133,7 +162,7 @@ jobs:
             process.exit(1);
           }
 
-          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 3 homepage safeguards checked.`);
+          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 3/4 visitor safeguards checked.`);
           NODE
 
       - name: Syntax-check JavaScript
