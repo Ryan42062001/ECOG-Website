@@ -1,0 +1,111 @@
+name: Phase 1 Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run Phase 1 static validation
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+
+          const root = process.cwd();
+          const topPages = [
+            'index.html', 'new-here.html', 'about.html', 'ministries.html',
+            'messages.html', 'events.html', 'give.html', 'contact.html', '404.html'
+          ];
+          const ministryPages = [
+            'ministries/children.html', 'ministries/students.html',
+            'ministries/men.html', 'ministries/women.html',
+            'ministries/senior-adults.html'
+          ];
+          const pages = [...topPages, ...ministryPages];
+          const required = [
+            ...pages,
+            'assets/css/main.css',
+            'assets/js/components.js',
+            'assets/js/main.js',
+            'data/events.json',
+            'data/sermons.json',
+            'robots.txt'
+          ];
+
+          const failures = [];
+          const assert = (condition, message) => { if (!condition) failures.push(message); };
+          const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
+
+          for (const file of required) {
+            assert(fs.existsSync(path.join(root, file)), `Missing required file: ${file}`);
+          }
+
+          for (const file of pages.filter((p) => p !== '404.html')) {
+            const html = read(file);
+            const prefix = file.startsWith('ministries/') ? '../' : '';
+            assert(/<html\s+lang="en"/i.test(html), `${file}: missing lang=en`);
+            assert(/<meta\s+name="viewport"/i.test(html), `${file}: missing viewport meta`);
+            assert(/<title>[^<]+<\/title>/i.test(html), `${file}: missing title`);
+            assert(/<main\s+id="main-content"/i.test(html), `${file}: missing #main-content`);
+            assert(/class="skip-link"\s+href="#main-content"/i.test(html), `${file}: missing skip link`);
+            assert(html.includes(`${prefix}assets/css/main.css`), `${file}: incorrect main.css path`);
+            assert(html.includes(`${prefix}assets/js/components.js`), `${file}: incorrect components.js path`);
+            assert(html.includes(`${prefix}assets/js/main.js`), `${file}: incorrect main.js path`);
+            assert(html.includes('data-site-header'), `${file}: missing shared header target`);
+            assert(html.includes('data-site-footer'), `${file}: missing shared footer target`);
+          }
+
+          const components = read('assets/js/components.js');
+          const mainJs = read('assets/js/main.js');
+          assert(components.includes("path.includes('/ministries/') ? '../' : ''"), 'Shared components: nested ministry depth handling missing');
+          assert(components.includes('aria-current="page"'), 'Shared components: current-page accessibility state missing');
+          assert(mainJs.includes("event.key === 'Escape'"), 'Navigation: Escape-key close behavior missing');
+          assert(mainJs.includes("window.innerWidth > 860"), 'Navigation: desktop reset behavior missing');
+
+          for (const dataFile of ['data/events.json', 'data/sermons.json']) {
+            let data;
+            try { data = JSON.parse(read(dataFile)); }
+            catch (error) { failures.push(`${dataFile}: invalid JSON (${error.message})`); continue; }
+            assert(Array.isArray(data), `${dataFile}: root must be an array`);
+            assert(Array.isArray(data) && data.length === 0, `${dataFile}: must remain empty until verified content is added`);
+          }
+
+          const robots = read('robots.txt');
+          assert(/User-agent:\s*\*/i.test(robots), 'robots.txt: missing wildcard user-agent');
+          assert(/Disallow:\s*\//i.test(robots), 'robots.txt: staging crawl block missing');
+          assert(!fs.existsSync(path.join(root, 'CNAME')), 'Production CNAME must not exist during Phase 1');
+
+          const notFound = read('404.html');
+          assert(/name="robots"\s+content="noindex"/i.test(notFound), '404.html: missing noindex');
+          assert(notFound.includes("location.hostname.endsWith('github.io')"), '404.html: GitHub Pages project-root handling missing');
+
+          if (failures.length) {
+            console.error(`Phase 1 validation failed with ${failures.length} issue(s):`);
+            failures.forEach((failure) => console.error(`- ${failure}`));
+            process.exit(1);
+          }
+
+          console.log(`Phase 1 validation passed: ${pages.length} pages and ${required.length} required files checked.`);
+          NODE
+
+      - name: Syntax-check JavaScript
+        run: |
+          node --check assets/js/components.js
+          node --check assets/js/main.js
