@@ -43,7 +43,7 @@
   const meta = (event) => [event.time, event.location].filter((item) => typeof item === 'string' && item.trim()).map((item) => `<span>${escapeHtml(item)}</span>`).join('');
   const action = (event, label = 'Event Details') => {
     const url = safeUrl(event.detailsUrl);
-    return url ? `<a class="text-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label} <span aria-hidden="true">→</span></a>` : '';
+    return url ? `<a class="text-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label} <span aria-hidden="true">→</span><span class="sr-only"> (opens in a new tab)</span></a>` : '';
   };
   const pageCard = (event) => {
     const date = dateParts(event.date);

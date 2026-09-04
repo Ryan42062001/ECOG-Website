@@ -5,18 +5,26 @@
     if (!toggle || !menu || toggle.dataset.initialized === 'true') return;
 
     toggle.dataset.initialized = 'true';
+    const menuLinks = [...menu.querySelectorAll('a')];
 
-    const closeMenu = () => {
+    const closeMenu = ({ restoreFocus = false } = {}) => {
+      const wasOpen = menu.classList.contains('is-open');
       menu.classList.remove('is-open');
       toggle.setAttribute('aria-expanded', 'false');
       toggle.setAttribute('aria-label', 'Open navigation menu');
+      if (restoreFocus && wasOpen) toggle.focus();
+    };
+
+    const openMenu = () => {
+      menu.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close navigation menu');
+      menuLinks[0]?.focus();
     };
 
     toggle.addEventListener('click', () => {
-      const open = !menu.classList.contains('is-open');
-      menu.classList.toggle('is-open', open);
-      toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+      if (menu.classList.contains('is-open')) closeMenu();
+      else openMenu();
     });
 
     menu.addEventListener('click', (event) => {
@@ -24,7 +32,14 @@
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') closeMenu();
+      if (event.key === 'Escape' && menu.classList.contains('is-open')) {
+        event.preventDefault();
+        closeMenu({ restoreFocus: true });
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (menu.classList.contains('is-open') && !menu.contains(event.target) && !toggle.contains(event.target)) closeMenu();
     });
 
     window.addEventListener('resize', () => {

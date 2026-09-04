@@ -1,0 +1,64 @@
+name: Phase 11 Quality
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  site-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate structure, links, data, JS, and accessibility invariants
+        run: node scripts/validate-site.js
+
+  seo-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate SEO and launch safeguards
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs'), path = require('path');
+          const root = process.cwd(), productionOrigin = 'https://everettchurchofgod.com', failures = [];
+          const assert = (c,m) => { if(!c) failures.push(m); }, read = f => fs.readFileSync(path.join(root,f),'utf8');
+          const pages = [['index.html','/'],['new-here.html','/new-here.html'],['about.html','/about.html'],['ministries.html','/ministries.html'],['ministries/children.html','/ministries/children.html'],['ministries/students.html','/ministries/students.html'],['ministries/men.html','/ministries/men.html'],['ministries/women.html','/ministries/women.html'],['messages.html','/messages.html'],['events.html','/events.html'],['give.html','/give.html'],['contact.html','/contact.html']];
+          const esc = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          for(const [file,route] of pages){const h=read(file),c=`${productionOrigin}${route}`; assert((h.match(/<title>[^<]+<\/title>/gi)||[]).length===1,`${file}: title`); assert((h.match(/<meta\s+name="description"\s+content="[^"]{50,}"/gi)||[]).length===1,`${file}: description`); assert(new RegExp(`<link\\s+rel=["']canonical["']\\s+href=["']${esc(c)}["']`,'i').test(h),`${file}: canonical`); assert(/name="robots" content="noindex,nofollow"/i.test(h),`${file}: staging noindex`); for(const x of ['og:type','og:site_name','og:title','og:description','og:url']) assert(h.includes(`property="${x}"`),`${file}: ${x}`); assert(h.includes(`property="og:url" content="${c}"`),`${file}: og:url`); assert(h.includes('name="twitter:card" content="summary"'),`${file}: twitter:card`); assert(!/github\.io\/ECOG-Website/i.test(h),`${file}: staging URL leak`);}
+          const urls=pages.map(([,r])=>`${productionOrigin}${r}`), sitemap=read('sitemap.xml'), listed=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]); assert(listed.length===urls.length&&new Set(listed).size===listed.length,'sitemap count/duplicates'); for(const u of urls) assert(listed.includes(u),`sitemap missing ${u}`); assert(!/senior-adults\.html|github\.io/i.test(sitemap),'sitemap retired/staging URL');
+          const home=read('index.html'), sm=home.match(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/i); assert(!!sm,'homepage JSON-LD'); if(sm){try{const s=JSON.parse(sm[1]); assert(s['@type']==='Church'&&s.name==='Everett Church of God','schema identity'); assert(s.telephone==='+1-814-652-9287'&&s.email==='everettcog@comcast.net','schema contact'); assert(s.address?.streetAddress==='11152 Lincoln Highway'&&s.address?.addressLocality==='Everett'&&s.address?.addressRegion==='PA'&&s.address?.postalCode==='15537'&&s.address?.addressCountry==='US','schema address'); assert(s.sameAs?.includes('https://www.facebook.com/EverettCOG/')&&s.sameAs?.includes('https://www.youtube.com/@everettchurchofgod417'),'schema socials'); for(const k of ['geo','foundingDate','logo','image']) assert(!(k in s),`unverified schema ${k}`);}catch(e){failures.push(`invalid JSON-LD: ${e.message}`)}}
+          const retired=read('ministries/senior-adults.html'), robots=read('robots.txt'); assert(/name="robots" content="noindex,follow"/i.test(retired),'retired noindex'); assert(!/rel=["']canonical["']/i.test(retired),'retired canonical'); assert(/User-agent:\s*\*[\s\S]*Disallow:\s*\//i.test(robots),'staging robots'); assert(!/Sitemap:/i.test(robots),'staging sitemap advertisement'); assert(!fs.existsSync(path.join(root,'CNAME')),'premature CNAME');
+          if(failures.length){console.error(failures.map(x=>`- ${x}`).join('\n'));process.exit(1)} console.log('Phase 11 SEO validation passed.');
+          NODE
+
+  performance-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Enforce static performance budgets
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),path=require('path'),root=process.cwd(),failures=[],warnings=[],KB=1024;
+          const budgets={cssFile:40*KB,jsFile:30*KB,totalCss:80*KB,totalJs:50*KB,image:500*KB,totalImages:2500*KB};
+          const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>{const f=path.join(d,e.name);return e.isDirectory()?walk(f):[f]}), rel=f=>path.relative(root,f).replace(/\\/g,'/'), size=f=>fs.statSync(f).size;
+          const files=walk(root).filter(f=>!rel(f).startsWith('.git/')),css=files.filter(f=>/\.css$/i.test(f)),js=files.filter(f=>/\.js$/i.test(f)&&!rel(f).startsWith('scripts/')),images=files.filter(f=>/\.(avif|webp|jpe?g|png|gif|svg)$/i.test(f)),html=files.filter(f=>/\.html$/i.test(f)),total=a=>a.reduce((s,f)=>s+size(f),0),fmt=b=>`${(b/KB).toFixed(1)} KB`;
+          for(const f of css)if(size(f)>budgets.cssFile)failures.push(`${rel(f)} exceeds CSS file budget`); for(const f of js)if(size(f)>budgets.jsFile)failures.push(`${rel(f)} exceeds JS file budget`); if(total(css)>budgets.totalCss)failures.push('Total CSS budget exceeded'); if(total(js)>budgets.totalJs)failures.push('Total JS budget exceeded');
+          let ib=0; for(const f of images){ib+=size(f);if(size(f)>budgets.image)failures.push(`${rel(f)} exceeds image budget`);if(/\.(jpe?g|png)$/i.test(f))warnings.push(`${rel(f)}: consider AVIF/WebP`)} if(ib>budgets.totalImages)failures.push('Total image budget exceeded');
+          for(const f of html){const r=rel(f),s=fs.readFileSync(f,'utf8');for(const m of s.matchAll(/<script\b([^>]*)\bsrc=["']([^"']+)["']([^>]*)>/gi)){if(!/^https?:\/\//i.test(m[2])&&!/\b(defer|async)\b/i.test(`${m[1]} ${m[3]}`))failures.push(`${r}: ${m[2]} needs defer/async`)}for(const m of s.matchAll(/<img\b([^>]*)>/gi)){const a=m[1],src=(a.match(/src=["']([^"']+)/i)||[])[1]||'image',hero=/fetchpriority=["']high|data-hero|class=["'][^"']*hero/i.test(a);if(!/width=["']\d+/i.test(a)||!/height=["']\d+/i.test(a))failures.push(`${r}: ${src} needs width/height`);if(!hero&&!/loading=["']lazy/i.test(a))failures.push(`${r}: ${src} needs lazy loading`);if(hero&&/loading=["']lazy/i.test(a))failures.push(`${r}: hero ${src} must not lazy load`)}if(/<iframe\b/i.test(s))warnings.push(`${r}: review iframe performance`)}
+          warnings.forEach(w=>console.warn(`WARNING: ${w}`)); if(failures.length){console.error(failures.map(x=>`- ${x}`).join('\n'));process.exit(1)} console.log(`Performance validation passed. CSS ${fmt(total(css))}, JS ${fmt(total(js))}, images ${fmt(ib)}.`);
+          NODE
