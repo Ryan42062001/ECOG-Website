@@ -77,6 +77,8 @@
                 <li><a href="${depth}give.html">Give</a></li>
                 <li><a href="${depth}contact.html">Contact</a></li>
                 <li><a href="mailto:everettcog@comcast.net">everettcog@comcast.net</a></li>
+                <li><a href="https://www.facebook.com/EverettCOG/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                <li><a href="https://www.youtube.com/@everettchurchofgod417" target="_blank" rel="noopener noreferrer">YouTube</a></li>
               </ul>
             </div>
           </div>
