@@ -19,23 +19,23 @@
         <h1>Be encouraged by God's Word.</h1>
         <p>Watch messages from Everett Church of God and continue growing in faith throughout the week.</p>
         <div class="button-row">
-          <a class="button button--primary" href="https://www.youtube.com/@everettchurchofgod417" target="_blank" rel="noopener noreferrer">Watch on YouTube <span aria-hidden="true">↗</span></a>
+          <a class="button button--primary" href="https://www.youtube.com/@everettchurchofgod417" target="_blank" rel="noopener noreferrer">Watch on YouTube <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>
           <a class="button button--outline-light" href="new-here.html">Join Us Sunday</a>
         </div>
       </div>
     </header>
 
-    <section class="section messages-featured" aria-label="Latest message">
-      <div class="container"><article class="message-feature" data-featured-message hidden></article></div>
+    <section class="section messages-featured" aria-labelledby="latest-message-title">
+      <div class="container"><h2 class="sr-only" id="latest-message-title">Latest message</h2><article class="message-feature" data-featured-message hidden></article></div>
     </section>
 
-    <section class="section section-muted" id="message-library">
+    <section class="section section-muted" id="message-library" aria-labelledby="message-library-title">
       <div class="container">
         <div class="messages-library__top">
-          <div class="section-heading"><p class="eyebrow">Message library</p><h2>Watch and grow.</h2><p>Our official YouTube channel is the source for Everett Church of God messages. Verified recordings can also be displayed here as the website integration is completed.</p></div>
-          <p class="messages-count" data-message-count aria-live="polite">Loading messages…</p>
+          <div class="section-heading"><p class="eyebrow">Message library</p><h2 id="message-library-title">Watch and grow.</h2><p>Our official YouTube channel is the source for Everett Church of God messages. Verified recordings can also be displayed here as the website integration is completed.</p></div>
+          <p class="messages-count" data-message-count aria-live="polite" aria-atomic="true">Loading messages…</p>
         </div>
-        <div class="messages-grid" data-message-library aria-live="polite"><div class="messages-empty"><div class="messages-empty__icon" aria-hidden="true">▶</div><p class="eyebrow">Loading</p><h2>Preparing the message library…</h2></div></div>
+        <div class="messages-grid" data-message-library aria-live="polite" aria-atomic="true"><div class="messages-empty"><div class="messages-empty__icon" aria-hidden="true">▶</div><p class="eyebrow">Loading</p><h3>Preparing the message library…</h3></div></div>
       </div>
     </section>
 
