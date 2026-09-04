@@ -32,11 +32,12 @@
   };
 
   const meta = (message) => [message.speaker, formatDate(message.date), message.scripture].filter(Boolean);
+  const newTabText = '<span class="sr-only"> (opens in a new tab)</span>';
 
   const watchButton = (message, className = 'button button--secondary') => {
     const url = safeUrl(message.watchUrl);
     if (!url) return '';
-    return `<a class="${className}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Watch Message <span aria-hidden="true">↗</span></a>`;
+    return `<a class="${className}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Watch Message <span aria-hidden="true">↗</span>${newTabText}</a>`;
   };
 
   const renderFeatured = (message) => {
@@ -54,13 +55,13 @@
   const renderEmpty = () => {
     if (featured) featured.hidden = true;
     if (count) count.textContent = 'Watch current messages on our official YouTube channel.';
-    library.innerHTML = `<div class="messages-empty"><div class="messages-empty__icon" aria-hidden="true">▶</div><p class="eyebrow">Official message source</p><h2>Watch ECOG on YouTube.</h2><p>Our official YouTube channel is the current source for Everett Church of God messages while the on-site message library is being connected.</p><div class="button-row"><a class="button button--secondary" href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Visit YouTube <span aria-hidden="true">↗</span></a><a class="button button--secondary" href="new-here.html">Plan Your Visit</a></div></div>`;
+    library.innerHTML = `<div class="messages-empty"><div class="messages-empty__icon" aria-hidden="true">▶</div><p class="eyebrow">Official message source</p><h3>Watch ECOG on YouTube.</h3><p>Our official YouTube channel is the current source for Everett Church of God messages while the on-site message library is being connected.</p><div class="button-row"><a class="button button--secondary" href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Visit YouTube <span aria-hidden="true">↗</span>${newTabText}</a><a class="button button--secondary" href="new-here.html">Plan Your Visit</a></div></div>`;
   };
 
   const renderError = () => {
     if (featured) featured.hidden = true;
     if (count) count.textContent = '';
-    library.innerHTML = `<div class="messages-error" role="status"><p>The on-site message library could not be loaded right now.</p><p><a href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Watch messages on our official YouTube channel <span aria-hidden="true">↗</span></a></p></div>`;
+    library.innerHTML = `<div class="messages-error" role="status"><p>The on-site message library could not be loaded right now.</p><p><a href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Watch messages on our official YouTube channel <span aria-hidden="true">↗</span>${newTabText}</a></p></div>`;
   };
 
   fetch('data/sermons.json', { cache: 'no-store' })
