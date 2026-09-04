@@ -33,8 +33,10 @@
 .contact-help-card{padding:1.5rem;border:1px solid var(--color-border);border-radius:1.2rem;background:var(--color-surface)}
 .contact-help-card h3{margin:.35rem 0 .65rem}
 .contact-help-card p{color:var(--color-muted)}
-.contact-next .cta-panel{text-align:center}
-.contact-next .cta-panel p{max-width:42rem;margin-inline:auto}
-.contact-next .button-row{justify-content:center}
+.contact-next .cta-panel{display:flex;max-width:64rem;flex-direction:column;align-items:center;gap:.45rem;margin-inline:auto;padding-block:clamp(2.5rem,5vw,4rem);text-align:center}
+.contact-next .cta-panel .eyebrow{margin-bottom:.35rem;color:var(--color-accent)}
+.contact-next .cta-panel h2{margin-bottom:.65rem}
+.contact-next .cta-panel p:not(.eyebrow){max-width:42rem;margin:0 auto;color:rgba(255,255,255,.84)}
+.contact-next .cta-panel .button-row{justify-content:center;margin-top:1.35rem}
 @media(max-width:900px){.give-intro__grid,.contact-grid{grid-template-columns:1fr}.contact-map{min-height:21rem}.contact-help-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:620px){.give-options,.contact-help-grid{grid-template-columns:1fr}.give-card,.contact-card{padding:1.35rem}.contact-map{min-height:18rem;padding:1.5rem}.contact-list li{grid-template-columns:2.5rem 1fr}.contact-list__icon{width:2.5rem;height:2.5rem}}
+@media(max-width:620px){.give-options,.contact-help-grid{grid-template-columns:1fr}.give-card,.contact-card{padding:1.35rem}.contact-map{min-height:18rem;padding:1.5rem}.contact-list li{grid-template-columns:2.5rem 1fr}.contact-list__icon{width:2.5rem;height:2.5rem}.contact-next .cta-panel{padding:2rem 1.4rem}}
