@@ -29,9 +29,11 @@ jobs:
           const path = require('path');
           const root = process.cwd();
           const topPages = ['index.html','new-here.html','about.html','ministries.html','messages.html','events.html','give.html','contact.html','404.html'];
-          const ministryPages = ['ministries/children.html','ministries/students.html','ministries/men.html','ministries/women.html','ministries/senior-adults.html'];
+          const activeMinistryPages = ['ministries/children.html','ministries/students.html','ministries/men.html','ministries/women.html'];
+          const retiredMinistryPages = ['ministries/senior-adults.html'];
+          const ministryPages = [...activeMinistryPages, ...retiredMinistryPages];
           const pages = [...topPages, ...ministryPages];
-          const required = [...pages,'assets/css/main.css','assets/css/components.css','assets/css/ministries.css','assets/css/messages.css','assets/css/events.css','assets/css/giving-contact.css','assets/js/components.js','assets/js/main.js','assets/js/messages.js','assets/js/events.js','data/events.json','data/sermons.json','docs/phase-2-design-system.md','robots.txt'];
+          const required = [...pages,'assets/css/main.css','assets/css/components.css','assets/css/ministries.css','assets/css/messages.css','assets/css/events.css','assets/css/giving-contact.css','assets/js/components.js','assets/js/main.js','assets/js/messages.js','assets/js/events.js','data/events.json','data/sermons.json','docs/phase-2-design-system.md','docs/phase-10-content-migration.md','robots.txt'];
           const failures = [];
           const assert = (condition, message) => { if (!condition) failures.push(message); };
           const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
@@ -54,31 +56,53 @@ jobs:
           const home = read('index.html');
           for (const marker of ['class="hero section-dark"','class="service-strip"','home-welcome','home-ministry-grid','home-message-section','home-events-section','home-location-section','home-final-cta','data-home-events','data-home-event-list']) assert(home.includes(marker),`Homepage: missing ${marker}`);
           assert(home.includes('11152 Lincoln Highway') && home.includes('Everett, PA 15537'),'Homepage: verified address missing');
-          assert(home.includes('Sunday Worship</span><strong>9:30 AM') && home.includes('Wednesday Bible Study</span><strong>7:00 PM'),'Homepage: verified service times missing');
+          assert(home.includes('Sunday Worship</span><strong>10:00 AM') && home.includes('Wednesday Bible Study</span><strong>7:00 PM'),'Homepage: current service times missing');
+          assert(!home.includes('9:30 AM'),'Homepage: obsolete Sunday 9:30 AM time detected');
+          assert(!/senior adults/i.test(home),'Homepage: inactive Senior Adults ministry must not be promoted');
           assert(!/sermon title|event title/i.test(home),'Homepage: unverified placeholder content detected');
 
           const visit = read('new-here.html');
           for (const marker of ['class="page-hero visit-hero"','id="visit-details"','visit-quick__grid','visit-expect','visit-steps','visit-kids','visit-preview','visit-faq','id="location"','visit-final']) assert(visit.includes(marker),`New Here: missing ${marker}`);
           assert(visit.includes('11152 Lincoln Highway') && visit.includes('Everett, PA 15537'),'New Here: verified address missing');
-          assert(visit.includes('Sunday Worship</span><strong>9:30 AM') && visit.includes('Wednesday Bible Study</span><strong>7:00 PM'),'New Here: verified service times missing');
+          assert(visit.includes('Sunday Worship</span><strong>10:00 AM') && visit.includes('Wednesday Bible Study</span><strong>7:00 PM'),'New Here: current service times missing');
+          assert(!visit.includes('9:30 AM'),'New Here: obsolete Sunday 9:30 AM time detected');
           assert(visit.includes('google.com/maps/search/?api=1'),'New Here: directions link missing');
           assert(!/parking (lot|entrance)|check[- ]?in desk|nursery|childcare|dress code|service lasts|service length/i.test(visit),'New Here: unverified visitor logistics detected');
 
           const about = read('about.html');
           for (const marker of ['class="page-hero about-hero"','id="our-heart"','about-value-grid','about-leadership','about-leader-placeholder','about-beliefs','about-next']) assert(about.includes(marker),`About: missing ${marker}`);
           assert(about.includes('A church family centered on Jesus.') && about.includes('Loving God. Loving People.') && about.includes('Pentecostal church'),'About: verified identity copy missing');
+          assert(about.includes('Jenn &amp; John Kisner') && about.includes('Co-Pastors'),'About: confirmed co-pastor information missing');
+          for (const belief of ['The Bible','God','Jesus Christ','Salvation','The Holy Spirit','The Church','Jesus Is Coming Back']) assert(about.includes(belief),`About: confirmed belief section missing ${belief}`);
+          assert(!about.includes('9:30 AM'),'About: obsolete Sunday 9:30 AM time detected');
           assert(!/senior pastor|lead pastor|founded in|established in/i.test(about),'About: potentially unverified leadership/history claim detected');
 
           const hub = read('ministries.html');
           for (const marker of ['assets/css/ministries.css','ministries-hero','id="ministry-groups"','ministries-grid','ministry-card']) assert(hub.includes(marker),`Ministries: missing ${marker}`);
-          for (const page of ministryPages) assert(hub.includes(page),`Ministries: link missing for ${page}`);
-          assert(hub.includes('Ages 5–12') && hub.includes('Ages 12–college age') && hub.includes('Ages 55+'),'Ministries: verified age ranges missing');
-          for (const file of ministryPages) {
+          for (const page of activeMinistryPages) assert(hub.includes(page),`Ministries: active ministry link missing for ${page}`);
+          assert(!hub.includes('ministries/senior-adults.html') && !/Ages 55\+|Senior Adults/i.test(hub),'Ministries: inactive Senior Adults ministry must not be listed as active');
+          assert(hub.includes('Ages 5–12') && hub.includes('Ages 12–college age'),'Ministries: current age ranges missing');
+          for (const file of activeMinistryPages) {
             const html = read(file);
             assert(html.includes('../assets/css/ministries.css'),`${file}: Phase 6 stylesheet missing`);
             assert(html.includes('class="page-hero ministry-hero"'),`${file}: ministry hero missing`);
             assert(!/coming soon|details will be added|leader(s)?\s*:/i.test(html),`${file}: stale placeholder/editorial ministry copy detected`);
           }
+          const children = read('ministries/children.html');
+          assert(children.includes('Ages 5–12') && children.includes('Sunday · 10:00 AM'),'Children: confirmed age/time missing');
+          assert(!children.includes('9:30 AM'),'Children: obsolete Sunday time detected');
+          const students = read('ministries/students.html');
+          assert(students.includes('Wednesday · 7:00 PM') && students.includes('Students gather Wednesday evenings at 7:00 PM.'),'Amplify: confirmed Wednesday schedule missing');
+          assert(!/Sunday[^<.]*9:30|Sunday[^<.]*10:00/i.test(students),'Amplify: obsolete Sunday meeting detected');
+          const men = read('ministries/men.html');
+          assert(men.includes('no fixed weekly or monthly meeting schedule'),'Guys: event-based schedule statement missing');
+          const women = read('ministries/women.html');
+          assert(women.includes('no fixed monthly meeting schedule'),'Women: event-based schedule statement missing');
+          assert(!/last Tuesday|most months/i.test(women),'Women: obsolete monthly schedule detected');
+          const retired = read('ministries/senior-adults.html');
+          assert(/name="robots"\s+content="noindex,follow"/i.test(retired),'Senior Adults legacy page: noindex,follow missing');
+          assert(retired.includes('no longer active') && retired.includes('../ministries.html'),'Senior Adults legacy page: retirement notice/current-ministry link missing');
+          assert(!/Bob|Shirley|Ages 55\+/i.test(retired),'Senior Adults legacy page: stale historical contact/age content detected');
 
           const messages = read('messages.html');
           for (const marker of ['assets/css/messages.css','assets/js/messages.js','data-messages-app','class="page-hero messages-hero"','data-featured-message','id="message-library"','data-message-count','data-message-library','messages-next']) assert(messages.includes(marker),`Messages: missing ${marker}`);
@@ -86,7 +110,8 @@ jobs:
 
           const events = read('events.html');
           for (const marker of ['assets/css/events.css','assets/js/events.js','data-events-app','class="page-hero events-hero"','data-featured-event','id="event-calendar"','data-event-count','data-event-library','events-next']) assert(events.includes(marker),`Events: missing ${marker}`);
-          assert(events.includes('Sunday worship at 9:30 AM') && events.includes('Wednesday Bible Study at 7:00 PM'),'Events: verified service times missing');
+          assert(events.includes('Sunday worship at 10:00 AM') && events.includes('Wednesday Bible Study at 7:00 PM'),'Events: current service times missing');
+          assert(!events.includes('9:30 AM'),'Events: obsolete Sunday time detected');
           assert(!/event title|event date|event location/i.test(events),'Events: unverified event placeholder content detected');
 
           const give = read('give.html');
@@ -103,11 +128,13 @@ jobs:
           for (const marker of ['class="page-hero contact-hero"','contact-grid','contact-list','contact-map','contact-help-grid','contact-next']) assert(contact.includes(marker),`Contact: missing ${marker}`);
           assert(contact.includes('11152 Lincoln Highway') && contact.includes('Everett, PA 15537'),'Contact: verified address missing');
           assert(contact.includes('tel:+18146529287') && contact.includes('814-652-9287'),'Contact: verified phone missing');
-          assert(contact.includes('Sunday Worship') && contact.includes('9:30 AM') && contact.includes('Wednesday Bible Study') && contact.includes('7:00 PM'),'Contact: verified service times missing');
+          assert(contact.includes('Sunday Worship') && contact.includes('10:00 AM') && contact.includes('Wednesday Bible Study') && contact.includes('7:00 PM'),'Contact: current service times missing');
+          assert(!contact.includes('9:30 AM'),'Contact: obsolete Sunday time detected');
+          for (const email of ['mailto:everettcog@comcast.net','mailto:kisner.jenn@yahoo.com','mailto:jdkcog@comcast.net']) assert(contact.includes(email),`Contact: confirmed email missing: ${email}`);
+          assert(contact.includes('Jenn Kisner') && contact.includes('John Kisner') && contact.includes('Co-Pastor'),'Contact: confirmed pastoral contacts missing');
           assert(contact.includes('https://www.google.com/maps/search/?api=1'),'Contact: Google Maps directions link missing');
           assert(/target="_blank"\s+rel="noopener noreferrer"/.test(contact),'Contact: external directions link protection missing');
           assert(!/<form\b|<input\b|<textarea\b/i.test(contact),'Contact: unapproved static contact form detected');
-          assert(!/mailto:|@Comcast\.net|@comcast\.net/i.test(contact),'Contact: unverified email must not be published yet');
 
           const mainCss = read('assets/css/main.css');
           const componentCss = read('assets/css/components.css');
@@ -123,40 +150,44 @@ jobs:
           assert(messagesCss.includes('@media(max-width:620px)') && messagesCss.includes('.messages-grid{grid-template-columns:1fr}'),'Phase 7 CSS: mobile safeguards missing');
           assert(eventsCss.includes('@media(max-width:620px)'),'Phase 8 CSS: mobile breakpoint missing');
           for (const marker of ['.give-hero','.give-intro__grid','.give-status','.give-options','.give-safety','.contact-hero','.contact-grid','.contact-list','.contact-map','.contact-help-grid','.contact-next']) assert(phase9Css.includes(marker),`Phase 9 CSS: missing ${marker}`);
-          assert(phase9Css.includes('@media(max-width:900px)'),'Phase 9 CSS: tablet breakpoint missing');
-          assert(phase9Css.includes('@media(max-width:620px)'),'Phase 9 CSS: mobile breakpoint missing');
-          assert(phase9Css.includes('.give-options,.contact-help-grid{grid-template-columns:1fr}'),'Phase 9 CSS: mobile card stacking missing');
-          assert(phase9Css.includes('.give-intro__grid,.contact-grid{grid-template-columns:1fr}'),'Phase 9 CSS: responsive primary-grid stacking missing');
+          assert(phase9Css.includes('@media(max-width:900px)') && phase9Css.includes('@media(max-width:620px)'),'Phase 9 CSS: responsive breakpoints missing');
 
-          const components = read('assets/js/components.js'); const mainJs = read('assets/js/main.js'); const messagesJs = read('assets/js/messages.js'); const eventsJs = read('assets/js/events.js');
+          const components = read('assets/js/components.js');
+          const mainJs = read('assets/js/main.js');
+          const messagesJs = read('assets/js/messages.js');
+          const eventsJs = read('assets/js/events.js');
           assert(components.includes("path.includes('/ministries/') ? '../' : ''"),'Shared components: nested ministry depth handling missing');
           assert(components.includes('aria-current="page"'),'Shared components: current-page accessibility state missing');
           assert(components.includes('new Date().getFullYear()'),'Shared footer: dynamic current year missing');
+          assert(components.includes('Sunday Worship · 10:00 AM') && components.includes('Wednesday Bible Study · 7:00 PM'),'Shared footer: current service times missing');
+          assert(!components.includes('9:30 AM'),'Shared footer: obsolete Sunday time detected');
+          for (const value of ['mailto:everettcog@comcast.net','https://www.facebook.com/EverettCOG/','https://www.youtube.com/@everettchurchofgod417']) assert(components.includes(value),`Shared footer: confirmed contact/social link missing: ${value}`);
           assert(mainJs.includes("event.key === 'Escape'") && mainJs.includes('window.innerWidth > 860'),'Navigation: keyboard/desktop reset safeguards missing');
           assert(messagesJs.includes('escapeHtml') && messagesJs.includes("['http:', 'https:'].includes(url.protocol)") && messagesJs.includes('rel=\"noopener noreferrer\"') && messagesJs.includes('Array.isArray(data)') && messagesJs.includes('.catch(renderError)'),'Messages renderer: safety/error safeguards missing');
+          assert(messagesJs.includes('https://www.youtube.com/@everettchurchofgod417') && messagesJs.includes('Watch ECOG on YouTube.'),'Messages renderer: official YouTube fallback missing');
           assert(eventsJs.includes('escapeHtml') && eventsJs.includes("['http:', 'https:'].includes(url.protocol)") && eventsJs.includes('rel=\"noopener noreferrer\"') && eventsJs.includes('Array.isArray(data)') && eventsJs.includes('date >= today') && eventsJs.includes('events.slice(0, 3)') && eventsJs.includes('.catch(renderError)'),'Events renderer: safety/filter safeguards missing');
 
-          let eventsData; try { eventsData = JSON.parse(read('data/events.json')); } catch (error) { failures.push(`data/events.json: invalid JSON (${error.message})`); }
-          if (eventsData) {
-            assert(Array.isArray(eventsData),'data/events.json: root must be an array');
-            if (Array.isArray(eventsData)) for (const [index,event] of eventsData.entries()) {
-              assert(event && typeof event === 'object' && !Array.isArray(event),`data/events.json[${index}]: must be an object`);
-              if (!event || typeof event !== 'object' || Array.isArray(event)) continue;
-              assert(typeof event.title === 'string' && event.title.trim(),`data/events.json[${index}]: title is required`);
-              assert(typeof event.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(event.date),`data/events.json[${index}]: date must use YYYY-MM-DD`);
-              if ('detailsUrl' in event) { try { const url = new URL(event.detailsUrl); assert(['http:','https:'].includes(url.protocol),`data/events.json[${index}]: detailsUrl must use HTTP/HTTPS`); } catch { failures.push(`data/events.json[${index}]: detailsUrl must be a valid absolute URL`); } }
+          for (const [file, label] of [['data/events.json','events'],['data/sermons.json','sermons']]) {
+            let data;
+            try { data = JSON.parse(read(file)); } catch (error) { failures.push(`${file}: invalid JSON (${error.message})`); continue; }
+            assert(Array.isArray(data),`${file}: root must be an array`);
+            if (!Array.isArray(data)) continue;
+            for (const [index,item] of data.entries()) {
+              assert(item && typeof item === 'object' && !Array.isArray(item),`${file}[${index}]: must be an object`);
+              if (!item || typeof item !== 'object' || Array.isArray(item)) continue;
+              if (label === 'events') {
+                assert(typeof item.title === 'string' && item.title.trim(),`${file}[${index}]: title is required`);
+                assert(typeof item.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(item.date),`${file}[${index}]: date must use YYYY-MM-DD`);
+              } else assert(typeof item.title === 'string' && item.title.trim(),`${file}[${index}]: title is required`);
+              const urlKey = label === 'events' ? 'detailsUrl' : 'watchUrl';
+              if (urlKey in item) { try { const url = new URL(item[urlKey]); assert(['http:','https:'].includes(url.protocol),`${file}[${index}]: ${urlKey} must use HTTP/HTTPS`); } catch { failures.push(`${file}[${index}]: ${urlKey} must be a valid absolute URL`); } }
             }
           }
-          let sermonData; try { sermonData = JSON.parse(read('data/sermons.json')); } catch (error) { failures.push(`data/sermons.json: invalid JSON (${error.message})`); }
-          if (sermonData) {
-            assert(Array.isArray(sermonData),'data/sermons.json: root must be an array');
-            if (Array.isArray(sermonData)) for (const [index,sermon] of sermonData.entries()) {
-              assert(sermon && typeof sermon === 'object' && !Array.isArray(sermon),`data/sermons.json[${index}]: must be an object`);
-              if (!sermon || typeof sermon !== 'object' || Array.isArray(sermon)) continue;
-              assert(typeof sermon.title === 'string' && sermon.title.trim(),`data/sermons.json[${index}]: title is required`);
-              if ('watchUrl' in sermon) { try { const url = new URL(sermon.watchUrl); assert(['http:','https:'].includes(url.protocol),`data/sermons.json[${index}]: watchUrl must use HTTP/HTTPS`); } catch { failures.push(`data/sermons.json[${index}]: watchUrl must be a valid absolute URL`); } }
-            }
-          }
+
+          const migration = read('docs/phase-10-content-migration.md');
+          for (const marker of ['10:00 AM','everettcog@comcast.net','Jenn Kisner','John Kisner','kisner.jenn@yahoo.com','jdkcog@comcast.net','https://www.facebook.com/EverettCOG/','https://www.youtube.com/@everettchurchofgod417']) assert(migration.includes(marker),`Phase 10 inventory: confirmed content missing: ${marker}`);
+          assert(/Senior Adults[\s\S]{0,400}(inactive|no longer active)/i.test(migration),'Phase 10 inventory: Senior Adults retirement not documented');
+          assert(/giving[\s\S]{0,500}(not yet selected|no current online giving|provider)/i.test(migration),'Phase 10 inventory: giving-provider dependency not documented');
 
           const robots = read('robots.txt');
           assert(/User-agent:\s*\*/i.test(robots),'robots.txt: missing wildcard user-agent');
@@ -171,7 +202,7 @@ jobs:
             failures.forEach((failure) => console.error(`- ${failure}`));
             process.exit(1);
           }
-          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 3/4/5/6/7/8/9 safeguards checked.`);
+          console.log(`Site validation passed: ${pages.length} pages, ${required.length} required files, and Phase 3-10 safeguards checked.`);
           NODE
 
       - name: Syntax-check JavaScript
