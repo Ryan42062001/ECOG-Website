@@ -5,6 +5,7 @@
   const featured = root.querySelector('[data-featured-message]');
   const library = root.querySelector('[data-message-library]');
   const count = root.querySelector('[data-message-count]');
+  const youtubeUrl = 'https://www.youtube.com/@everettchurchofgod417';
 
   const escapeHtml = (value = '') => String(value).replace(/[&<>'"]/g, (character) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -52,14 +53,14 @@
 
   const renderEmpty = () => {
     if (featured) featured.hidden = true;
-    if (count) count.textContent = 'Messages will be added as verified recordings become available.';
-    library.innerHTML = `<div class="messages-empty"><div class="messages-empty__icon" aria-hidden="true">▶</div><p class="eyebrow">Message library</p><h2>New messages are on the way.</h2><p>We are preparing the message library for the new website. Check back as verified sermon recordings are added.</p><div class="button-row"><a class="button button--secondary" href="new-here.html">Plan Your Visit</a></div></div>`;
+    if (count) count.textContent = 'Watch current messages on our official YouTube channel.';
+    library.innerHTML = `<div class="messages-empty"><div class="messages-empty__icon" aria-hidden="true">▶</div><p class="eyebrow">Official message source</p><h2>Watch ECOG on YouTube.</h2><p>Our official YouTube channel is the current source for Everett Church of God messages while the on-site message library is being connected.</p><div class="button-row"><a class="button button--secondary" href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Visit YouTube <span aria-hidden="true">↗</span></a><a class="button button--secondary" href="new-here.html">Plan Your Visit</a></div></div>`;
   };
 
   const renderError = () => {
     if (featured) featured.hidden = true;
     if (count) count.textContent = '';
-    library.innerHTML = '<p class="messages-error" role="status">The message library could not be loaded right now. Please try again later.</p>';
+    library.innerHTML = `<div class="messages-error" role="status"><p>The on-site message library could not be loaded right now.</p><p><a href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Watch messages on our official YouTube channel <span aria-hidden="true">↗</span></a></p></div>`;
   };
 
   fetch('data/sermons.json', { cache: 'no-store' })
