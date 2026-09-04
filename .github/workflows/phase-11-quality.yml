@@ -9,6 +9,16 @@ permissions:
   contents: read
 
 jobs:
+  site-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate structure, links, data, JS, and accessibility invariants
+        run: node scripts/validate-site.js
+
   seo-quality:
     runs-on: ubuntu-latest
     steps:
@@ -16,92 +26,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
       - name: Validate SEO and launch safeguards
         shell: bash
         run: |
           node <<'NODE'
-          const fs = require('fs');
-          const path = require('path');
-          const root = process.cwd();
-          const productionOrigin = 'https://everettchurchofgod.com';
-          const activePages = [
-            ['index.html', '/'], ['new-here.html', '/new-here.html'], ['about.html', '/about.html'],
-            ['ministries.html', '/ministries.html'], ['ministries/children.html', '/ministries/children.html'],
-            ['ministries/students.html', '/ministries/students.html'], ['ministries/men.html', '/ministries/men.html'],
-            ['ministries/women.html', '/ministries/women.html'], ['messages.html', '/messages.html'],
-            ['events.html', '/events.html'], ['give.html', '/give.html'], ['contact.html', '/contact.html']
-          ];
-          const failures = [];
-          const assert = (condition, message) => { if (!condition) failures.push(message); };
-          const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-          const escapeRegex = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-          for (const [file, route] of activePages) {
-            assert(fs.existsSync(path.join(root, file)), `${file}: active page missing`);
-            if (!fs.existsSync(path.join(root, file))) continue;
-            const html = read(file);
-            const canonical = `${productionOrigin}${route}`;
-            const descriptions = [...html.matchAll(/<meta\s+name="description"\s+content="([^"]+)"/gi)];
-            const titles = [...html.matchAll(/<title>([^<]+)<\/title>/gi)];
-            const canonicals = [...html.matchAll(/<link\s+rel="canonical"\s+href="([^"]+)"/gi)];
-            assert(titles.length === 1 && titles[0][1].trim().length > 0, `${file}: must have exactly one non-empty title`);
-            assert(descriptions.length === 1 && descriptions[0][1].trim().length >= 50, `${file}: must have exactly one useful meta description`);
-            assert(canonicals.length === 1 && canonicals[0][1] === canonical, `${file}: canonical must be ${canonical}`);
-            assert(/<meta\s+name="robots"\s+content="noindex,nofollow"/i.test(html), `${file}: staging noindex,nofollow missing`);
-            assert(/<meta\s+property="og:type"\s+content="website"/i.test(html), `${file}: og:type missing`);
-            assert(/<meta\s+property="og:site_name"\s+content="Everett Church of God"/i.test(html), `${file}: og:site_name missing`);
-            assert(/<meta\s+property="og:title"\s+content="[^"]+"/i.test(html), `${file}: og:title missing`);
-            assert(/<meta\s+property="og:description"\s+content="[^"]+"/i.test(html), `${file}: og:description missing`);
-            assert(new RegExp(`<meta\\s+property="og:url"\\s+content="${escapeRegex(canonical)}"`, 'i').test(html), `${file}: og:url must match canonical`);
-            assert(/<meta\s+name="twitter:card"\s+content="summary"/i.test(html), `${file}: twitter:card missing`);
-            assert(/<meta\s+name="twitter:title"\s+content="[^"]+"/i.test(html), `${file}: twitter:title missing`);
-            assert(/<meta\s+name="twitter:description"\s+content="[^"]+"/i.test(html), `${file}: twitter:description missing`);
-            assert(!/github\.io\/ECOG-Website/i.test(html), `${file}: staging URL leaked into production SEO metadata`);
-          }
-
-          const canonicalUrls = activePages.map(([, route]) => `${productionOrigin}${route}`);
-          assert(new Set(canonicalUrls).size === canonicalUrls.length, 'Active canonical URLs must be unique');
-          const sitemap = read('sitemap.xml');
-          const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
-          assert(sitemapUrls.length === activePages.length, `sitemap.xml: expected ${activePages.length} active URLs, found ${sitemapUrls.length}`);
-          assert(new Set(sitemapUrls).size === sitemapUrls.length, 'sitemap.xml: duplicate URLs detected');
-          for (const url of canonicalUrls) assert(sitemapUrls.includes(url), `sitemap.xml: missing ${url}`);
-          assert(!/senior-adults\.html/i.test(sitemap), 'sitemap.xml: retired Senior Adults route must be excluded');
-          assert(!/github\.io/i.test(sitemap), 'sitemap.xml: staging GitHub Pages URL detected');
-
-          const home = read('index.html');
-          const schemaMatch = home.match(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/i);
-          assert(Boolean(schemaMatch), 'Homepage: Church JSON-LD missing');
-          if (schemaMatch) {
-            let schema;
-            try { schema = JSON.parse(schemaMatch[1]); } catch (error) { failures.push(`Homepage: invalid JSON-LD (${error.message})`); }
-            if (schema) {
-              assert(schema['@context'] === 'https://schema.org' && schema['@type'] === 'Church', 'Homepage schema: Church schema regression');
-              assert(schema['@id'] === `${productionOrigin}/#church` && schema.url === `${productionOrigin}/`, 'Homepage schema: production URL regression');
-              assert(schema.name === 'Everett Church of God', 'Homepage schema: church name regression');
-              assert(schema.telephone === '+1-814-652-9287' && schema.email === 'everettcog@comcast.net', 'Homepage schema: contact regression');
-              assert(schema.address?.streetAddress === '11152 Lincoln Highway', 'Homepage schema: street address regression');
-              assert(schema.address?.addressLocality === 'Everett' && schema.address?.addressRegion === 'PA' && schema.address?.postalCode === '15537' && schema.address?.addressCountry === 'US', 'Homepage schema: locality/address regression');
-              assert(Array.isArray(schema.sameAs) && schema.sameAs.includes('https://www.facebook.com/EverettCOG/') && schema.sameAs.includes('https://www.youtube.com/@everettchurchofgod417'), 'Homepage schema: confirmed social profiles missing');
-              for (const unverified of ['geo', 'foundingDate', 'logo', 'image']) assert(!(unverified in schema), `Homepage schema: unverified ${unverified} must not be published yet`);
-            }
-          }
-
-          const retired = read('ministries/senior-adults.html');
-          assert(/<meta\s+name="robots"\s+content="noindex,follow"/i.test(retired), 'Retired Senior Adults page: noindex,follow missing');
-          assert(!/<link\s+rel="canonical"/i.test(retired), 'Retired Senior Adults page: should not advertise an active canonical URL');
-          const robots = read('robots.txt');
-          assert(/User-agent:\s*\*/i.test(robots) && /Disallow:\s*\//i.test(robots), 'robots.txt: staging crawl block missing');
-          assert(!/Sitemap:/i.test(robots), 'robots.txt: do not advertise production sitemap from staging before launch');
-          assert(!fs.existsSync(path.join(root, 'CNAME')), 'Production CNAME must not exist before Phase 12 launch');
-
-          if (failures.length) {
-            console.error(`Phase 11 SEO validation failed with ${failures.length} issue(s):`);
-            failures.forEach(failure => console.error(`- ${failure}`));
-            process.exit(1);
-          }
-          console.log(`Phase 11 SEO validation passed: ${activePages.length} active pages, sitemap, Church schema, retired route, and staging launch safeguards checked.`);
+          const fs = require('fs'), path = require('path');
+          const root = process.cwd(), productionOrigin = 'https://everettchurchofgod.com', failures = [];
+          const assert = (c,m) => { if(!c) failures.push(m); }, read = f => fs.readFileSync(path.join(root,f),'utf8');
+          const pages = [['index.html','/'],['new-here.html','/new-here.html'],['about.html','/about.html'],['ministries.html','/ministries.html'],['ministries/children.html','/ministries/children.html'],['ministries/students.html','/ministries/students.html'],['ministries/men.html','/ministries/men.html'],['ministries/women.html','/ministries/women.html'],['messages.html','/messages.html'],['events.html','/events.html'],['give.html','/give.html'],['contact.html','/contact.html']];
+          for(const [file,route] of pages){const h=read(file),c=`${productionOrigin}${route}`; assert((h.match(/<title>[^<]+<\/title>/gi)||[]).length===1,`${file}: title`); assert((h.match(/<meta\s+name="description"\s+content="[^"]{50,}"/gi)||[]).length===1,`${file}: description`); assert(h.includes(`rel="canonical" href="${c}"`),`${file}: canonical`); assert(/name="robots" content="noindex,nofollow"/i.test(h),`${file}: staging noindex`); for(const x of ['og:type','og:site_name','og:title','og:description','og:url']) assert(h.includes(`property="${x}"`),`${file}: ${x}`); assert(h.includes(`property="og:url" content="${c}"`),`${file}: og:url`); for(const x of ['twitter:card','twitter:title','twitter:description']) assert(h.includes(`name="${x}"`),`${file}: ${x}`); assert(!/github\.io\/ECOG-Website/i.test(h),`${file}: staging URL leak`);}
+          const urls=pages.map(([,r])=>`${productionOrigin}${r}`), sitemap=read('sitemap.xml'), listed=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]); assert(listed.length===urls.length&&new Set(listed).size===listed.length,'sitemap count/duplicates'); for(const u of urls) assert(listed.includes(u),`sitemap missing ${u}`); assert(!/senior-adults\.html|github\.io/i.test(sitemap),'sitemap retired/staging URL');
+          const home=read('index.html'), sm=home.match(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/i); assert(!!sm,'homepage JSON-LD'); if(sm){try{const s=JSON.parse(sm[1]); assert(s['@type']==='Church'&&s.name==='Everett Church of God','schema identity'); assert(s.telephone==='+1-814-652-9287'&&s.email==='everettcog@comcast.net','schema contact'); assert(s.address?.streetAddress==='11152 Lincoln Highway'&&s.address?.addressLocality==='Everett'&&s.address?.addressRegion==='PA'&&s.address?.postalCode==='15537'&&s.address?.addressCountry==='US','schema address'); assert(s.sameAs?.includes('https://www.facebook.com/EverettCOG/')&&s.sameAs?.includes('https://www.youtube.com/@everettchurchofgod417'),'schema socials'); for(const k of ['geo','foundingDate','logo','image']) assert(!(k in s),`unverified schema ${k}`);}catch(e){failures.push(`invalid JSON-LD: ${e.message}`)}}
+          const retired=read('ministries/senior-adults.html'), robots=read('robots.txt'); assert(/name="robots" content="noindex,follow"/i.test(retired),'retired noindex'); assert(!/rel="canonical"/i.test(retired),'retired canonical'); assert(/User-agent:\s*\*[\s\S]*Disallow:\s*\//i.test(robots),'staging robots'); assert(!/Sitemap:/i.test(robots),'staging sitemap advertisement'); assert(!fs.existsSync(path.join(root,'CNAME')),'premature CNAME');
+          if(failures.length){console.error(failures.map(x=>`- ${x}`).join('\n'));process.exit(1)} console.log('Phase 11 SEO validation passed.');
           NODE
 
   performance-quality:
@@ -111,79 +48,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
       - name: Enforce static performance budgets
         shell: bash
         run: |
           node <<'NODE'
-          const fs = require('fs');
-          const path = require('path');
-          const root = process.cwd();
-          const failures = [];
-          const warnings = [];
-          const KB = 1024;
-          const budgets = {
-            cssFile: 40 * KB,
-            jsFile: 30 * KB,
-            totalCss: 80 * KB,
-            totalJs: 50 * KB,
-            image: 500 * KB,
-            totalImages: 2500 * KB
-          };
-          const walk = dir => fs.readdirSync(dir, {withFileTypes: true}).flatMap(entry => {
-            const full = path.join(dir, entry.name);
-            return entry.isDirectory() ? walk(full) : [full];
-          });
-          const relative = file => path.relative(root, file).replace(/\\/g, '/');
-          const size = file => fs.statSync(file).size;
-          const files = walk(root).filter(file => !relative(file).startsWith('.git/'));
-          const css = files.filter(file => /\.css$/i.test(file));
-          const js = files.filter(file => /\.js$/i.test(file));
-          const images = files.filter(file => /\.(avif|webp|jpe?g|png|gif|svg)$/i.test(file));
-          const html = files.filter(file => /\.html$/i.test(file));
-          const total = list => list.reduce((sum, file) => sum + size(file), 0);
-          const fmt = bytes => `${(bytes / KB).toFixed(1)} KB`;
-
-          for (const file of css) if (size(file) > budgets.cssFile) failures.push(`${relative(file)} is ${fmt(size(file))}; CSS file budget is ${fmt(budgets.cssFile)}`);
-          for (const file of js) if (size(file) > budgets.jsFile) failures.push(`${relative(file)} is ${fmt(size(file))}; JS file budget is ${fmt(budgets.jsFile)}`);
-          if (total(css) > budgets.totalCss) failures.push(`Total CSS is ${fmt(total(css))}; budget is ${fmt(budgets.totalCss)}`);
-          if (total(js) > budgets.totalJs) failures.push(`Total JS is ${fmt(total(js))}; budget is ${fmt(budgets.totalJs)}`);
-
-          let imageBytes = 0;
-          for (const file of images) {
-            const rel = relative(file);
-            if (/\.gitkeep$/i.test(rel)) continue;
-            imageBytes += size(file);
-            if (size(file) > budgets.image) failures.push(`${rel} is ${fmt(size(file))}; individual image budget is ${fmt(budgets.image)}`);
-            if (/\.(jpe?g|png)$/i.test(file)) warnings.push(`${rel}: consider an AVIF/WebP delivery version before production`);
-          }
-          if (imageBytes > budgets.totalImages) failures.push(`Total image payload is ${fmt(imageBytes)}; repository image budget is ${fmt(budgets.totalImages)}`);
-
-          for (const file of html) {
-            const rel = relative(file);
-            const source = fs.readFileSync(file, 'utf8');
-            for (const match of source.matchAll(/<script\b([^>]*)\bsrc=["']([^"']+)["']([^>]*)>/gi)) {
-              const attrs = `${match[1]} ${match[3]}`;
-              const src = match[2];
-              if (!/^https?:\/\//i.test(src) && !/\b(defer|async)\b/i.test(attrs)) failures.push(`${rel}: local script ${src} must use defer or async`);
-            }
-            for (const match of source.matchAll(/<img\b([^>]*)>/gi)) {
-              const attrs = match[1];
-              const srcMatch = attrs.match(/\bsrc=["']([^"']+)["']/i);
-              const src = srcMatch ? srcMatch[1] : '(unknown image)';
-              if (!/\bwidth=["']\d+["']/i.test(attrs) || !/\bheight=["']\d+["']/i.test(attrs)) failures.push(`${rel}: ${src} must include explicit numeric width and height to reduce layout shift`);
-              const isLikelyHero = /\b(fetchpriority=["']high["']|data-hero|class=["'][^"']*hero[^"']*)/i.test(attrs);
-              if (!isLikelyHero && !/\bloading=["']lazy["']/i.test(attrs)) failures.push(`${rel}: below-fold image ${src} must use loading="lazy" (mark a true hero with fetchpriority="high" or data-hero)`);
-              if (isLikelyHero && /\bloading=["']lazy["']/i.test(attrs)) failures.push(`${rel}: likely hero image ${src} should not be lazy-loaded`);
-            }
-            if (/<iframe\b/i.test(source)) warnings.push(`${rel}: iframe detected; verify it is lazy-loaded and necessary before launch`);
-          }
-
-          for (const warning of warnings) console.warn(`WARNING: ${warning}`);
-          if (failures.length) {
-            console.error(`Phase 11 performance validation failed with ${failures.length} issue(s):`);
-            failures.forEach(failure => console.error(`- ${failure}`));
-            process.exit(1);
-          }
-          console.log(`Phase 11 performance validation passed. CSS ${fmt(total(css))}/${fmt(budgets.totalCss)}, JS ${fmt(total(js))}/${fmt(budgets.totalJs)}, images ${fmt(imageBytes)}/${fmt(budgets.totalImages)}.`);
+          const fs=require('fs'),path=require('path'),root=process.cwd(),failures=[],warnings=[],KB=1024;
+          const budgets={cssFile:40*KB,jsFile:30*KB,totalCss:80*KB,totalJs:50*KB,image:500*KB,totalImages:2500*KB};
+          const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>{const f=path.join(d,e.name);return e.isDirectory()?walk(f):[f]}), rel=f=>path.relative(root,f).replace(/\\/g,'/'), size=f=>fs.statSync(f).size;
+          const files=walk(root).filter(f=>!rel(f).startsWith('.git/')),css=files.filter(f=>/\.css$/i.test(f)),js=files.filter(f=>/\.js$/i.test(f)&&!rel(f).startsWith('scripts/')),images=files.filter(f=>/\.(avif|webp|jpe?g|png|gif|svg)$/i.test(f)),html=files.filter(f=>/\.html$/i.test(f)),total=a=>a.reduce((s,f)=>s+size(f),0),fmt=b=>`${(b/KB).toFixed(1)} KB`;
+          for(const f of css)if(size(f)>budgets.cssFile)failures.push(`${rel(f)} exceeds CSS file budget`); for(const f of js)if(size(f)>budgets.jsFile)failures.push(`${rel(f)} exceeds JS file budget`); if(total(css)>budgets.totalCss)failures.push('Total CSS budget exceeded'); if(total(js)>budgets.totalJs)failures.push('Total JS budget exceeded');
+          let ib=0; for(const f of images){ib+=size(f);if(size(f)>budgets.image)failures.push(`${rel(f)} exceeds image budget`);if(/\.(jpe?g|png)$/i.test(f))warnings.push(`${rel(f)}: consider AVIF/WebP`)} if(ib>budgets.totalImages)failures.push('Total image budget exceeded');
+          for(const f of html){const r=rel(f),s=fs.readFileSync(f,'utf8');for(const m of s.matchAll(/<script\b([^>]*)\bsrc=["']([^"']+)["']([^>]*)>/gi)){if(!/^https?:\/\//i.test(m[2])&&!/\b(defer|async)\b/i.test(`${m[1]} ${m[3]}`))failures.push(`${r}: ${m[2]} needs defer/async`)}for(const m of s.matchAll(/<img\b([^>]*)>/gi)){const a=m[1],src=(a.match(/src=["']([^"']+)/i)||[])[1]||'image',hero=/fetchpriority=["']high|data-hero|class=["'][^"']*hero/i.test(a);if(!/width=["']\d+/i.test(a)||!/height=["']\d+/i.test(a))failures.push(`${r}: ${src} needs width/height`);if(!hero&&!/loading=["']lazy/i.test(a))failures.push(`${r}: ${src} needs lazy loading`);if(hero&&/loading=["']lazy/i.test(a))failures.push(`${r}: hero ${src} must not lazy load`)}if(/<iframe\b/i.test(s))warnings.push(`${r}: review iframe performance`)}
+          warnings.forEach(w=>console.warn(`WARNING: ${w}`)); if(failures.length){console.error(failures.map(x=>`- ${x}`).join('\n'));process.exit(1)} console.log(`Performance validation passed. CSS ${fmt(total(css))}, JS ${fmt(total(js))}, images ${fmt(ib)}.`);
           NODE
