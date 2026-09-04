@@ -1,0 +1,123 @@
+name: Phase 11 Quality
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  seo-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate SEO and launch safeguards
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const root = process.cwd();
+          const productionOrigin = 'https://everettchurchofgod.com';
+          const activePages = [
+            ['index.html', '/'],
+            ['new-here.html', '/new-here.html'],
+            ['about.html', '/about.html'],
+            ['ministries.html', '/ministries.html'],
+            ['ministries/children.html', '/ministries/children.html'],
+            ['ministries/students.html', '/ministries/students.html'],
+            ['ministries/men.html', '/ministries/men.html'],
+            ['ministries/women.html', '/ministries/women.html'],
+            ['messages.html', '/messages.html'],
+            ['events.html', '/events.html'],
+            ['give.html', '/give.html'],
+            ['contact.html', '/contact.html']
+          ];
+          const failures = [];
+          const assert = (condition, message) => { if (!condition) failures.push(message); };
+          const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+          const escapeRegex = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+          for (const [file, route] of activePages) {
+            assert(fs.existsSync(path.join(root, file)), `${file}: active page missing`);
+            if (!fs.existsSync(path.join(root, file))) continue;
+            const html = read(file);
+            const canonical = `${productionOrigin}${route}`;
+            const descriptions = [...html.matchAll(/<meta\s+name="description"\s+content="([^"]+)"/gi)];
+            const titles = [...html.matchAll(/<title>([^<]+)<\/title>/gi)];
+            const canonicals = [...html.matchAll(/<link\s+rel="canonical"\s+href="([^"]+)"/gi)];
+
+            assert(titles.length === 1 && titles[0][1].trim().length > 0, `${file}: must have exactly one non-empty title`);
+            assert(descriptions.length === 1 && descriptions[0][1].trim().length >= 50, `${file}: must have exactly one useful meta description`);
+            assert(canonicals.length === 1 && canonicals[0][1] === canonical, `${file}: canonical must be ${canonical}`);
+            assert(new RegExp(`<meta\\s+name="robots"\\s+content="noindex,nofollow"`, 'i').test(html), `${file}: staging noindex,nofollow missing`);
+            assert(/<meta\s+property="og:type"\s+content="website"/i.test(html), `${file}: og:type missing`);
+            assert(/<meta\s+property="og:site_name"\s+content="Everett Church of God"/i.test(html), `${file}: og:site_name missing`);
+            assert(/<meta\s+property="og:title"\s+content="[^"]+"/i.test(html), `${file}: og:title missing`);
+            assert(/<meta\s+property="og:description"\s+content="[^"]+"/i.test(html), `${file}: og:description missing`);
+            assert(new RegExp(`<meta\\s+property="og:url"\\s+content="${escapeRegex(canonical)}"`, 'i').test(html), `${file}: og:url must match canonical`);
+            assert(/<meta\s+name="twitter:card"\s+content="summary"/i.test(html), `${file}: twitter:card missing`);
+            assert(/<meta\s+name="twitter:title"\s+content="[^"]+"/i.test(html), `${file}: twitter:title missing`);
+            assert(/<meta\s+name="twitter:description"\s+content="[^"]+"/i.test(html), `${file}: twitter:description missing`);
+            assert(!/github\.io\/ECOG-Website/i.test(html), `${file}: staging URL leaked into production SEO metadata`);
+          }
+
+          const canonicalUrls = activePages.map(([, route]) => `${productionOrigin}${route}`);
+          assert(new Set(canonicalUrls).size === canonicalUrls.length, 'Active canonical URLs must be unique');
+
+          const sitemapPath = path.join(root, 'sitemap.xml');
+          assert(fs.existsSync(sitemapPath), 'sitemap.xml missing');
+          if (fs.existsSync(sitemapPath)) {
+            const sitemap = read('sitemap.xml');
+            const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+            assert(sitemapUrls.length === activePages.length, `sitemap.xml: expected ${activePages.length} active URLs, found ${sitemapUrls.length}`);
+            assert(new Set(sitemapUrls).size === sitemapUrls.length, 'sitemap.xml: duplicate URLs detected');
+            for (const url of canonicalUrls) assert(sitemapUrls.includes(url), `sitemap.xml: missing ${url}`);
+            assert(!/senior-adults\.html/i.test(sitemap), 'sitemap.xml: retired Senior Adults route must be excluded');
+            assert(!/github\.io/i.test(sitemap), 'sitemap.xml: staging GitHub Pages URL detected');
+          }
+
+          const home = read('index.html');
+          const schemaMatch = home.match(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/i);
+          assert(Boolean(schemaMatch), 'Homepage: Church JSON-LD missing');
+          if (schemaMatch) {
+            let schema;
+            try { schema = JSON.parse(schemaMatch[1]); }
+            catch (error) { failures.push(`Homepage: invalid JSON-LD (${error.message})`); }
+            if (schema) {
+              assert(schema['@context'] === 'https://schema.org', 'Homepage schema: @context must be schema.org');
+              assert(schema['@type'] === 'Church', 'Homepage schema: @type must be Church');
+              assert(schema['@id'] === `${productionOrigin}/#church`, 'Homepage schema: unexpected @id');
+              assert(schema.name === 'Everett Church of God', 'Homepage schema: church name regression');
+              assert(schema.url === `${productionOrigin}/`, 'Homepage schema: production URL regression');
+              assert(schema.telephone === '+1-814-652-9287', 'Homepage schema: phone regression');
+              assert(schema.email === 'everettcog@comcast.net', 'Homepage schema: email regression');
+              assert(schema.address?.streetAddress === '11152 Lincoln Highway', 'Homepage schema: street address regression');
+              assert(schema.address?.addressLocality === 'Everett' && schema.address?.addressRegion === 'PA' && schema.address?.postalCode === '15537' && schema.address?.addressCountry === 'US', 'Homepage schema: locality/address regression');
+              assert(Array.isArray(schema.sameAs) && schema.sameAs.includes('https://www.facebook.com/EverettCOG/') && schema.sameAs.includes('https://www.youtube.com/@everettchurchofgod417'), 'Homepage schema: confirmed social profiles missing');
+              for (const unverified of ['geo', 'foundingDate', 'logo', 'image']) assert(!(unverified in schema), `Homepage schema: unverified ${unverified} must not be published yet`);
+            }
+          }
+
+          const retired = read('ministries/senior-adults.html');
+          assert(/<meta\s+name="robots"\s+content="noindex,follow"/i.test(retired), 'Retired Senior Adults page: noindex,follow missing');
+          assert(!/<link\s+rel="canonical"/i.test(retired), 'Retired Senior Adults page: should not advertise an active canonical URL');
+
+          const robots = read('robots.txt');
+          assert(/User-agent:\s*\*/i.test(robots) && /Disallow:\s*\//i.test(robots), 'robots.txt: staging crawl block missing');
+          assert(!/Sitemap:/i.test(robots), 'robots.txt: do not advertise production sitemap from staging before launch');
+          assert(!fs.existsSync(path.join(root, 'CNAME')), 'Production CNAME must not exist before Phase 12 launch');
+
+          if (failures.length) {
+            console.error(`Phase 11 SEO validation failed with ${failures.length} issue(s):`);
+            failures.forEach(failure => console.error(`- ${failure}`));
+            process.exit(1);
+          }
+          console.log(`Phase 11 SEO validation passed: ${activePages.length} active pages, sitemap, Church schema, retired route, and staging launch safeguards checked.`);
+          NODE
