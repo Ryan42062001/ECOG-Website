@@ -74,7 +74,7 @@ jobs:
           assert(hub.includes('Ages 5–12') && hub.includes('Ages 12–college age'),'Ministries: current age ranges missing');
           assert(!hub.includes('ministries/senior-adults.html') && !/Ages 55\+|Senior Adults/i.test(hub),'Ministries: inactive Senior Adults listing detected');
           const children = read('ministries/children.html');
-          assert(children.includes('Ages 5–12') && children.includes('Sunday · 10:00 AM') && !children.includes('9:30 AM'),'Children: current age/time regression');
+          assert(children.includes('<span>Ages</span><strong>5–12</strong>') && children.includes('Sunday · 10:00 AM') && !children.includes('9:30 AM'),'Children: current age/time regression');
           const students = read('ministries/students.html');
           assert(students.includes('Wednesday · 7:00 PM') && students.includes('Students gather Wednesday evenings at 7:00 PM.'),'Amplify: Wednesday schedule missing');
           assert(!/Sunday[^<.]*9:30|Sunday[^<.]*10:00/i.test(students),'Amplify: obsolete Sunday meeting detected');
@@ -131,6 +131,18 @@ jobs:
           for (const file of ['data/events.json','data/sermons.json']) {
             let data; try { data = JSON.parse(read(file)); } catch (error) { failures.push(`${file}: invalid JSON (${error.message})`); continue; }
             assert(Array.isArray(data),`${file}: root must be an array`);
+            if (!Array.isArray(data)) continue;
+            data.forEach((item, index) => {
+              assert(item && typeof item === 'object' && !Array.isArray(item),`${file}[${index}]: item must be an object`);
+              if (!item || typeof item !== 'object' || Array.isArray(item)) return;
+              assert(typeof item.title === 'string' && item.title.trim().length > 0,`${file}[${index}]: title is required`);
+              if (file === 'data/events.json') {
+                assert(typeof item.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(item.date),`${file}[${index}]: date must use YYYY-MM-DD`);
+                assert(typeof item.detailsUrl === 'string' && item.detailsUrl.trim().length > 0,`${file}[${index}]: detailsUrl is required`);
+              } else {
+                assert(typeof item.watchUrl === 'string' && item.watchUrl.trim().length > 0,`${file}[${index}]: watchUrl is required`);
+              }
+            });
           }
 
           const migration = read('docs/phase-10-content-migration.md');
