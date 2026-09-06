@@ -1,31 +1,40 @@
 # Everett Church of God Website
 
-A modern, accessible, mobile-first website for Everett Church of God in Everett, Pennsylvania.
+A modern, accessible, mobile-first replacement website for Everett Church of God in Everett, Pennsylvania.
 
 ## Project status
 
-The replacement website is under active development. The current production website remains live until this project is reviewed and approved for launch.
+The planned implementation through **Phase 11 — accessibility, SEO, performance, and automated quality gates — is merged into `main`**. The site remains in staging/review mode until church leadership approves launch.
 
-## Development workflow
+The production domain is intentionally untouched. Production indexing, DNS changes, and a `CNAME` file remain blocked until launch approval.
 
-- `main` is the stable branch.
-- Feature work is completed on development branches and reviewed through pull requests.
-- The production domain will not be connected until launch approval.
-
-## Planned site sections
+## Implemented site sections
 
 - Home
 - New Here
-- About
+- About and leadership
 - Ministries
 - Messages
 - Events
 - Give
 - Contact
 
+The repository also includes completed content-migration work plus accessibility, SEO, local-discovery, performance, and site-integrity safeguards.
+
+## Development workflow
+
+- `main` is the stable reviewed branch.
+- New changes should use short-lived feature branches and pull requests.
+- Merged or abandoned feature branches should be deleted.
+- Production domain or indexing changes require explicit launch approval.
+
 ## Technology
 
-This project is intentionally lightweight and suitable for GitHub Pages. It uses semantic HTML, CSS, and vanilla JavaScript with data-driven content where practical.
+This project is intentionally lightweight and suitable for GitHub Pages. It uses semantic HTML, CSS, vanilla JavaScript, and data-driven content where practical. It intentionally avoids a framework, trackers, external fonts, and heavy media dependencies.
+
+## Quality gates
+
+Automated checks cover structural HTML, internal links, JSON, JavaScript syntax, accessibility invariants, SEO/launch safeguards, and performance budgets. Phase 11 also added canonical/Open Graph/Twitter metadata, factual Church JSON-LD, a production sitemap for active routes, and staging `noindex,nofollow` protections.
 
 ## Local development
 
@@ -39,14 +48,14 @@ python -m http.server 8000
 
 Then visit `http://localhost:8000`.
 
-## Phase documentation
+## Documentation
 
-- [`docs/phase-1-foundation.md`](docs/phase-1-foundation.md) — Phase 1 scope, launch-safety decisions, and verification checklist.
+Phase documentation lives in `docs/`, including the original foundation decisions and the later implementation, migration, accessibility, SEO, and performance work.
 
 ## Production domain
 
-The existing `everettchurchofgod.com` domain will remain untouched during development. A `CNAME` file will be added only during the launch phase.
+The existing `everettchurchofgod.com` domain remains untouched during staging. A `CNAME` file should be added only as part of an explicitly approved production launch.
 
 ## Content note
 
-Service times and the street address in the initial framework were carried forward from the church's current public website and must be reconfirmed with church leadership before production launch. Other placeholder copy is not production content. The sermon and event data files are intentionally empty until verified church content is added in later phases.
+Service times, address details, giving/payment details, events, sermons, leadership information, and other public-facing facts must remain based on verified church information. Do not invent production content to fill gaps.
