@@ -19,9 +19,9 @@ const legacyRoutes = [
   ['index.php/messages/index.html', '../../messages.html', 'https://everettchurchofgod.com/messages.html'],
   ['index.php/contact-us/index.html', '../../contact.html', 'https://everettchurchofgod.com/contact.html'],
   ['index.php/donations/index.html', '../../give.html', 'https://everettchurchofgod.com/give.html'],
-  ['index.php/services/index.html', '../../new-here.html#visit-details', 'https://everettchurchofgod.com/new-here.html#visit-details'],
-  ['index.php/our-pastors/index.html', '../../about.html#leadership-title', 'https://everettchurchofgod.com/about.html#leadership-title'],
-  ['index.php/what-we-believe/index.html', '../../about.html#beliefs-title', 'https://everettchurchofgod.com/about.html#beliefs-title'],
+  ['index.php/services/index.html', '../../new-here.html#visit-details', 'https://everettchurchofgod.com/new-here.html'],
+  ['index.php/our-pastors/index.html', '../../about.html#leadership-title', 'https://everettchurchofgod.com/about.html'],
+  ['index.php/what-we-believe/index.html', '../../about.html#beliefs-title', 'https://everettchurchofgod.com/about.html'],
   ['index.php/ways-to-connect/index.html', '../../ministries.html', 'https://everettchurchofgod.com/ministries.html'],
   ['index.php/childrens-ministry/index.html', '../../ministries/children.html', 'https://everettchurchofgod.com/ministries/children.html'],
   ['index.php/amplify-students-ministry/index.html', '../../ministries/students.html', 'https://everettchurchofgod.com/ministries/students.html'],
@@ -108,7 +108,11 @@ for (const [file, target, canonical] of legacyRoutes) {
   assert(html.includes(`http-equiv="refresh" content="0; url=${target}"`), `${file}: zero-delay forwarding target incorrect`);
   assert(html.includes(`<link rel="canonical" href="${canonical}">`), `${file}: canonical target incorrect`);
   assert(new RegExp(`<a\\b[^>]*href=["']${escapeRegExp(target)}["']`, 'i').test(html), `${file}: visible fallback link incorrect`);
-  assert(/name=["']robots["']\s+content=["']noindex,follow["']/i.test(html), `${file}: compatibility noindex safeguard missing`);
+  if (file === 'index.php/senior-adults-ministry/index.html') {
+    assert(/name=["']robots["']\s+content=["']noindex,follow["']/i.test(html), `${file}: retired compatibility noindex safeguard missing`);
+  } else {
+    assert(!/\bnoindex\b/i.test(html), `${file}: active-destination compatibility route must not contain noindex`);
+  }
   for (const [environmentName, base] of deploymentBases) validateSiteLocalUrl(file, target, environmentName, base);
 }
 assert(!/index\.php\//i.test(read('sitemap.xml')), 'sitemap.xml: legacy compatibility routes must not be listed');
