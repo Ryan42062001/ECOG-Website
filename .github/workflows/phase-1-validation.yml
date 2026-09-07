@@ -164,9 +164,6 @@ jobs:
           for (const marker of ['10:00 AM','everettcog@comcast.net','Jenn Kisner','John Kisner','kisner.jenn@yahoo.com','jdkcog@comcast.net','https://www.facebook.com/EverettCOG/','https://www.youtube.com/@everettchurchofgod417']) assert(migration.includes(marker),`Phase 10 inventory: confirmed content missing: ${marker}`);
           assert(/Senior Adults[\s\S]{0,500}(inactive|no longer active)/i.test(migration),'Phase 10 inventory: Senior Adults retirement missing');
 
-          const robots = read('robots.txt');
-          assert(/User-agent:\s*\*/i.test(robots) && /Disallow:\s*\//i.test(robots),'robots.txt: staging crawl block missing');
-          assert(!fs.existsSync(path.join(root,'CNAME')),'Production CNAME must not exist before launch');
           const notFound = read('404.html');
           assert(/name="robots"\s+content="noindex"/i.test(notFound) && notFound.includes("location.hostname.endsWith('github.io')"),'404.html: staging/project-root safeguards missing');
 
@@ -180,6 +177,9 @@ jobs:
 
       - name: Validate environment-safe local URLs and compatibility routes
         run: node scripts/validate-site.js
+
+      - name: Validate launch-state SEO and indexing safeguards
+        run: node scripts/validate-launch-state.js
 
       - name: Syntax-check JavaScript
         run: |
