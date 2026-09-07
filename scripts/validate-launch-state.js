@@ -9,6 +9,12 @@ const assert = (condition, message) => { if (!condition) failures.push(message);
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const exists = file => fs.existsSync(path.join(root, file));
 const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const getDescription = html => {
+  const doubleQuoted = html.match(/<meta\s+name=["']description["']\s+content="([^"]+)"/i);
+  if (doubleQuoted) return doubleQuoted[1];
+  const singleQuoted = html.match(/<meta\s+name=["']description["']\s+content='([^']+)'/i);
+  return singleQuoted ? singleQuoted[1] : null;
+};
 
 const pages = [
   ['index.html', '/'],
@@ -46,8 +52,9 @@ const mode = cnameExists ? 'production' : 'staging';
 for (const [file, route] of pages) {
   const html = read(file);
   const canonical = `${productionOrigin}${route}`;
+  const description = getDescription(html);
   assert((html.match(/<title>[^<]+<\/title>/gi) || []).length === 1, `${file}: expected one title`);
-  assert((html.match(/<meta\s+name=["']description["']\s+content=["'][^"']{50,}["']/gi) || []).length === 1, `${file}: production description missing or too short`);
+  assert(description && description.trim().length >= 50, `${file}: production description missing or too short`);
   assert(new RegExp(`<link\\s+rel=["']canonical["']\\s+href=["']${escapeRegExp(canonical)}["']`, 'i').test(html), `${file}: canonical must be ${canonical}`);
   for (const property of ['og:type', 'og:site_name', 'og:title', 'og:description', 'og:url']) {
     assert(html.includes(`property="${property}"`), `${file}: ${property} missing`);
