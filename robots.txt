@@ -1,4 +1,3 @@
 User-agent: *
-Disallow: /
-
-# Development/staging site. Crawling will be enabled at production launch.
+Allow: /
+Sitemap: https://everettchurchofgod.com/sitemap.xml
