@@ -3,6 +3,7 @@
   const footerTarget = document.querySelector('[data-site-footer]');
   const path = window.location.pathname;
   const depth = path.includes('/ministries/') ? '../' : '';
+  const homeHref = depth ? '../' : './';
   const lastSegment = path.split('/').filter(Boolean).pop() || '';
   const current = path.endsWith('/') ? 'index.html' : lastSegment;
 
@@ -10,6 +11,7 @@
     ['Home', 'index.html'], ['New Here', 'new-here.html'], ['About', 'about.html'], ['Ministries', 'ministries.html'], ['Messages', 'messages.html'], ['Events', 'events.html'], ['Give', 'give.html']
   ];
 
+  const linkHref = (href) => href === 'index.html' ? homeHref : `${depth}${href}`;
   const isCurrent = (href) => {
     if (current === href) return true;
     if (path.includes('/ministries/') && href === 'ministries.html') return true;
@@ -26,10 +28,10 @@
     headerTarget.innerHTML = `
       <header class="site-header">
         <nav class="nav container" aria-label="Primary navigation">
-          <a class="brand" href="${depth}index.html" aria-label="Everett Church of God home">${brandMark}<span class="brand__text">Everett Church of God<small>Loving God. Loving People.</small></span></a>
+          <a class="brand" href="${homeHref}" aria-label="Everett Church of God home">${brandMark}<span class="brand__text">Everett Church of God<small>Loving God. Loving People.</small></span></a>
           <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation menu"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
-          <ul class="nav__links" id="site-menu">${navItems.map(([label, href]) => `<li><a href="${depth}${href}" ${isCurrent(href) ? 'aria-current="page"' : ''}>${label}</a></li>`).join('')}</ul>
-          <a class="button button--primary button--small nav__cta" href="${depth}new-here.html">Plan Your Visit</a>
+          <ul class="nav__links" id="site-menu">${navItems.map(([label, href]) => `<li><a href="${linkHref(href)}" ${isCurrent(href) ? 'aria-current="page"' : ''}>${label}</a></li>`).join('')}</ul>
+          <a class="button button--primary button--small nav__cta" href="${linkHref('new-here.html')}">Plan Your Visit</a>
         </nav>
       </header>`;
   }
@@ -41,12 +43,12 @@
         <div class="container">
           <div class="footer-grid">
             <div class="footer-brand">
-              <a class="brand brand--footer" href="${depth}index.html" aria-label="Everett Church of God home">${brandMark}<span class="brand__text">Everett Church of God<small>Loving God. Loving People.</small></span></a>
+              <a class="brand brand--footer" href="${homeHref}" aria-label="Everett Church of God home">${brandMark}<span class="brand__text">Everett Church of God<small>Loving God. Loving People.</small></span></a>
               <address class="footer-address">11152 Lincoln Highway<br>Everett, PA 15537</address>
               <p>Sunday Worship · 10:00 AM<br>Wednesday Bible Study · 7:00 PM</p>
             </div>
-            <nav aria-label="Footer explore navigation"><h2 class="footer-heading">Explore</h2><ul class="footer-links"><li><a href="${depth}new-here.html">New Here</a></li><li><a href="${depth}about.html">About</a></li><li><a href="${depth}ministries.html">Ministries</a></li><li><a href="${depth}messages.html">Messages</a></li></ul></nav>
-            <nav aria-label="Footer connect navigation"><h2 class="footer-heading">Connect</h2><ul class="footer-links"><li><a href="${depth}events.html">Events</a></li><li><a href="${depth}give.html">Give</a></li><li><a href="${depth}contact.html">Contact</a></li><li><a href="mailto:everettcog@comcast.net">everettcog@comcast.net</a></li><li><a href="https://www.facebook.com/EverettCOG/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr-only"> (opens in a new tab)</span></a></li><li><a href="https://www.youtube.com/@everettchurchofgod417" target="_blank" rel="noopener noreferrer">YouTube<span class="sr-only"> (opens in a new tab)</span></a></li></ul></nav>
+            <nav aria-label="Footer explore navigation"><h2 class="footer-heading">Explore</h2><ul class="footer-links"><li><a href="${linkHref('new-here.html')}">New Here</a></li><li><a href="${linkHref('about.html')}">About</a></li><li><a href="${linkHref('ministries.html')}">Ministries</a></li><li><a href="${linkHref('messages.html')}">Messages</a></li></ul></nav>
+            <nav aria-label="Footer connect navigation"><h2 class="footer-heading">Connect</h2><ul class="footer-links"><li><a href="${linkHref('events.html')}">Events</a></li><li><a href="${linkHref('give.html')}">Give</a></li><li><a href="${linkHref('contact.html')}">Contact</a></li><li><a href="mailto:everettcog@comcast.net">everettcog@comcast.net</a></li><li><a href="https://www.facebook.com/EverettCOG/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr-only"> (opens in a new tab)</span></a></li><li><a href="https://www.youtube.com/@everettchurchofgod417" target="_blank" rel="noopener noreferrer">YouTube<span class="sr-only"> (opens in a new tab)</span></a></li></ul></nav>
           </div>
           <div class="footer-bottom"><span>© ${year} Everett Church of God.</span><span>Everett, Pennsylvania</span></div>
         </div>
