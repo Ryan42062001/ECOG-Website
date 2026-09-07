@@ -54,14 +54,14 @@
 
   const renderEmpty = () => {
     if (featured) featured.hidden = true;
-    if (count) count.textContent = 'Watch current messages on our official YouTube channel.';
+    if (count) count.textContent = 'No on-site messages yet. Watch current messages on our official YouTube channel.';
     library.innerHTML = `<div class="messages-empty"><div class="messages-empty__icon" aria-hidden="true">▶</div><p class="eyebrow">Official message source</p><h3>Watch ECOG on YouTube.</h3><p>Our official YouTube channel is the current source for Everett Church of God messages while the on-site message library is being connected.</p><div class="button-row"><a class="button button--secondary" href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Visit YouTube <span aria-hidden="true">↗</span>${newTabText}</a><a class="button button--secondary" href="new-here.html">Plan Your Visit</a></div></div>`;
   };
 
   const renderError = () => {
     if (featured) featured.hidden = true;
-    if (count) count.textContent = '';
-    library.innerHTML = `<div class="messages-error" role="status"><p>The on-site message library could not be loaded right now.</p><p><a href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Watch messages on our official YouTube channel <span aria-hidden="true">↗</span>${newTabText}</a></p></div>`;
+    if (count) count.textContent = 'Message library unavailable.';
+    library.innerHTML = `<div class="messages-error"><p>The on-site message library could not be loaded right now.</p><p><a href="${youtubeUrl}" target="_blank" rel="noopener noreferrer">Watch messages on our official YouTube channel <span aria-hidden="true">↗</span>${newTabText}</a></p></div>`;
   };
 
   fetch('data/sermons.json', { cache: 'no-store' })
@@ -74,7 +74,7 @@
       const messages = data.filter((message) => message && typeof message.title === 'string' && message.title.trim()).sort((a, b) => dateValue(b) - dateValue(a));
       if (!messages.length) return renderEmpty();
       renderFeatured(messages[0]);
-      if (count) count.textContent = `${messages.length} ${messages.length === 1 ? 'message' : 'messages'}`;
+      if (count) count.textContent = `${messages.length} ${messages.length === 1 ? 'message' : 'messages'} available.`;
       library.innerHTML = messages.map(renderCard).join('');
     })
     .catch(renderError);

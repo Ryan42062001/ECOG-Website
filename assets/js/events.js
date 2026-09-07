@@ -60,31 +60,38 @@
     const count = pageApp.querySelector('[data-event-count]');
     if (!events.length) {
       featured.hidden = true;
-      count.textContent = 'No verified upcoming events posted yet';
+      count.textContent = 'No verified upcoming events posted yet.';
       library.innerHTML = `<div class="events-empty"><p class="eyebrow">Calendar updates</p><h3>Upcoming events will appear here.</h3><p>We are preparing the church calendar for the new website. As dates and details are verified, they will be added here.</p><div class="button-row"><a class="button button--secondary" href="contact.html">Contact the Church</a><a class="button button--primary" href="new-here.html">Plan Your Visit</a></div></div>`;
       return;
     }
     const first = events[0]; const date = dateParts(first.date);
     featured.hidden = false;
     featured.innerHTML = `<div class="event-feature__date"><span class="event-feature__month">${date.month}</span><strong class="event-feature__day">${date.day}</strong><span class="event-feature__weekday">${date.weekday}</span></div><div class="event-feature__body"><p class="eyebrow">Next event</p><h2>${escapeHtml(first.title)}</h2><div class="event-feature__meta">${meta(first)}</div>${first.description ? `<p>${escapeHtml(first.description)}</p>` : ''}<div class="button-row">${action(first, 'Event Details')}</div></div>`;
-    count.textContent = `${events.length} upcoming ${events.length === 1 ? 'event' : 'events'}`;
+    count.textContent = `${events.length} upcoming ${events.length === 1 ? 'event' : 'events'}.`;
     library.innerHTML = events.map(pageCard).join('');
   };
   const renderHome = (events) => {
     const library = homeApp.querySelector('[data-home-event-list]');
+    const status = homeApp.querySelector('[data-home-event-status]');
     if (!events.length) {
+      if (status) status.textContent = 'No verified upcoming events posted yet.';
       library.innerHTML = `<div class="home-empty-state"><p class="eyebrow">Calendar coming soon</p><h3>More ways to connect are on the way.</h3><p>We are preparing the church calendar for the new website. Visit the Events page as verified dates are added.</p><a class="button button--secondary" href="events.html">Visit Events</a></div>`;
       return;
     }
+    if (status) status.textContent = `${Math.min(events.length, 3)} upcoming ${Math.min(events.length, 3) === 1 ? 'event' : 'events'} shown.`;
     library.innerHTML = events.slice(0, 3).map(homeCard).join('');
   };
   const renderError = () => {
     if (pageApp) {
       pageApp.querySelector('[data-featured-event]').hidden = true;
-      pageApp.querySelector('[data-event-count]').textContent = 'Event calendar unavailable';
-      pageApp.querySelector('[data-event-library]').innerHTML = `<div class="events-error" role="status"><h3>We couldn't load the event calendar.</h3><p>Please try again later or contact the church for current event information.</p><div class="button-row"><a class="button button--secondary" href="contact.html">Contact the Church</a></div></div>`;
+      pageApp.querySelector('[data-event-count]').textContent = 'Event calendar unavailable.';
+      pageApp.querySelector('[data-event-library]').innerHTML = `<div class="events-error"><h3>We couldn't load the event calendar.</h3><p>Please try again later or contact the church for current event information.</p><div class="button-row"><a class="button button--secondary" href="contact.html">Contact the Church</a></div></div>`;
     }
-    if (homeApp) homeApp.querySelector('[data-home-event-list]').innerHTML = `<div class="home-events-error" role="status">Upcoming events could not be loaded. Visit the Events page or contact the church for current information.</div>`;
+    if (homeApp) {
+      const status = homeApp.querySelector('[data-home-event-status]');
+      if (status) status.textContent = 'Upcoming events could not be loaded.';
+      homeApp.querySelector('[data-home-event-list]').innerHTML = `<div class="home-events-error">Upcoming events could not be loaded. Visit the Events page or contact the church for current information.</div>`;
+    }
   };
 
   fetch('data/events.json', { cache: 'no-store' })
