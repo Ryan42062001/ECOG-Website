@@ -1,0 +1,150 @@
+const fs = require('fs');
+const path = require('path');
+const root = process.cwd();
+const topPages = ['index.html','new-here.html','about.html','ministries.html','messages.html','events.html','give.html','contact.html'];
+const activeMinistries = ['ministries/children.html','ministries/students.html','ministries/men.html','ministries/women.html'];
+const retiredMinistries = ['ministries/senior-adults.html'];
+const pages = [...topPages, ...activeMinistries, ...retiredMinistries];
+const required = [...pages,'404.html','assets/css/main.css','assets/css/components.css','assets/css/ministries.css','assets/css/messages.css','assets/css/events.css','assets/css/giving-contact.css','assets/js/components.js','assets/js/main.js','assets/js/messages.js','assets/js/events.js','data/events.json','data/sermons.json','docs/phase-10-content-migration.md','robots.txt'];
+const failures = [];
+const assert = (condition, message) => { if (!condition) failures.push(message); };
+const read = file => fs.readFileSync(path.join(root,file),'utf8');
+
+for (const file of required) assert(fs.existsSync(path.join(root,file)),`Missing required file: ${file}`);
+for (const file of pages) {
+  const html = read(file);
+  const prefix = file.startsWith('ministries/') ? '../' : '';
+  for (const [ok,label] of [
+    [/<html\s+lang="en"/i.test(html),'lang=en'],
+    [/<meta\s+name="viewport"/i.test(html),'viewport meta'],
+    [/<title>[^<]+<\/title>/i.test(html),'title'],
+    [/<main\s+id="main-content"/i.test(html),'#main-content'],
+    [/class="skip-link"\s+href="#main-content"/i.test(html),'skip link'],
+    [html.includes(`${prefix}assets/css/main.css`),'main.css'],
+    [html.includes(`${prefix}assets/js/components.js`),'components.js'],
+    [html.includes(`${prefix}assets/js/main.js`),'main.js'],
+    [html.includes('data-site-header'),'shared header target'],
+    [html.includes('data-site-footer'),'shared footer target']
+  ]) assert(ok,`${file}: missing/incorrect ${label}`);
+}
+
+const home = read('index.html');
+for (const marker of ['hero section-dark','service-strip','home-welcome','home-ministry-grid','home-message-section','home-events-section','home-location-section','home-final-cta','data-home-events']) assert(home.includes(marker),`Homepage: missing ${marker}`);
+assert(home.includes('11152 Lincoln Highway') && home.includes('Everett, PA 15537'),'Homepage: address missing');
+assert(home.includes('Sunday Worship') && home.includes('10:00 AM') && home.includes('Wednesday Bible Study') && home.includes('7:00 PM'),'Homepage: current service times missing');
+assert(home.includes('Watch ECOG on YouTube') && home.includes('Official Everett Church of God channel') && home.includes('google.com/maps/search/?api=1'),'Homepage: verified media replacement links missing');
+assert(!/Church family photo|Latest message will appear here|Map & directions/i.test(home),'Homepage: production-visible media placeholder wording detected');
+assert(!home.includes('9:30 AM'),'Homepage: obsolete 9:30 AM detected');
+assert(!/senior adults/i.test(home),'Homepage: inactive Senior Adults promotion detected');
+
+const visit = read('new-here.html');
+assert(visit.includes('Sunday Worship</span><strong>10:00 AM') && visit.includes('Wednesday Bible Study</span><strong>7:00 PM'),'New Here: current service times missing');
+assert(!visit.includes('9:30 AM'),'New Here: obsolete 9:30 AM detected');
+assert(visit.includes('11152 Lincoln Highway') && visit.includes('google.com/maps/search/?api=1'),'New Here: location/directions missing');
+assert(visit.includes('Ages 5–12 · Sunday at 10:00 AM') && visit.includes('Watch ECOG on YouTube') && visit.includes('See messages from Everett Church of God'),'New Here: verified family/message content missing');
+assert(!/Church worship photo|Children's ministry photo|Recent message video|Map & directions/i.test(visit),'New Here: production-visible media placeholder wording detected');
+assert(!/parking (lot|entrance)|check[- ]?in desk|nursery|childcare|dress code|service lasts|service length/i.test(visit),'New Here: unverified logistics detected');
+
+const about = read('about.html');
+for (const marker of ['A church family centered on Jesus.','Loving God. Loving People.','Pentecostal church','Jenn &amp; John Kisner','Co-Pastors','The Bible','Jesus Christ','Salvation','The Holy Spirit','The Church','Jesus Is Coming Back']) assert(about.includes(marker),`About: confirmed content missing: ${marker}`);
+assert(!/Church Family Photo|Pastor Photo/i.test(about),'About: production-visible photo placeholder wording detected');
+assert(!about.includes('9:30 AM'),'About: obsolete 9:30 AM detected');
+assert(!/senior pastor|lead pastor|founded in|established in/i.test(about),'About: unverified leadership/history claim detected');
+
+const hub = read('ministries.html');
+for (const page of activeMinistries) assert(hub.includes(page),`Ministries: active link missing: ${page}`);
+assert(hub.includes('Ages 5–12') && hub.includes('Ages 12–college age'),'Ministries: current age ranges missing');
+assert(!hub.includes('ministries/senior-adults.html') && !/Ages 55\+|Senior Adults/i.test(hub),'Ministries: inactive Senior Adults listing detected');
+const children = read('ministries/children.html');
+assert(children.includes('<span>Ages</span><strong>5–12</strong>') && children.includes('Sunday · 10:00 AM') && !children.includes('9:30 AM'),'Children: current age/time regression');
+assert(!/Children's Ministry Photo/i.test(children),'Children: photo placeholder wording detected');
+const students = read('ministries/students.html');
+assert(students.includes('Wednesday · 7:00 PM') && students.includes('Students gather Wednesday evenings at 7:00 PM.'),'Amplify: Wednesday schedule missing');
+assert(!/Sunday[^<.]*9:30|Sunday[^<.]*10:00/i.test(students),'Amplify: obsolete Sunday meeting detected');
+assert(!/Amplify Students Photo/i.test(students),'Amplify: photo placeholder wording detected');
+const men = read('ministries/men.html');
+assert(men.includes('no fixed weekly or monthly meeting schedule'),'Guys: event-based schedule statement missing');
+assert(!/Guys Ministry Photo/i.test(men),'Guys: photo placeholder wording detected');
+const women = read('ministries/women.html');
+assert(women.includes('no fixed monthly meeting schedule') && !/last Tuesday|most months/i.test(women),'Women: event-based schedule regression');
+assert(!/Women's Ministry Photo/i.test(women),'Women: photo placeholder wording detected');
+const retired = read('ministries/senior-adults.html');
+assert(/name="robots"\s+content="noindex,follow"/i.test(retired),'Senior Adults legacy page: noindex missing');
+assert(retired.includes('no longer active') && retired.includes('../ministries.html'),'Senior Adults legacy page: retirement routing missing');
+assert(!/Bob|Shirley|Ages 55\+/i.test(retired),'Senior Adults legacy page: stale historical details detected');
+
+const events = read('events.html');
+assert(events.includes('Sunday worship at 10:00 AM') && events.includes('Wednesday Bible Study at 7:00 PM') && !events.includes('9:30 AM'),'Events: service-time regression');
+assert(!/event title|event date|event location/i.test(events),'Events: unverified placeholder content detected');
+const messages = read('messages.html');
+assert(!/sermon title|speaker name|message title/i.test(messages),'Messages: unverified sermon placeholder content detected');
+
+const contact = read('contact.html');
+for (const marker of ['11152 Lincoln Highway','Everett, PA 15537','tel:+18146529287','814-652-9287','Sunday Worship','10:00 AM','Wednesday Bible Study','7:00 PM','mailto:everettcog@comcast.net','mailto:kisner.jenn@yahoo.com','mailto:jdkcog@comcast.net','Jenn Kisner','John Kisner','Co-Pastor','google.com/maps/search/?api=1']) assert(contact.includes(marker),`Contact: confirmed content missing: ${marker}`);
+assert(!contact.includes('9:30 AM'),'Contact: obsolete 9:30 AM detected');
+assert(!/<form\b|<input\b|<textarea\b/i.test(contact),'Contact: unapproved static form detected');
+assert(/target="_blank"\s+rel="noopener noreferrer"/.test(contact),'Contact: external-link protection missing');
+
+const give = read('give.html');
+for (const marker of ['will not collect or store your card, bank account, or other payment information','verified external giving provider','tel:+18146529287']) assert(give.includes(marker),`Give: safeguard missing: ${marker}`);
+assert(!/<form\b|<input\b|<iframe\b/i.test(give),'Give: payment collection surface detected');
+const giveOutboundAnchors = [...give.matchAll(/<a\b[^>]*\bhref=["'](https?:\/\/[^"']+)["'][^>]*>/gi)].map(match => match[1]);
+assert(giveOutboundAnchors.length === 0,`Give: unverified outbound anchor detected: ${giveOutboundAnchors.join(', ')}`);
+
+const mainCss = read('assets/css/main.css');
+const componentCss = read('assets/css/components.css');
+const ministryCss = read('assets/css/ministries.css');
+const messagesCss = read('assets/css/messages.css');
+const eventsCss = read('assets/css/events.css');
+const phase9Css = read('assets/css/giving-contact.css');
+assert(mainCss.includes('--color-accent:#00c8ef') && mainCss.includes(':focus-visible') && mainCss.includes('prefers-reduced-motion:reduce'),'Design system: core accessibility/tokens missing');
+assert(mainCss.includes('[data-site-header]:empty') && mainCss.includes('outline:3px solid var(--color-accent-dark)'),'Design system: header reservation/focus contrast remediation missing');
+for (const marker of ['.cta-panel','.visit-hero','.about-hero','.about-beliefs','.branded-link-panel','.about-leader-card']) assert(componentCss.includes(marker),`Components: missing ${marker}`);
+assert(ministryCss.includes('@media(max-width:620px)'),'Ministries CSS: mobile breakpoint missing');
+assert(messagesCss.includes('@media(max-width:620px)'),'Messages CSS: mobile breakpoint missing');
+assert(eventsCss.includes('@media(max-width:620px)'),'Events CSS: mobile breakpoint missing');
+assert(phase9Css.includes('@media(max-width:900px)') && phase9Css.includes('@media(max-width:620px)'),'Giving/Contact CSS: responsive breakpoints missing');
+
+const components = read('assets/js/components.js');
+const mainJs = read('assets/js/main.js');
+const messagesJs = read('assets/js/messages.js');
+const eventsJs = read('assets/js/events.js');
+for (const marker of ["path.includes('/ministries/') ? '../' : ''","const homeHref = depth ? '../' : './';",'aria-current="page"','new Date().getFullYear()','Sunday Worship · 10:00 AM','Wednesday Bible Study · 7:00 PM','mailto:everettcog@comcast.net','https://www.facebook.com/EverettCOG/','https://www.youtube.com/@everettchurchofgod417']) assert(components.includes(marker),`Shared components: missing ${marker}`);
+assert(!components.includes('${depth}index.html'),'Shared components: index.html Home URL generation detected');
+assert(!components.includes('9:30 AM'),'Shared components: obsolete 9:30 AM detected');
+assert(mainJs.includes("event.key === 'Escape'") && mainJs.includes('window.innerWidth > 860'),'Navigation safeguards missing');
+assert(messagesJs.includes('escapeHtml') && messagesJs.includes("['http:', 'https:'].includes(url.protocol)") && messagesJs.includes('Array.isArray(data)') && messagesJs.includes('.catch(renderError)'),'Messages renderer safeguards missing');
+assert(messagesJs.includes('https://www.youtube.com/@everettchurchofgod417') && messagesJs.includes('Watch ECOG on YouTube.') && messagesJs.includes('noopener noreferrer'),'Messages: official YouTube fallback/protection missing');
+assert(eventsJs.includes('escapeHtml') && eventsJs.includes("['http:', 'https:'].includes(url.protocol)") && eventsJs.includes('Array.isArray(data)') && eventsJs.includes('date >= today') && eventsJs.includes('events.slice(0, 3)') && eventsJs.includes('.catch(renderError)'),'Events renderer safeguards missing');
+assert(!messagesJs.includes('role="status"') && !eventsJs.includes('role="status"'),'Dynamic renderers: nested role=status detected');
+
+for (const file of ['data/events.json','data/sermons.json']) {
+  let data; try { data = JSON.parse(read(file)); } catch (error) { failures.push(`${file}: invalid JSON (${error.message})`); continue; }
+  assert(Array.isArray(data),`${file}: root must be an array`);
+  if (!Array.isArray(data)) continue;
+  data.forEach((item, index) => {
+    assert(item && typeof item === 'object' && !Array.isArray(item),`${file}[${index}]: item must be an object`);
+    if (!item || typeof item !== 'object' || Array.isArray(item)) return;
+    assert(typeof item.title === 'string' && item.title.trim().length > 0,`${file}[${index}]: title is required`);
+    if (file === 'data/events.json') {
+      assert(typeof item.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(item.date),`${file}[${index}]: date must use YYYY-MM-DD`);
+      assert(typeof item.detailsUrl === 'string' && item.detailsUrl.trim().length > 0,`${file}[${index}]: detailsUrl is required`);
+    } else {
+      assert(typeof item.watchUrl === 'string' && item.watchUrl.trim().length > 0,`${file}[${index}]: watchUrl is required`);
+    }
+  });
+}
+
+const migration = read('docs/phase-10-content-migration.md');
+for (const marker of ['10:00 AM','everettcog@comcast.net','Jenn Kisner','John Kisner','kisner.jenn@yahoo.com','jdkcog@comcast.net','https://www.facebook.com/EverettCOG/','https://www.youtube.com/@everettchurchofgod417']) assert(migration.includes(marker),`Phase 10 inventory: confirmed content missing: ${marker}`);
+assert(/Senior Adults[\s\S]{0,500}(inactive|no longer active)/i.test(migration),'Phase 10 inventory: Senior Adults retirement missing');
+
+const notFound = read('404.html');
+assert(/name="robots"\s+content="noindex"/i.test(notFound) && notFound.includes("location.hostname.endsWith('github.io')"),'404.html: staging/project-root safeguards missing');
+
+if (failures.length) {
+  console.error(`Site validation failed with ${failures.length} issue(s):`);
+  failures.forEach(f => console.error(`- ${f}`));
+  process.exit(1);
+}
+console.log(`Site validation passed: ${pages.length} content pages and Phase 3-10 safeguards checked.`);

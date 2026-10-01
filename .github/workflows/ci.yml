@@ -1,0 +1,85 @@
+name: Speed Workflow V2.1 CI
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      head_sha:
+        description: Exact 40-character candidate SHA for FULL
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  fast:
+    name: FAST
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Verify exact checkout
+        run: test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Run complete validation union
+        run: |
+          node scripts/validate-release-candidate.js
+          node scripts/validate-content.js
+          node scripts/validate-site.js
+          node scripts/validate-launch-state.js
+          node scripts/validate-performance.js
+          node --check assets/js/components.js
+          node --check assets/js/main.js
+          node --check assets/js/messages.js
+          node --check assets/js/events.js
+
+  full:
+    name: FULL PHASE CI
+    if: (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label.name == 'full-phase-ci')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      REQUESTED_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.head_sha || github.event.pull_request.head.sha }}
+    steps:
+      - name: Validate requested SHA
+        run: |
+          if [[ ! "$REQUESTED_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Invalid requested SHA" >&2
+            exit 1
+          fi
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.REQUESTED_SHA }}
+          persist-credentials: false
+      - name: Verify exact checkout
+        run: test "$(git rev-parse HEAD)" = "$REQUESTED_SHA"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Run complete validation union
+        run: |
+          node scripts/validate-release-candidate.js
+          node scripts/validate-content.js
+          node scripts/validate-site.js
+          node scripts/validate-launch-state.js
+          node scripts/validate-performance.js
+          node --check assets/js/components.js
+          node --check assets/js/main.js
+          node --check assets/js/messages.js
+          node --check assets/js/events.js
+      - name: Deterministic validation repeat
+        run: |
+          node scripts/validate-release-candidate.js
+          node scripts/validate-content.js
+          node scripts/validate-site.js
+          node scripts/validate-launch-state.js
+          node scripts/validate-performance.js
