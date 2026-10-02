@@ -9,4 +9,10 @@ Production Launch: NOT AUTHORIZED
 DNS Changes: NOT AUTHORIZED
 Pages Custom Domain: NOT AUTHORIZED
 
-The Speed Workflow V2.1 governance migration does not activate ECOG-P01. PR #15 is preserved input, not automatic integration authority. Production launch, DNS changes, and GitHub Pages custom-domain mutation remain not authorized.
+Speed Workflow V2.1 migration status: CLOSED.
+
+Migration closure evidence:
+- PR #16 merged to canonical `main` at `bea9bc78776ac2c852d37526b2ef9804744cd3db`.
+- Post-merge FAST run `36809918530`: SUCCESS.
+
+ECOG-P01 is not activated by migration closure. PR #15 remains preserved production-cutover evidence. Production launch, DNS changes, GitHub Pages custom-domain mutation, CNAME activation, and production indexing remain separately unauthorized.
