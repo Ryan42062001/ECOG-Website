@@ -1,8 +1,8 @@
 # ECOG-P02 — Production Hosting & Domain Cutover
 
-- State: PREVIEW_READY
+- State: PUNCH_LIST
 - Risk: HIGH
-- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED
+- Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT
 - Product Owner: Ryan
 - Manager / Architect / Planner: ChatGPT
 - Activation baseline: `fdcb14aede80215f45b898dd725e1ae633afae49`
@@ -96,41 +96,75 @@ Prepared DNS records match GitHub's documented apex A addresses:
 
 The prepared records are DNS-only. No wildcard record is authorized.
 
+## Immutable audit target and operational CNAME reconciliation
+
+The future immutable P02 audit target is the **pre-cutover runbook/control candidate**. A later explicitly authorized GitHub Pages custom-domain operation may create `main:/CNAME` containing exactly `everettchurchofgod.com`.
+
+That operational commit does not silently retarget or replace the frozen audit SHA. During cutover:
+
+1. Capture the GitHub-created commit by exact SHA.
+2. Treat it as separately authorized cutover evidence.
+3. Run FAST against every canonical source commit produced by the Pages custom-domain action.
+4. Reconcile the resulting CNAME/custom-domain state into P02 post-cutover and closure evidence.
+5. Keep the operational commit limited to the Pages-created CNAME/custom-domain state; do not fold unrelated source work into it.
+6. Any unrelated product or source mutation requires a new candidate and the appropriate new freeze/audit evidence.
+
 ## DNSSEC / DS prerequisite
 
-Current DNSSEC and registrar DS state is **not established by repository or connected read-only evidence**.
+### Current owner-preview evidence
 
-Cloudflare's full-setup guidance warns that changing nameservers while the old DNSSEC chain remains active can make the domain unreachable. Therefore:
+- Ryan's public DS lookup reported: `everettchurchofgod.com does not have any DS records.`
+- Kingdom-side authoritative DNS remained visible, including `amos.ns.cloudflare.com`.
+- No parent DS is currently evidenced.
+- This clears the specific preview-time blocker of a currently published parent DS record. It does **not** prove that DNSSEC can never become a cutover problem.
 
-- **STOP** if registrar DNSSEC status is unknown.
-- **STOP** if DS records at the parent cannot be queried and matched to the intended zone state.
-- **STOP** if DNSSEC is enabled and the old DS material cannot safely follow the new zone.
-- Normal full-setup path: under a separate explicit authorization, disable/remove the old registrar DS configuration, wait for removal to propagate (Cloudflare documents at least 24 hours for the transfer workflow), verify the parent no longer publishes the old DS, and only then replace nameservers.
-- Exception: a planned multi-signer/DNSKEY migration is acceptable only with complete provider support and a separately reviewed procedure; none is established here.
-- After the new Cloudflare zone is Active and routing is verified, separately authorize enabling Cloudflare DNSSEC and publishing the new DS values at the registrar; verify validation before declaring completion.
+### Mandatory cutover-time recheck
 
-No DNSSEC or DS change was performed.
+Immediately before any nameserver mutation:
+
+1. Query public DS state again from reliable public resolvers/registry evidence.
+2. Verify that no parent DS exists.
+3. Query current authoritative NS and verify the expected Kingdom pair remains in effect.
+4. Record the exact lookup output and timestamp.
+5. **STOP** if a DS record exists, the lookup is unavailable or inconclusive, results conflict, authoritative nameservers are unexpected, or DNSSEC behavior is unclear.
+
+If a DS record appears, do not mutate nameservers or DNSSEC under the existing authorization. Return the exact condition for separately reviewed remediation. No DNSSEC or DS change was performed.
 
 ## Nameserver cutover runbook
 
 ### Gate 0 — authorization
 
-**GO only if:** Ryan explicitly authorizes the exact Pages-setting/CNAME, DNSSEC/DS, and nameserver actions; candidate SHA is frozen/audited; a cutover operator and observation window are named.
+**GO only if all are true:**
 
-**STOP if:** authorization is ambiguous, candidate moved, FULL/audit is absent, or no operator can restore/repair service.
+- the exact P02 candidate has passed FULL, immutable freeze, and independent HIGH-risk audit;
+- Ryan explicitly authorizes the exact Pages custom-domain/CNAME and nameserver actions;
+- GitHub Pages staging remains healthy;
+- prepared Ryan-controlled Cloudflare records remain exact and DNS-only;
+- an immediate public DS query returns no DS;
+- current authoritative nameservers are the expected Kingdom pair;
+- an authorized operator capable of changing registrar nameservers is identified;
+- the Pages custom-domain operation is ready;
+- a verified Ryan-controlled recovery target is healthy;
+- a cutover operator and observation window are named.
+
+**STOP** for any DS record, unavailable/inconclusive DS lookup, unexpected nameservers, unavailable registrar operator, unexpected Cloudflare record change, unavailable staging site, Pages/custom-domain mismatch, missing Ryan-controlled recovery target, authorization ambiguity, moved candidate, absent FULL/audit, or inability to observe/recover the change.
 
 ### Gate 1 — registrar and delegation readiness
 
+Ryan currently does **not** have eNom/registrar control-panel access.
+
 **GO only if all are true:**
 
-- eNom account access can change nameservers;
-- registrant ownership, renewal status, and registrar contact email are confirmed;
-- domain lock/transfer state is recorded (unlock is not required merely to change nameservers unless eNom requires it);
-- registrar DNSSEC status and parent DS records are verified;
-- any old DS has been safely removed under separate authorization and removal has propagated;
-- current NS answers are captured as `amos.ns.cloudflare.com` / `izabella.ns.cloudflare.com`.
+- either Ryan/authorized church personnel have obtained registrar access capable of changing nameservers, or Kingdom/eNom has accepted the exact operator handoff below;
+- the named operator is available for the approved window;
+- Ryan/Manager reconfirms authorization immediately before Kingdom/eNom acts;
+- registrant ownership, renewal status, and registrar contact path are confirmed;
+- domain lock/transfer state is recorded; no unlock or transfer is requested for the nameserver operation;
+- immediate DS and authoritative-NS evidence passes Gate 0;
+- current NS answers are `amos.ns.cloudflare.com` and `izabella.ns.cloudflare.com`;
+- execution evidence can be captured.
 
-**STOP** on unknown DNSSEC/DS state, inaccessible registrar account, disputed ownership, expired/near-expiry uncertainty, or inability to restore nameservers while Kingdom remains viable.
+**STOP** if registrar access/operator availability is absent, ownership is disputed, authorization is stale or ambiguous, current delegation differs, or the operator will not follow the exact limited instruction.
 
 ### Gate 2 — Ryan-controlled zone readiness
 
@@ -160,20 +194,30 @@ No DNSSEC or DS change was performed.
 
 ### Gate 4 — execute only after explicit authorization
 
-1. Save the Pages custom domain `everettchurchofgod.com`; capture the resulting setting and root `CNAME` change.
-2. Reconfirm that no indexing file changed.
-3. At eNom, replace only:
+1. Save the Pages custom domain `everettchurchofgod.com`; capture the resulting setting and exact root `CNAME` commit SHA.
+2. Reconfirm that no indexing file changed and run FAST on any canonical source commit created by the Pages action.
+3. Ryan/Manager gives immediate confirmation to the identified registrar operator.
+4. The operator changes **only** the registrar nameserver delegation:
+
+   **REMOVE / REPLACE**
    - `amos.ns.cloudflare.com`
    - `izabella.ns.cloudflare.com`
-   
-   with:
+
+   **WITH**
    - `jaime.ns.cloudflare.com`
    - `meiling.ns.cloudflare.com`
-4. Do not enter the EPP code and do not start a registrar transfer.
-5. Record timestamp, operator, screenshots, and the exact submitted values.
-6. Observe parent delegation and Cloudflare status until Active; Cloudflare notes propagation may take up to 24 hours.
 
-**STOP** immediately for unexpected NS values, SERVFAIL/DNSSEC validation failure, zone removal, lost registrar access, unexplained record loss, or inability to reach either a viable Kingdom route or verified Ryan-controlled deployment.
+5. The operator must not:
+   - modify the Ryan-controlled Cloudflare zone;
+   - alter the prepared GitHub Pages records;
+   - enter the EPP code;
+   - begin registrar transfer;
+   - change ownership or contacts;
+   - change DNSSEC/DS unless a separately reviewed condition and authorization explicitly require it.
+6. Record execution time and capture screenshots or registrar confirmation showing the submitted nameserver values.
+7. Observe parent delegation and Cloudflare status until Active.
+
+**STOP** immediately for unexpected NS values, a newly published or indeterminate DS record, DNSSEC validation failure, zone removal, lost operator access, unexplained record loss, unauthorized extra mutation, or inability to reach the verified Ryan-controlled deployment.
 
 ## Post-cutover verification checklist
 
@@ -243,8 +287,8 @@ Do not start the transfer during P02 preparation. Hosting stability must not dep
 
 - Explicit Product Owner authorization for the exact production mutations.
 - Exact-head FULL PHASE CI, immutable freeze, and fresh HIGH-risk audit.
-- eNom account/change access and registrant/renewal confirmation.
-- DNSSEC status and parent DS verification.
+- An identified authorized registrar operator: Ryan/church personnel with access, or Kingdom/eNom accepting the exact limited handoff.
+- Cutover-time reconfirmation that public DS remains absent and authoritative NS remains the expected Kingdom pair.
 - Complete Ryan-zone record inventory, including confirmation that no non-web records are missing.
 - Pages custom-domain/domain-verification readiness.
 - Exact root `CNAME` change approval.
@@ -272,4 +316,4 @@ Owner preview should confirm:
 6. that indexing remains deferred;
 7. which exact mutations may later be authorized.
 
-No production action should be taken during preview.
+No production action should be taken during preview. The bounded punch-list refinement is complete and ready for Manager-led Phase Sync.

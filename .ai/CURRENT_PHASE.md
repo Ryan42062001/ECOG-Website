@@ -2,9 +2,9 @@
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
-State: PREVIEW_READY
+State: PUNCH_LIST
 Risk: HIGH
-Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED
+Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT
 Production Launch: NOT AUTHORIZED
 DNS Changes: NOT AUTHORIZED
 Pages Custom Domain: NOT AUTHORIZED
@@ -22,7 +22,7 @@ ECOG-P01 closure evidence:
 - Closure Sync PR #19 merged to canonical `main` at `fdcb14aede80215f45b898dd725e1ae633afae49`.
 - Canonical closure FAST run `36956218816`: SUCCESS.
 
-ECOG-P02 implementation checkpoint is ready for Product Owner preview. The runbook is preparation only; every production mutation remains separately unauthorized.
+ECOG-P02 owner preview is complete. The bounded punch-list control refinement is complete and ready for Manager-led Phase Sync; the runbook remains preparation only and every production mutation remains separately unauthorized.
 
 Verified pre-activation hosting evidence:
 - GitHub Pages is enabled from `main` / `/(root)`.
@@ -38,6 +38,8 @@ Owner-provided DNS / registrar evidence:
 - The domain is not used for email.
 - Current registrar evidence identifies eNom; an EPP/auth code was provided, but registrar transfer has not been started.
 - Kingdom reports its existing host/Cloudflare service is expected to be removed October 2, 2026.
+- Owner-preview public lookup reported no DS record for `everettchurchofgod.com`; Kingdom-side authoritative DNS remained visible. This evidence is time-sensitive and must be rechecked immediately before any nameserver mutation.
+- Ryan does not currently have eNom/registrar control-panel access. A future nameserver change therefore requires either authorized church access or exact execution by Kingdom/eNom after immediate Ryan/Manager confirmation.
 
 Current implementation boundary:
 - No nameserver change is authorized.

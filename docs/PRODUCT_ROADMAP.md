@@ -52,9 +52,9 @@ Kingdom Church Websites controlled the observed Cloudflare zone during ECOG-P01,
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
-- State: PREVIEW_READY
+- State: PUNCH_LIST
 - Risk: HIGH
-- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED
+- Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT
 
 Objective:
 
@@ -85,5 +85,12 @@ Phase work must:
 9. Keep registrar transfer separate from DNS activation; use the EPP code only after the Ryan-controlled Cloudflare zone is active and the transfer prerequisites are verified.
 10. Obtain explicit Product Owner authorization for the exact production cutover mutations before performing them.
 11. After successful domain/hosting cutover, treat production indexing activation as a separately controlled release decision.
+
+Owner-preview punch-list evidence:
+
+1. A public lookup reported no parent DS record; this clears the preview-time active-DS blocker only.
+2. DS and current authoritative NS must be queried again immediately before delegation; missing, inconsistent, or inconclusive evidence is a STOP.
+3. Ryan currently lacks eNom control-panel access, so an identified authorized registrar operator remains required.
+4. Any GitHub-created operational `main:/CNAME` commit must be captured by exact SHA, validated by FAST, and reconciled as post-cutover/closure evidence without silently retargeting the pre-cutover audit SHA.
 
 Production launch, nameserver changes, Cloudflare authoritative-DNS changes, Pages custom-domain mutation, repository `CNAME` activation, registrar transfer, and production indexing remain NOT AUTHORIZED by phase activation.
