@@ -3,11 +3,11 @@ const path = require('path');
 
 const defaultRoot = path.resolve(__dirname, '..');
 const intendedAi = ['ARCHITECTURE.md', 'CURRENT_PHASE.md', 'DECISIONS.md', 'PROJECT.md', 'REPO_MAP.md'];
-const phaseHeading = '## ECOG-P01 — Production Cutover & Launch Verification';
+const phaseHeading = '## ECOG-P02 — Production Hosting & Domain Cutover';
 const requiredPhaseFields = [
-  ['State', 'CLOSED'],
+  ['State', 'BUILDING'],
   ['Risk', 'HIGH'],
-  ['Status', 'CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED'],
+  ['Status', 'IMPLEMENTATION ACTIVE'],
   ['Production Launch', 'NOT AUTHORIZED'],
   ['DNS Changes', 'NOT AUTHORIZED'],
   ['Pages Custom Domain', 'NOT AUTHORIZED'],
@@ -69,7 +69,7 @@ function validateReleaseCandidate(root = defaultRoot) {
     .map((line, index) => line.trim() === phaseHeading ? index : -1)
     .filter(index => index >= 0);
 
-  assert(headingIndexes.length === 1, 'CURRENT_PHASE must contain exactly one ECOG-P01 section heading');
+  assert(headingIndexes.length === 1, 'CURRENT_PHASE must contain exactly one ECOG-P02 section heading');
   if (headingIndexes.length === 1) {
     const start = headingIndexes[0] + 1;
     let end = phaseLines.length;
@@ -83,9 +83,9 @@ function validateReleaseCandidate(root = defaultRoot) {
     const sectionLines = phaseLines.slice(start, end);
     for (const [key, value] of requiredPhaseFields) {
       const matches = sectionLines.filter(line => line.startsWith(key + ':'));
-      assert(matches.length === 1, `ECOG-P01 ${key} must appear exactly once inside its section`);
+      assert(matches.length === 1, `ECOG-P02 ${key} must appear exactly once inside its section`);
       if (matches.length === 1) {
-        assert(matches[0] === `${key}: ${value}`, `ECOG-P01 ${key} must be exactly "${key}: ${value}"`);
+        assert(matches[0] === `${key}: ${value}`, `ECOG-P02 ${key} must be exactly "${key}: ${value}"`);
       }
     }
   }
@@ -94,7 +94,7 @@ function validateReleaseCandidate(root = defaultRoot) {
   const roadmapHeadingIndexes = roadmapLines
     .map((line, index) => line.trim() === phaseHeading ? index : -1)
     .filter(index => index >= 0);
-  assert(roadmapHeadingIndexes.length === 1, 'Roadmap must contain exactly one ECOG-P01 section heading');
+  assert(roadmapHeadingIndexes.length === 1, 'Roadmap must contain exactly one ECOG-P02 section heading');
   if (roadmapHeadingIndexes.length === 1) {
     const start = roadmapHeadingIndexes[0] + 1;
     let end = roadmapLines.length;
@@ -108,9 +108,9 @@ function validateReleaseCandidate(root = defaultRoot) {
     for (const [key, value] of requiredPhaseFields.slice(0, 3)) {
       const expected = `- ${key}: ${value}`;
       const matches = sectionLines.filter(line => line.startsWith(`- ${key}:`));
-      assert(matches.length === 1, `Roadmap ECOG-P01 ${key} must appear exactly once inside its section`);
+      assert(matches.length === 1, `Roadmap ECOG-P02 ${key} must appear exactly once inside its section`);
       if (matches.length === 1) {
-        assert(matches[0] === expected, `Roadmap ECOG-P01 ${key} must be exactly "${expected}"`);
+        assert(matches[0] === expected, `Roadmap ECOG-P02 ${key} must be exactly "${expected}"`);
       }
     }
   }

@@ -92,32 +92,32 @@ test('rejects a symlink replacing an authorized .ai file when supported', t => {
   expectRejected(root, /PROJECT\.md must be a regular file/);
 });
 
-test('rejects wrong ECOG-P01 State', t => {
+test('rejects wrong ECOG-P02 State', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('State: CLOSED', 'State: FREEZE_READY'));
+  mutatePhase(root, text => text.replace('State: BUILDING', 'State: PLANNED'));
   expectRejected(root, /State must be exactly/);
 });
 
-test('rejects wrong ECOG-P01 Risk', t => {
+test('rejects wrong ECOG-P02 Risk', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text.replace('Risk: HIGH', 'Risk: MEDIUM'));
   expectRejected(root, /Risk must be exactly/);
 });
 
-test('rejects wrong ECOG-P01 Status', t => {
+test('rejects wrong ECOG-P02 Status', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED', 'Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED'));
+  mutatePhase(root, text => text.replace('Status: IMPLEMENTATION ACTIVE', 'Status: NOT STARTED'));
   expectRejected(root, /Status must be exactly/);
 });
 
-test('rejects required strings placed outside an invalid ECOG-P01 section', t => {
+test('rejects required strings placed outside an invalid ECOG-P02 section', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text
-    .replace('State: CLOSED', 'State: PUNCH_LIST')
+    .replace('State: BUILDING', 'State: PUNCH_LIST')
     + '\n## Decoy section\n\n'
-    + 'State: CLOSED\n'
+    + 'State: BUILDING\n'
     + 'Risk: HIGH\n'
-    + 'Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED\n'
+    + 'Status: IMPLEMENTATION ACTIVE\n'
     + 'Production Launch: NOT AUTHORIZED\n'
     + 'DNS Changes: NOT AUTHORIZED\n'
     + 'Pages Custom Domain: NOT AUTHORIZED\n');
@@ -150,20 +150,20 @@ test('rejects a duplicate structured field', t => {
 
 test('rejects a missing structured field', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED\n', ''));
+  mutatePhase(root, text => text.replace('Status: IMPLEMENTATION ACTIVE\n', ''));
   expectRejected(root, /Status must appear exactly once/);
 });
 
-test('rejects wrong roadmap lifecycle inside the ECOG-P01 section', t => {
+test('rejects wrong roadmap lifecycle inside the ECOG-P02 section', t => {
   const root = createFixture(t);
-  mutateRoadmap(root, text => text.replace('- State: CLOSED', '- State: FREEZE_READY'));
-  expectRejected(root, /Roadmap ECOG-P01 State must be exactly/);
+  mutateRoadmap(root, text => text.replace('- State: BUILDING', '- State: PLANNED'));
+  expectRejected(root, /Roadmap ECOG-P02 State must be exactly/);
 });
 
 test('rejects valid roadmap strings placed only in a decoy section', t => {
   const root = createFixture(t);
   mutateRoadmap(root, text => text
-    .replace('- Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED', '- Status: PUNCH LIST COMPLETE / PHASE SYNC READY')
-    + '\n## Decoy\n\n- State: CLOSED\n- Risk: HIGH\n- Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED\n');
-  expectRejected(root, /Roadmap ECOG-P01 Status must be exactly/);
+    .replace('- Status: IMPLEMENTATION ACTIVE', '- Status: PUNCH LIST COMPLETE / PHASE SYNC READY')
+    + '\n## Decoy\n\n- State: BUILDING\n- Risk: HIGH\n- Status: IMPLEMENTATION ACTIVE\n');
+  expectRejected(root, /Roadmap ECOG-P02 Status must be exactly/);
 });
