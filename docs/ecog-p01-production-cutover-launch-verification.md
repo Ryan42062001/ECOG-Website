@@ -1,8 +1,8 @@
 # ECOG-P01 — Production Cutover & Launch Verification
 
-- State: PUNCH_LIST
+- State: CLOSED
 - Risk: HIGH
-- Status: PUNCH LIST COMPLETE / PHASE SYNC READY
+- Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED
 - Product Owner: Ryan
 - Manager / Architect / Planner: ChatGPT
 - Activation baseline: `56316ab56edca42547b28c4432f6062961ac0846`
@@ -23,6 +23,19 @@ Preserved production-cutover evidence:
 - Activation-time relationship of PR #15 head to canonical baseline: diverged, 1 ahead / 5 behind
 
 PR #15 is evidence only. It is not authorized for direct merge or silent retarget.
+
+## Closure outcome
+
+ECOG-P01 source-readiness work is complete and closed.
+
+- Frozen/audited source candidate: `c913d2e5ad9cb9e3add2f6bbcd9a73c432727e7d`
+- Independent HIGH-risk audit: **PASS WITH NON-BLOCKING FINDINGS**
+- Product Owner merge authorization: explicit
+- PR #18 merge commit: `9b369af46cee0f4d3fcaf2772b007782287a8e89`
+- Post-merge FAST: run `36955932363` — **SUCCESS**
+- The audit's non-blocking stale lifecycle-header finding is corrected by this Closure Sync.
+
+Closing ECOG-P01 records completion of the bounded source-readiness workflow. It does **not** mean the production website has launched. Registrar/DNS control, Cloudflare handoff, verified Ryan-controlled hosting, custom-domain/TLS readiness, preservation of mail/non-web services, and a separate explicit Product Owner production-launch authorization remain required.
 
 ## Authorized scope
 
