@@ -14,34 +14,37 @@
 - Phase 10 content migration/reconciliation — completed
 - Phase 11 accessibility / SEO / performance / quality — completed
 - Phase 12 launch-validation scaffolding — merged/completed as pre-launch infrastructure
+- ECOG-P01 source-readiness work — completed/closed; production launch not authorized
 
-Production launch is not complete. PR #15 remains DRAFT / UNMERGED production-cutover evidence.
+Production launch is not complete. PR #15 remains DRAFT / UNMERGED historical production-cutover evidence.
 
 ## ECOG-P01 — Production Cutover & Launch Verification
 
-- State: FREEZE_READY
+- State: CLOSED
 - Risk: HIGH
-- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED
+- Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED
 
-Active phase work must:
+Closure outcome:
 
-1. Independently reconcile PR #15 against current canonical main.
-2. Confirm explicit Ryan/church launch authorization.
-3. Confirm who controls everettchurchofgod.com DNS.
-4. Capture and review current production DNS records before mutation.
-5. Define coordinated DNS / GitHub Pages custom-domain cutover.
-6. Preserve continuity through a verified Ryan-controlled hosting path; do not assume the cancelled Kingdom host remains available.
-7. Validate CNAME/custom-domain configuration.
-8. Validate HTTPS/certificate behavior.
-9. Verify apex / expected host routing.
-10. Verify active routes and legacy compatibility routes live.
-11. Verify production robots/indexing state.
-12. Verify sitemap and canonical URLs.
-13. Confirm retired Senior Adults and 404 indexing safeguards remain correct.
-14. Verify no staging github.io/ECOG-Website metadata leakage.
-15. Reverify the external giving safety boundary.
-16. Reverify public-facing church facts at launch.
-17. Define and preserve a rollback plan before cutover.
-18. Obtain separate explicit Product Owner authorization for production launch.
+1. PR #15 was reconciled against current canonical main without copying stale product blobs.
+2. Sunday worship was confirmed by the Product Owner as 10:00 AM.
+3. `everettchurchofgod.com` was approved as the primary production host, with `www` intended to redirect/alias to the apex.
+4. Launch without a giving link was approved unless an external destination is independently verified.
+5. The source-readiness candidate passed FAST, exact-head FULL PHASE CI, and fresh independent HIGH-risk audit.
+6. PR #18 was explicitly authorized by Ryan and merged to canonical main at `9b369af46cee0f4d3fcaf2772b007782287a8e89`.
+7. Post-merge FAST run `36955932363` passed.
+8. The independent audit's stale lifecycle-header finding is corrected by Closure Sync.
+9. No production launch, DNS/Cloudflare mutation, Pages enablement/settings/custom-domain mutation, CNAME activation, or production indexing was authorized by the phase merge.
 
-Kingdom Church Websites currently controls the Cloudflare zone. Ryan has not established independent zone access, so transfer/delegated control remains a launch blocker.
+Remaining production-launch prerequisites:
+
+1. Establish Ryan-controlled registrar access and domain ownership/renewal control.
+2. Establish Ryan-controlled Cloudflare/DNS access or a safe zone handoff.
+3. Preserve the complete DNS/routing/TLS configuration, including MX/SPF/DKIM/DMARC and every non-web record.
+4. Establish and verify a Ryan-controlled hosting target.
+5. If GitHub Pages is selected, verify enablement, source/build health, project URL, noindex behavior, custom-domain readiness, and HTTPS/certificate state.
+6. Preserve and test mail and other non-web services through any nameserver or DNS change.
+7. Reverify launch-time public facts, compatibility routes, indexing safeguards, sitemap/canonical behavior, and the external giving boundary.
+8. Obtain a separate explicit Product Owner authorization for the exact production-launch actions.
+
+Kingdom Church Websites controlled the observed Cloudflare zone during ECOG-P01, while Ryan-controlled zone access remained unestablished. That operational handoff remains a production-launch blocker, not a claim of completed launch readiness.
