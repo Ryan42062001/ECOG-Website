@@ -94,7 +94,7 @@ test('rejects a symlink replacing an authorized .ai file when supported', t => {
 
 test('rejects wrong ECOG-P01 State', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('State: BUILDING', 'State: PLANNED'));
+  mutatePhase(root, text => text.replace('State: PUNCH_LIST', 'State: BUILDING'));
   expectRejected(root, /State must be exactly/);
 });
 
@@ -106,18 +106,18 @@ test('rejects wrong ECOG-P01 Risk', t => {
 
 test('rejects wrong ECOG-P01 Status', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: IMPLEMENTATION ACTIVE', 'Status: NOT STARTED'));
+  mutatePhase(root, text => text.replace('Status: PUNCH LIST COMPLETE / PHASE SYNC READY', 'Status: IMPLEMENTATION ACTIVE'));
   expectRejected(root, /Status must be exactly/);
 });
 
 test('rejects required strings placed outside an invalid ECOG-P01 section', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text
-    .replace('State: BUILDING', 'State: PLANNED')
+    .replace('State: PUNCH_LIST', 'State: PLANNED')
     + '\n## Decoy section\n\n'
-    + 'State: BUILDING\n'
+    + 'State: PUNCH_LIST\n'
     + 'Risk: HIGH\n'
-    + 'Status: IMPLEMENTATION ACTIVE\n'
+    + 'Status: PUNCH LIST COMPLETE / PHASE SYNC READY\n'
     + 'Production Launch: NOT AUTHORIZED\n'
     + 'DNS Changes: NOT AUTHORIZED\n'
     + 'Pages Custom Domain: NOT AUTHORIZED\n');
@@ -150,20 +150,20 @@ test('rejects a duplicate structured field', t => {
 
 test('rejects a missing structured field', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: IMPLEMENTATION ACTIVE\n', ''));
+  mutatePhase(root, text => text.replace('Status: PUNCH LIST COMPLETE / PHASE SYNC READY\n', ''));
   expectRejected(root, /Status must appear exactly once/);
 });
 
 test('rejects wrong roadmap lifecycle inside the ECOG-P01 section', t => {
   const root = createFixture(t);
-  mutateRoadmap(root, text => text.replace('- State: BUILDING', '- State: PLANNED'));
+  mutateRoadmap(root, text => text.replace('- State: PUNCH_LIST', '- State: BUILDING'));
   expectRejected(root, /Roadmap ECOG-P01 State must be exactly/);
 });
 
 test('rejects valid roadmap strings placed only in a decoy section', t => {
   const root = createFixture(t);
   mutateRoadmap(root, text => text
-    .replace('- Status: IMPLEMENTATION ACTIVE', '- Status: NOT STARTED')
-    + '\n## Decoy\n\n- State: BUILDING\n- Risk: HIGH\n- Status: IMPLEMENTATION ACTIVE\n');
+    .replace('- Status: PUNCH LIST COMPLETE / PHASE SYNC READY', '- Status: NOT STARTED')
+    + '\n## Decoy\n\n- State: PUNCH_LIST\n- Risk: HIGH\n- Status: PUNCH LIST COMPLETE / PHASE SYNC READY\n');
   expectRejected(root, /Roadmap ECOG-P01 Status must be exactly/);
 });

@@ -1,8 +1,8 @@
 # ECOG-P01 — Production Cutover & Launch Verification
 
-- State: BUILDING
+- State: PUNCH_LIST
 - Risk: HIGH
-- Status: IMPLEMENTATION ACTIVE
+- Status: PUNCH LIST COMPLETE / PHASE SYNC READY
 - Product Owner: Ryan
 - Manager / Architect / Planner: ChatGPT
 - Activation baseline: `56316ab56edca42547b28c4432f6062961ac0846`
@@ -32,9 +32,9 @@ PR #15 is evidence only. It is not authorized for direct merge or silent retarge
 4. Determine who controls `everettchurchofgod.com` DNS before any mutation.
 5. Capture and review current public DNS records before proposing changes.
 6. Define the coordinated GitHub Pages custom-domain / DNS cutover sequence.
-7. Define a rollback sequence that preserves the existing live site until replacement verification is sufficient.
+7. Define pre-cutover rollback while Kingdom remains available and a separate post-Kingdom continuity path under Ryan's control.
 8. Revalidate launch-sensitive routes, metadata, sitemap, robots/indexing state, canonical URLs, retired-route safeguards, public church facts, and the external giving boundary.
-9. Prepare owner-preview evidence and an exact candidate for HIGH-risk freeze/audit under Speed Workflow V2.1.
+9. Complete owner-preview remediation and prepare exact Phase Sync evidence for later HIGH-risk freeze/audit under Speed Workflow V2.1.
 10. Update control-plane state and validation contracts only as needed to represent the active ECOG-P01 lifecycle accurately.
 
 ## Protected boundaries
