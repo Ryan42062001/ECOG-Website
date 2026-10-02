@@ -19,9 +19,9 @@ Production launch is not complete. PR #15 remains DRAFT / UNMERGED production-cu
 
 ## ECOG-P01 — Production Cutover & Launch Verification
 
-- State: PUNCH_LIST
+- State: FREEZE_READY
 - Risk: HIGH
-- Status: PUNCH LIST COMPLETE / PHASE SYNC READY
+- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED
 
 Active phase work must:
 

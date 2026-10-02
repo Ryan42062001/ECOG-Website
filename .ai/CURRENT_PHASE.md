@@ -2,9 +2,9 @@
 
 ## ECOG-P01 — Production Cutover & Launch Verification
 
-State: PUNCH_LIST
+State: FREEZE_READY
 Risk: HIGH
-Status: PUNCH LIST COMPLETE / PHASE SYNC READY
+Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED
 Production Launch: NOT AUTHORIZED
 DNS Changes: NOT AUTHORIZED
 Pages Custom Domain: NOT AUTHORIZED
@@ -15,7 +15,7 @@ Migration closure evidence:
 - PR #16 merged to canonical `main` at `bea9bc78776ac2c852d37526b2ef9804744cd3db`.
 - Post-merge FAST run `36809918530`: SUCCESS.
 
-ECOG-P01 owner preview and bounded punch-list remediation are complete. The phase is ready for Manager-led Phase Sync; FULL PHASE CI, freeze, audit, merge, and launch have not begun. PR #15 remains preserved production-cutover evidence. Production launch, DNS changes, GitHub Pages custom-domain mutation, CNAME activation, and production indexing remain separately unauthorized.
+ECOG-P01 Phase Sync is complete. The exact synchronized candidate requires Manager-authorized FULL PHASE CI before immutable freeze; audit, merge, and launch have not begun. PR #15 remains preserved production-cutover evidence. Production launch, DNS changes, GitHub Pages custom-domain mutation, CNAME activation, and production indexing remain separately unauthorized.
 
 Current implementation boundary:
 - PR #15 is reconciled evidence only; it is not merge authority.
