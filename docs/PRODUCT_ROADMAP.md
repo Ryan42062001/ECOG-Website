@@ -19,18 +19,18 @@ Production launch is not complete. PR #15 remains DRAFT / UNMERGED production-cu
 
 ## ECOG-P01 — Production Cutover & Launch Verification
 
-- State: PLANNED
+- State: FREEZE_READY
 - Risk: HIGH
-- Status: NOT STARTED
+- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED
 
-Future work must:
+Active phase work must:
 
 1. Independently reconcile PR #15 against current canonical main.
 2. Confirm explicit Ryan/church launch authorization.
 3. Confirm who controls everettchurchofgod.com DNS.
 4. Capture and review current production DNS records before mutation.
 5. Define coordinated DNS / GitHub Pages custom-domain cutover.
-6. Preserve the existing live site until replacement verification is sufficient.
+6. Preserve continuity through a verified Ryan-controlled hosting path; do not assume the cancelled Kingdom host remains available.
 7. Validate CNAME/custom-domain configuration.
 8. Validate HTTPS/certificate behavior.
 9. Verify apex / expected host routing.
@@ -44,4 +44,4 @@ Future work must:
 17. Define and preserve a rollback plan before cutover.
 18. Obtain separate explicit Product Owner authorization for production launch.
 
-DNS ownership/control facts remain unresolved and are not claimed as known.
+Kingdom Church Websites currently controls the Cloudflare zone. Ryan has not established independent zone access, so transfer/delegated control remains a launch blocker.

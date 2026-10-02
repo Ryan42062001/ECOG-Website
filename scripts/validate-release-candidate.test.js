@@ -46,6 +46,14 @@ function mutatePhase(root, mutate) {
   fs.writeFileSync(file, updated);
 }
 
+function mutateRoadmap(root, mutate) {
+  const file = path.join(root, 'docs', 'PRODUCT_ROADMAP.md');
+  const original = fs.readFileSync(file, 'utf8');
+  const updated = mutate(original);
+  assert.notEqual(updated, original, 'test setup must change PRODUCT_ROADMAP.md');
+  fs.writeFileSync(file, updated);
+}
+
 function expectRejected(root, pattern) {
   const failures = validateReleaseCandidate(root);
   assert.ok(failures.length > 0, 'candidate unexpectedly passed');
@@ -86,7 +94,7 @@ test('rejects a symlink replacing an authorized .ai file when supported', t => {
 
 test('rejects wrong ECOG-P01 State', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('State: PLANNED', 'State: BUILDING'));
+  mutatePhase(root, text => text.replace('State: FREEZE_READY', 'State: PUNCH_LIST'));
   expectRejected(root, /State must be exactly/);
 });
 
@@ -98,18 +106,18 @@ test('rejects wrong ECOG-P01 Risk', t => {
 
 test('rejects wrong ECOG-P01 Status', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: NOT STARTED', 'Status: IN PROGRESS'));
+  mutatePhase(root, text => text.replace('Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED', 'Status: PUNCH LIST COMPLETE / PHASE SYNC READY'));
   expectRejected(root, /Status must be exactly/);
 });
 
 test('rejects required strings placed outside an invalid ECOG-P01 section', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text
-    .replace('State: PLANNED', 'State: BUILDING')
+    .replace('State: FREEZE_READY', 'State: PUNCH_LIST')
     + '\n## Decoy section\n\n'
-    + 'State: PLANNED\n'
+    + 'State: FREEZE_READY\n'
     + 'Risk: HIGH\n'
-    + 'Status: NOT STARTED\n'
+    + 'Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED\n'
     + 'Production Launch: NOT AUTHORIZED\n'
     + 'DNS Changes: NOT AUTHORIZED\n'
     + 'Pages Custom Domain: NOT AUTHORIZED\n');
@@ -142,6 +150,20 @@ test('rejects a duplicate structured field', t => {
 
 test('rejects a missing structured field', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: NOT STARTED\n', ''));
+  mutatePhase(root, text => text.replace('Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED\n', ''));
   expectRejected(root, /Status must appear exactly once/);
+});
+
+test('rejects wrong roadmap lifecycle inside the ECOG-P01 section', t => {
+  const root = createFixture(t);
+  mutateRoadmap(root, text => text.replace('- State: FREEZE_READY', '- State: PUNCH_LIST'));
+  expectRejected(root, /Roadmap ECOG-P01 State must be exactly/);
+});
+
+test('rejects valid roadmap strings placed only in a decoy section', t => {
+  const root = createFixture(t);
+  mutateRoadmap(root, text => text
+    .replace('- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED', '- Status: PUNCH LIST COMPLETE / PHASE SYNC READY')
+    + '\n## Decoy\n\n- State: FREEZE_READY\n- Risk: HIGH\n- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED\n');
+  expectRejected(root, /Roadmap ECOG-P01 Status must be exactly/);
 });
