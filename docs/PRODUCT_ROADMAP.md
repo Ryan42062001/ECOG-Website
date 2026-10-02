@@ -19,11 +19,11 @@ Production launch is not complete. PR #15 remains DRAFT / UNMERGED production-cu
 
 ## ECOG-P01 — Production Cutover & Launch Verification
 
-- State: PLANNED
+- State: BUILDING
 - Risk: HIGH
-- Status: NOT STARTED
+- Status: IMPLEMENTATION ACTIVE
 
-Future work must:
+Active phase work must:
 
 1. Independently reconcile PR #15 against current canonical main.
 2. Confirm explicit Ryan/church launch authorization.

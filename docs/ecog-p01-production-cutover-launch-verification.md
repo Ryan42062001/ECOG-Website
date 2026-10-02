@@ -1,7 +1,8 @@
 # ECOG-P01 — Production Cutover & Launch Verification
 
-- State: PLANNED
+- State: BUILDING
 - Risk: HIGH
+- Status: IMPLEMENTATION ACTIVE
 - Product Owner: Ryan
 - Manager / Architect / Planner: ChatGPT
 - Activation baseline: `56316ab56edca42547b28c4432f6062961ac0846`

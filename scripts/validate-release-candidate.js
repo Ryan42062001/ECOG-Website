@@ -5,9 +5,9 @@ const defaultRoot = path.resolve(__dirname, '..');
 const intendedAi = ['ARCHITECTURE.md', 'CURRENT_PHASE.md', 'DECISIONS.md', 'PROJECT.md', 'REPO_MAP.md'];
 const phaseHeading = '## ECOG-P01 — Production Cutover & Launch Verification';
 const requiredPhaseFields = [
-  ['State', 'PLANNED'],
+  ['State', 'BUILDING'],
   ['Risk', 'HIGH'],
-  ['Status', 'NOT STARTED'],
+  ['Status', 'IMPLEMENTATION ACTIVE'],
   ['Production Launch', 'NOT AUTHORIZED'],
   ['DNS Changes', 'NOT AUTHORIZED'],
   ['Pages Custom Domain', 'NOT AUTHORIZED'],
@@ -90,7 +90,30 @@ function validateReleaseCandidate(root = defaultRoot) {
     }
   }
 
-  assert(roadmap.includes('ECOG-P01') && roadmap.includes('State: PLANNED'), 'Roadmap must keep ECOG-P01 planned');
+  const roadmapLines = roadmap.split(/\r?\n/);
+  const roadmapHeadingIndexes = roadmapLines
+    .map((line, index) => line.trim() === phaseHeading ? index : -1)
+    .filter(index => index >= 0);
+  assert(roadmapHeadingIndexes.length === 1, 'Roadmap must contain exactly one ECOG-P01 section heading');
+  if (roadmapHeadingIndexes.length === 1) {
+    const start = roadmapHeadingIndexes[0] + 1;
+    let end = roadmapLines.length;
+    for (let index = start; index < roadmapLines.length; index += 1) {
+      if (/^#{1,2}\s/.test(roadmapLines[index])) {
+        end = index;
+        break;
+      }
+    }
+    const sectionLines = roadmapLines.slice(start, end);
+    for (const [key, value] of requiredPhaseFields.slice(0, 3)) {
+      const expected = `- ${key}: ${value}`;
+      const matches = sectionLines.filter(line => line.startsWith(`- ${key}:`));
+      assert(matches.length === 1, `Roadmap ECOG-P01 ${key} must appear exactly once inside its section`);
+      if (matches.length === 1) {
+        assert(matches[0] === expected, `Roadmap ECOG-P01 ${key} must be exactly "${expected}"`);
+      }
+    }
+  }
   const history = exists('.history/pre-speed-v2-1/README.md') ? read('.history/pre-speed-v2-1/README.md') : '';
   assert(/historical/i.test(history) && /not active workflow authority/i.test(history) && /docs\/WORKFLOW\.md/i.test(history), 'Archive must identify historical, non-authoritative status');
   assert(!exists('CNAME'), 'CNAME must not exist on the migration candidate');
