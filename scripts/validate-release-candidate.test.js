@@ -94,7 +94,7 @@ test('rejects a symlink replacing an authorized .ai file when supported', t => {
 
 test('rejects wrong ECOG-P02 State', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('State: BUILDING', 'State: PLANNED'));
+  mutatePhase(root, text => text.replace('State: PREVIEW_READY', 'State: BUILDING'));
   expectRejected(root, /State must be exactly/);
 });
 
@@ -106,18 +106,18 @@ test('rejects wrong ECOG-P02 Risk', t => {
 
 test('rejects wrong ECOG-P02 Status', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: IMPLEMENTATION ACTIVE', 'Status: NOT STARTED'));
+  mutatePhase(root, text => text.replace('Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED', 'Status: IMPLEMENTATION ACTIVE'));
   expectRejected(root, /Status must be exactly/);
 });
 
 test('rejects required strings placed outside an invalid ECOG-P02 section', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text
-    .replace('State: BUILDING', 'State: PUNCH_LIST')
+    .replace('State: PREVIEW_READY', 'State: PUNCH_LIST')
     + '\n## Decoy section\n\n'
-    + 'State: BUILDING\n'
+    + 'State: PREVIEW_READY\n'
     + 'Risk: HIGH\n'
-    + 'Status: IMPLEMENTATION ACTIVE\n'
+    + 'Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED\n'
     + 'Production Launch: NOT AUTHORIZED\n'
     + 'DNS Changes: NOT AUTHORIZED\n'
     + 'Pages Custom Domain: NOT AUTHORIZED\n');
@@ -142,6 +142,30 @@ test('rejects Pages Custom Domain authorization', t => {
   expectRejected(root, /Pages Custom Domain must be exactly/);
 });
 
+
+test('rejects Cloudflare Cutover authorization', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Cloudflare Cutover: NOT AUTHORIZED', 'Cloudflare Cutover: AUTHORIZED'));
+  expectRejected(root, /Cloudflare Cutover must be exactly/);
+});
+
+test('rejects DNSSEC Changes authorization', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('DNSSEC Changes: NOT AUTHORIZED', 'DNSSEC Changes: AUTHORIZED'));
+  expectRejected(root, /DNSSEC Changes must be exactly/);
+});
+
+test('rejects Registrar Transfer authorization', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Registrar Transfer: NOT AUTHORIZED', 'Registrar Transfer: AUTHORIZED'));
+  expectRejected(root, /Registrar Transfer must be exactly/);
+});
+
+test('rejects Production Indexing authorization', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Production Indexing: NOT AUTHORIZED', 'Production Indexing: AUTHORIZED'));
+  expectRejected(root, /Production Indexing must be exactly/);
+});
 test('rejects a duplicate structured field', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text.replace('Risk: HIGH', 'Risk: HIGH\nRisk: HIGH'));
@@ -150,20 +174,20 @@ test('rejects a duplicate structured field', t => {
 
 test('rejects a missing structured field', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: IMPLEMENTATION ACTIVE\n', ''));
+  mutatePhase(root, text => text.replace('Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED\n', ''));
   expectRejected(root, /Status must appear exactly once/);
 });
 
 test('rejects wrong roadmap lifecycle inside the ECOG-P02 section', t => {
   const root = createFixture(t);
-  mutateRoadmap(root, text => text.replace('- State: BUILDING', '- State: PLANNED'));
+  mutateRoadmap(root, text => text.replace('- State: PREVIEW_READY', '- State: BUILDING'));
   expectRejected(root, /Roadmap ECOG-P02 State must be exactly/);
 });
 
 test('rejects valid roadmap strings placed only in a decoy section', t => {
   const root = createFixture(t);
   mutateRoadmap(root, text => text
-    .replace('- Status: IMPLEMENTATION ACTIVE', '- Status: PUNCH LIST COMPLETE / PHASE SYNC READY')
-    + '\n## Decoy\n\n- State: BUILDING\n- Risk: HIGH\n- Status: IMPLEMENTATION ACTIVE\n');
+    .replace('- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED', '- Status: PUNCH LIST COMPLETE / PHASE SYNC READY')
+    + '\n## Decoy\n\n- State: PREVIEW_READY\n- Risk: HIGH\n- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED\n');
   expectRejected(root, /Roadmap ECOG-P02 Status must be exactly/);
 });

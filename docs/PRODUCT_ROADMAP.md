@@ -52,9 +52,9 @@ Kingdom Church Websites controlled the observed Cloudflare zone during ECOG-P01,
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
-- State: BUILDING
+- State: PREVIEW_READY
 - Risk: HIGH
-- Status: IMPLEMENTATION ACTIVE
+- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED
 
 Objective:
 

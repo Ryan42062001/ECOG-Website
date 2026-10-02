@@ -5,12 +5,16 @@ const defaultRoot = path.resolve(__dirname, '..');
 const intendedAi = ['ARCHITECTURE.md', 'CURRENT_PHASE.md', 'DECISIONS.md', 'PROJECT.md', 'REPO_MAP.md'];
 const phaseHeading = '## ECOG-P02 — Production Hosting & Domain Cutover';
 const requiredPhaseFields = [
-  ['State', 'BUILDING'],
+  ['State', 'PREVIEW_READY'],
   ['Risk', 'HIGH'],
-  ['Status', 'IMPLEMENTATION ACTIVE'],
+  ['Status', 'CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED'],
   ['Production Launch', 'NOT AUTHORIZED'],
   ['DNS Changes', 'NOT AUTHORIZED'],
   ['Pages Custom Domain', 'NOT AUTHORIZED'],
+  ['Cloudflare Cutover', 'NOT AUTHORIZED'],
+  ['DNSSEC Changes', 'NOT AUTHORIZED'],
+  ['Registrar Transfer', 'NOT AUTHORIZED'],
+  ['Production Indexing', 'NOT AUTHORIZED'],
 ];
 
 function validateReleaseCandidate(root = defaultRoot) {

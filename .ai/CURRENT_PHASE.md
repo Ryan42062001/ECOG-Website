@@ -2,12 +2,16 @@
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
-State: BUILDING
+State: PREVIEW_READY
 Risk: HIGH
-Status: IMPLEMENTATION ACTIVE
+Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED
 Production Launch: NOT AUTHORIZED
 DNS Changes: NOT AUTHORIZED
 Pages Custom Domain: NOT AUTHORIZED
+Cloudflare Cutover: NOT AUTHORIZED
+DNSSEC Changes: NOT AUTHORIZED
+Registrar Transfer: NOT AUTHORIZED
+Production Indexing: NOT AUTHORIZED
 
 Speed Workflow V2.1 migration status: CLOSED.
 ECOG-P01 source-readiness status: CLOSED.
@@ -18,7 +22,7 @@ ECOG-P01 closure evidence:
 - Closure Sync PR #19 merged to canonical `main` at `fdcb14aede80215f45b898dd725e1ae633afae49`.
 - Canonical closure FAST run `36956218816`: SUCCESS.
 
-ECOG-P02 is active for bounded production-hosting and domain-cutover preparation.
+ECOG-P02 implementation checkpoint is ready for Product Owner preview. The runbook is preparation only; every production mutation remains separately unauthorized.
 
 Verified pre-activation hosting evidence:
 - GitHub Pages is enabled from `main` / `/(root)`.
