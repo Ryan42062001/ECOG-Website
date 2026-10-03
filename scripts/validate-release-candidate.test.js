@@ -113,7 +113,7 @@ test('rejects wrong ECOG-P02 Status', t => {
 test('rejects required strings placed outside an invalid ECOG-P02 section', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text
-    .replace('State: PUNCH_LIST', 'State: PUNCH_LIST')
+    .replace('State: PUNCH_LIST', 'State: PREVIEW_READY')
     + '\n## Decoy section\n\n'
     + 'State: PUNCH_LIST\n'
     + 'Risk: HIGH\n'
