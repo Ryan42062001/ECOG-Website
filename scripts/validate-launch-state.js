@@ -164,13 +164,13 @@ assert(!/index\.php\//i.test(sitemap), 'sitemap.xml: compatibility routes must r
 
 const robots = read('robots.txt');
 if (indexingState === 'NOT AUTHORIZED') {
-  assert(/User-agent:\s*\*/i.test(robots) && /Disallow:\s*\//i.test(robots), 'robots.txt: indexing-blocked sitewide crawl block missing');
-  assert(!/Allow:\s*\//i.test(robots), 'robots.txt: indexing-blocked state must not allow sitewide crawling');
+  assert(/^User-agent:\s*\*\s*$/im.test(robots) && /^Disallow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-blocked sitewide crawl block missing');
+  assert(!/^Allow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-blocked state must not allow sitewide crawling');
   assert(!/Sitemap:/i.test(robots), 'robots.txt: indexing-blocked state must not advertise sitemap');
 } else if (indexingState === 'AUTHORIZED') {
-  assert(/User-agent:\s*\*/i.test(robots), 'robots.txt: User-agent * missing');
-  assert(/Allow:\s*\//i.test(robots), 'robots.txt: indexing-authorized Allow: / missing');
-  assert(!/Disallow:\s*\//i.test(robots), 'robots.txt: indexing-authorized state must not block all crawling');
+  assert(/^User-agent:\s*\*\s*$/im.test(robots), 'robots.txt: User-agent * missing');
+  assert(/^Allow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-authorized Allow: / missing');
+  assert(!/^Disallow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-authorized state must not block all crawling');
   assert(new RegExp(`Sitemap:\\s*${escapeRegExp(productionOrigin)}/sitemap\\.xml`, 'i').test(robots), 'robots.txt: indexing-authorized sitemap directive missing or incorrect');
 }
 

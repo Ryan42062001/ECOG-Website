@@ -43,6 +43,7 @@ PR #15 remains historical evidence only. No stale PR #15 blob is used.
 - Root cause: the old launch-state validator incorrectly inferred production indexing from CNAME presence.
 - Manager scope expansion: PR #20 comment `5969998505`.
 - Authorized correction: custom-domain hosting and production indexing are validated as independent controls, within the exact seven-path cumulative boundary.
+- Expanded-scope head `e3e74e402b9c3892a7bcacebe1fe686363b0e237` produced FAST run `37129324800`: **FAILURE**, with 33/34 tests passing. The sole failure was an unanchored `Allow:` regex matching the substring inside `Disallow:`; the replacement anchors robots directives to full lines.
 
 ## Preserved facts
 
