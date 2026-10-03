@@ -5,13 +5,13 @@ const defaultRoot = path.resolve(__dirname, '..');
 const intendedAi = ['ARCHITECTURE.md', 'CURRENT_PHASE.md', 'DECISIONS.md', 'PROJECT.md', 'REPO_MAP.md'];
 const phaseHeading = '## ECOG-P02 — Production Hosting & Domain Cutover';
 const requiredPhaseFields = [
-  ['State', 'FREEZE_READY'],
+  ['State', 'REMEDIATING'],
   ['Risk', 'HIGH'],
-  ['Status', 'PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED'],
-  ['Production Launch', 'NOT AUTHORIZED'],
-  ['DNS Changes', 'NOT AUTHORIZED'],
-  ['Pages Custom Domain', 'NOT AUTHORIZED'],
-  ['Cloudflare Cutover', 'NOT AUTHORIZED'],
+  ['Status', 'CUTOVER REMEDIATION / PROTECTED CNAME PATH'],
+  ['Production Launch', 'AUTHORIZED'],
+  ['DNS Changes', 'AUTHORIZED'],
+  ['Pages Custom Domain', 'AUTHORIZED'],
+  ['Cloudflare Cutover', 'AUTHORIZED'],
   ['DNSSEC Changes', 'NOT AUTHORIZED'],
   ['Registrar Transfer', 'NOT AUTHORIZED'],
   ['Production Indexing', 'NOT AUTHORIZED'],
@@ -120,7 +120,21 @@ function validateReleaseCandidate(root = defaultRoot) {
   }
   const history = exists('.history/pre-speed-v2-1/README.md') ? read('.history/pre-speed-v2-1/README.md') : '';
   assert(/historical/i.test(history) && /not active workflow authority/i.test(history) && /docs\/WORKFLOW\.md/i.test(history), 'Archive must identify historical, non-authoritative status');
-  assert(!exists('CNAME'), 'CNAME must not exist on the migration candidate');
+  const cnamePath = fullPath('CNAME');
+  let cnameStat = null;
+  try {
+    cnameStat = fs.lstatSync(cnamePath);
+  } catch (error) {
+    if (error.code !== 'ENOENT') failures.push(`Unable to inspect CNAME: ${error.message}`);
+  }
+  assert(Boolean(cnameStat), 'CNAME must exist');
+  if (cnameStat) {
+    assert(cnameStat.isFile() && !cnameStat.isSymbolicLink(), 'CNAME must be a regular file and not a symlink');
+    if (cnameStat.isFile() && !cnameStat.isSymbolicLink()) {
+      const cname = read('CNAME');
+      assert(/^everettchurchofgod\.com(?:\r?\n)?$/.test(cname), 'CNAME must contain exactly everettchurchofgod.com');
+    }
+  }
 
   return failures;
 }

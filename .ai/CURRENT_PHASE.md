@@ -2,13 +2,13 @@
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
-State: FREEZE_READY
+State: REMEDIATING
 Risk: HIGH
-Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED
-Production Launch: NOT AUTHORIZED
-DNS Changes: NOT AUTHORIZED
-Pages Custom Domain: NOT AUTHORIZED
-Cloudflare Cutover: NOT AUTHORIZED
+Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH
+Production Launch: AUTHORIZED
+DNS Changes: AUTHORIZED
+Pages Custom Domain: AUTHORIZED
+Cloudflare Cutover: AUTHORIZED
 DNSSEC Changes: NOT AUTHORIZED
 Registrar Transfer: NOT AUTHORIZED
 Production Indexing: NOT AUTHORIZED
@@ -22,7 +22,7 @@ ECOG-P01 closure evidence:
 - Closure Sync PR #19 merged to canonical `main` at `fdcb14aede80215f45b898dd725e1ae633afae49`.
 - Canonical closure FAST run `36956218816`: SUCCESS.
 
-ECOG-P02 Phase Sync is complete. The exact synchronized pre-cutover candidate requires Manager-authorized FULL PHASE CI before immutable freeze; every production mutation remains separately unauthorized.
+Previous immutable audit target `c4dc1357c0d363d0a5f43a305a4ad99d808e20b4` passed the independent HIGH-risk audit. Product Owner production-cutover authorization is recorded in PR #20 comment `5969764264`. A GitHub Pages Custom Domain save for `everettchurchofgod.com` was attempted, but Protect Main safely blocked the direct `CNAME` commit. Manager remediation authorization is recorded in PR #20 comment `5969870029`; branch protection remains intact, and the production `CNAME` now travels through the normal protected PR path. This replacement candidate requires new FAST, exact-head FULL, immutable freeze, and targeted fresh HIGH-risk re-audit. The previous audited SHA is not silently retargeted.
 
 Verified pre-activation hosting evidence:
 - GitHub Pages is enabled from `main` / `/(root)`.
@@ -42,11 +42,10 @@ Owner-provided DNS / registrar evidence:
 - Ryan does not currently have eNom/registrar control-panel access. A future nameserver change therefore requires either authorized church access or exact execution by Kingdom/eNom after immediate Ryan/Manager confirmation.
 
 Current implementation boundary:
-- No nameserver change is authorized.
-- No Cloudflare authoritative-DNS cutover is authorized.
-- No GitHub Pages custom-domain mutation is authorized.
-- No production `CNAME` activation is authorized.
-- No production indexing change is authorized.
-- No registrar transfer is authorized.
-- No production launch/deployment is authorized.
+- Production launch, DNS changes, the Pages custom domain, and Cloudflare cutover are authorized, but no corresponding live mutation is claimed complete.
+- The root `CNAME` in this branch is an authorized protected-PR candidate; it is not active on `main` until an explicitly authorized merge.
+- No registrar nameserver delegation or Cloudflare record mutation occurred during this remediation.
+- DNSSEC/DS changes remain NOT AUTHORIZED.
+- Registrar transfer and EPP use remain NOT AUTHORIZED.
+- Production indexing remains NOT AUTHORIZED and staging safeguards remain required.
 - PR #15 remains historical evidence only.

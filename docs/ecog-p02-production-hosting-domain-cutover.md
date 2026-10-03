@@ -1,8 +1,8 @@
 # ECOG-P02 — Production Hosting & Domain Cutover
 
-- State: FREEZE_READY
+- State: REMEDIATING
 - Risk: HIGH
-- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED
+- Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH
 - Product Owner: Ryan
 - Manager / Architect / Planner: ChatGPT
 - Activation baseline: `fdcb14aede80215f45b898dd725e1ae633afae49`
@@ -10,17 +10,29 @@
 
 ## Release boundary
 
-This is a non-production preparation checkpoint. It does not authorize or perform nameserver, Cloudflare, DNSSEC/DS, GitHub Pages custom-domain, repository `CNAME`, registrar-transfer/EPP, indexing, merge, deployment, or launch mutations.
+This is a post-audit protected-path remediation checkpoint. The Product Owner authorized the production launch, DNS changes, Pages custom domain, and Cloudflare cutover, but those authorization fields do not claim that any live mutation has completed. This branch adds the exact production `CNAME` candidate without changing nameservers, Cloudflare records, DNSSEC/DS, registrar/EPP state, indexing, merge state, deployment, or live launch state.
 
-Production Launch: NOT AUTHORIZED  
-DNS Changes: NOT AUTHORIZED  
-Pages Custom Domain: NOT AUTHORIZED  
-Cloudflare Cutover: NOT AUTHORIZED  
+Production Launch: AUTHORIZED  
+DNS Changes: AUTHORIZED  
+Pages Custom Domain: AUTHORIZED  
+Cloudflare Cutover: AUTHORIZED  
 DNSSEC Changes: NOT AUTHORIZED  
 Registrar Transfer: NOT AUTHORIZED  
 Production Indexing: NOT AUTHORIZED
 
 PR #15 remains historical evidence only. No stale PR #15 blob is used.
+
+## Post-audit remediation evidence
+
+1. Previous immutable audit target: `c4dc1357c0d363d0a5f43a305a4ad99d808e20b4`.
+2. Previous independent HIGH-risk audit: **PASS**.
+3. Explicit Product Owner production-cutover authorization: PR #20 comment `5969764264`.
+4. Operational attempt: GitHub Pages Custom Domain save was attempted for `everettchurchofgod.com`.
+5. Safe failure: Protect Main blocked GitHub's direct `CNAME` commit.
+6. Manager decision: branch protection stays intact; remediation authorization is PR #20 comment `5969870029`.
+7. Replacement strategy: the exact production `CNAME` travels through the normal protected PR path.
+8. Required replacement evidence: new FAST, exact-head FULL, immutable freeze, and targeted fresh HIGH-risk re-audit.
+9. The previous audited SHA is preserved and is not silently retargeted.
 
 ## Preserved facts
 
@@ -71,20 +83,24 @@ Official GitHub guidance for branch-based Pages says saving a custom domain in r
 everettchurchofgod.com
 ```
 
-A `CNAME` file alone does not safely authorize or complete the settings change. Because Pages publishes from `main` / root, the file must ultimately exist at `main:/CNAME`; adding it to this unmerged branch would not affect the live Pages deployment, but it is intentionally deferred until the exact production mutation is authorized.
+A `CNAME` file alone does not complete the settings change. The exact production mutation is now authorized, but Protect Main blocked GitHub's direct commit. Because Pages publishes from `main` / root, this remediation carries `CNAME` through PR #20. While unmerged it does not change the live Pages source; after an explicitly authorized protected merge it will exist at `main:/CNAME`.
 
 ### Authorized future ordering
 
-1. **GO:** exact source candidate has passed FAST, FULL, freeze, and independent HIGH-risk audit; Product Owner explicitly authorizes the named mutations.
-2. Verify the GitHub account/domain-verification option if available.
-3. In GitHub Pages settings, save `everettchurchofgod.com` as the custom domain **before** pointing authoritative DNS at Pages. GitHub recommends this order to reduce takeover risk.
-4. For branch publishing, capture the GitHub-created root `CNAME` commit and reconcile it into the authorized source history, or use an approved exact repository commit containing only `everettchurchofgod.com`.
-5. Confirm the Pages setting shows the apex and its DNS check is expected/pending.
-6. Only after all nameserver GO checks pass, delegate to `jaime.ns.cloudflare.com` and `meiling.ns.cloudflare.com`.
-7. Wait for the Ryan-controlled zone to become Active and verify DNS responses.
-8. Wait for GitHub certificate provisioning. GitHub states HTTPS availability can take up to 24 hours; do not treat pending certificate state as success.
-9. Enable HTTPS enforcement only after the certificate is available, then verify HTTP redirects to HTTPS.
-10. Keep noindex/robots blocking unchanged.
+1. Replacement candidate passes FAST.
+2. Manager triggers exact-head FULL.
+3. Manager freezes the replacement SHA.
+4. A fresh targeted HIGH-risk re-audit passes.
+5. Ryan explicitly authorizes merge.
+6. Merge PR #20 through protected `main`.
+7. Capture the exact merge/canonical SHA.
+8. Run post-merge FAST.
+9. Verify Pages deployment and the `CNAME`/custom-domain state.
+10. If Pages still requires confirmation, perform only the already-authorized `everettchurchofgod.com` Custom Domain setting action.
+11. Immediately before registrar mutation, re-query public DS and require no DS; re-query authoritative NS and require the expected Kingdom pair.
+12. Perform only the authorized delegation replacement from `amos.ns.cloudflare.com` / `izabella.ns.cloudflare.com` to `jaime.ns.cloudflare.com` / `meiling.ns.cloudflare.com`.
+13. Observe the Ryan-controlled Cloudflare zone until Active.
+14. Verify HTTPS, apex/`www`, routes, assets, custom 404, and all indexing safeguards.
 
 Prepared DNS records match GitHub's documented apex A addresses:
 
@@ -98,16 +114,9 @@ The prepared records are DNS-only. No wildcard record is authorized.
 
 ## Immutable audit target and operational CNAME reconciliation
 
-The future immutable P02 audit target is the **pre-cutover runbook/control candidate**. A later explicitly authorized GitHub Pages custom-domain operation may create `main:/CNAME` containing exactly `everettchurchofgod.com`.
+The previous immutable P02 audit target is `c4dc1357c0d363d0a5f43a305a4ad99d808e20b4`. It remains preserved audit evidence and is not retargeted. The replacement protected-PR candidate containing the exact root `CNAME` must independently pass FAST, exact-head FULL, immutable freeze, and targeted fresh HIGH-risk re-audit.
 
-That operational commit does not silently retarget or replace the frozen audit SHA. During cutover:
-
-1. Capture the GitHub-created commit by exact SHA.
-2. Treat it as separately authorized cutover evidence.
-3. Run FAST against every canonical source commit produced by the Pages custom-domain action.
-4. Reconcile the resulting CNAME/custom-domain state into P02 post-cutover and closure evidence.
-5. Keep the operational commit limited to the Pages-created CNAME/custom-domain state; do not fold unrelated source work into it.
-6. Any unrelated product or source mutation requires a new candidate and the appropriate new freeze/audit evidence.
+After an authorized merge, capture the exact merge/canonical SHA and run post-merge FAST. If a subsequent GitHub Pages Custom Domain confirmation creates any canonical source commit, capture its exact SHA, treat it as separately authorized cutover evidence, run FAST on it, and reconcile it into P02 post-cutover/closure evidence. Do not combine unrelated source work with that operational state; unrelated changes require a new candidate and appropriate freeze/audit evidence.
 
 ## DNSSEC / DS prerequisite
 
@@ -283,10 +292,10 @@ The registrar transfer is deliberately separate from website activation.
 
 Do not start the transfer during P02 preparation. Hosting stability must not depend on registrar-transfer timing.
 
-## Remaining blockers before cutover authorization
+## Remaining gates before live cutover
 
-- Explicit Product Owner authorization for the exact production mutations.
-- Exact-head FULL PHASE CI, immutable freeze, and fresh HIGH-risk audit.
+- Replacement exact-head FULL PHASE CI, immutable freeze, and targeted fresh HIGH-risk re-audit.
+- Explicit merge authorization for the replacement candidate.
 - An identified authorized registrar operator: Ryan/church personnel with access, or Kingdom/eNom accepting the exact limited handoff.
 - Cutover-time reconfirmation that public DS remains absent and authoritative NS remains the expected Kingdom pair.
 - Complete Ryan-zone record inventory, including confirmation that no non-web records are missing.
@@ -316,4 +325,4 @@ Owner preview should confirm:
 6. that indexing remains deferred;
 7. which exact mutations may later be authorized.
 
-No production action should be taken during preview. Phase Sync is complete; exact-head FULL PHASE CI is required before immutable freeze.
+No live cutover action is performed by this remediation. Stop after replacement FAST; Manager-controlled exact-head FULL, freeze, and targeted fresh HIGH-risk re-audit are required next.

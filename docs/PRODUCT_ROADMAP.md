@@ -52,9 +52,9 @@ Kingdom Church Websites controlled the observed Cloudflare zone during ECOG-P01,
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
-- State: FREEZE_READY
+- State: REMEDIATING
 - Risk: HIGH
-- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED
+- Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH
 
 Objective:
 
@@ -93,4 +93,13 @@ Owner-preview punch-list evidence:
 3. Ryan currently lacks eNom control-panel access, so an identified authorized registrar operator remains required.
 4. Any GitHub-created operational `main:/CNAME` commit must be captured by exact SHA, validated by FAST, and reconciled as post-cutover/closure evidence without silently retargeting the pre-cutover audit SHA.
 
-Production launch, nameserver changes, Cloudflare authoritative-DNS changes, Pages custom-domain mutation, repository `CNAME` activation, registrar transfer, and production indexing remain NOT AUTHORIZED by phase activation.
+Post-audit cutover remediation:
+
+1. Previous immutable audit target `c4dc1357c0d363d0a5f43a305a4ad99d808e20b4` passed the independent HIGH-risk audit.
+2. Product Owner production-cutover authorization is recorded in PR #20 comment `5969764264`.
+3. The attempted GitHub Pages Custom Domain save for `everettchurchofgod.com` safely failed because Protect Main blocked GitHub's direct `CNAME` commit.
+4. Manager remediation authorization is recorded in PR #20 comment `5969870029`; Protect Main remains unchanged.
+5. The replacement strategy carries the exact root `CNAME` through PR #20's protected path.
+6. The replacement SHA requires new FAST, exact-head FULL, immutable freeze, and targeted fresh HIGH-risk re-audit; the previous audited SHA is not silently retargeted.
+7. Production launch, DNS changes, Pages custom domain, and Cloudflare cutover are authorized but not represented as completed.
+8. DNSSEC changes, registrar transfer, and production indexing remain NOT AUTHORIZED.
