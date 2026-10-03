@@ -4,6 +4,7 @@ const path = require('path');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { validateReleaseCandidate } = require('./validate-release-candidate');
+const { validateLaunchState } = require('./validate-launch-state');
 
 const repoRoot = path.resolve(__dirname, '..');
 const fixturePaths = [
@@ -19,6 +20,19 @@ const fixturePaths = [
   'scripts/validate-performance.js',
   'scripts/validate-site.js',
   'scripts/validate-launch-state.js',
+  '404.html',
+  'about.html',
+  'contact.html',
+  'events.html',
+  'give.html',
+  'index.html',
+  'messages.html',
+  'ministries.html',
+  'new-here.html',
+  'ministries',
+  'index.php',
+  'robots.txt',
+  'sitemap.xml',
 ];
 
 function copyFixturePath(root, relativePath) {
@@ -59,6 +73,20 @@ function expectRejected(root, pattern) {
   const failures = validateReleaseCandidate(root);
   assert.ok(failures.length > 0, 'candidate unexpectedly passed');
   assert.match(failures.join('\n'), pattern);
+}
+
+function mutateFile(root, relativePath, mutate) {
+  const file = path.join(root, relativePath);
+  const original = fs.readFileSync(file, 'utf8');
+  const updated = mutate(original);
+  assert.notEqual(updated, original, `test setup must change ${relativePath}`);
+  fs.writeFileSync(file, updated);
+}
+
+function expectLaunchRejected(root, pattern) {
+  const result = validateLaunchState(root);
+  assert.ok(result.failures.length > 0, 'launch state unexpectedly passed');
+  assert.match(result.failures.join('\n'), pattern);
 }
 
 test('canonical candidate passes', () => {
@@ -251,4 +279,56 @@ test('rejects the old pre-cutover lifecycle and authorization state', t => {
     .replace('Pages Custom Domain: AUTHORIZED', 'Pages Custom Domain: NOT AUTHORIZED')
     .replace('Cloudflare Cutover: AUTHORIZED', 'Cloudflare Cutover: NOT AUTHORIZED'));
   expectRejected(root, /State must be exactly/);
+});
+
+
+test('custom-domain hosting with indexing NOT AUTHORIZED passes launch-state validation', () => {
+  const result = validateLaunchState(repoRoot);
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.hostingState, 'CUSTOM DOMAIN');
+  assert.equal(result.indexingState, 'NOT AUTHORIZED');
+});
+
+test('rejects an active page missing noindex while indexing is NOT AUTHORIZED', t => {
+  const root = createFixture(t);
+  mutateFile(root, 'index.html', text => text.replace('<meta name="robots" content="noindex,nofollow">', '<meta name="robots" content="index,follow">'));
+  expectLaunchRejected(root, /indexing-blocked noindex,nofollow safeguard missing/);
+});
+
+test('rejects crawl-enabled robots while indexing is NOT AUTHORIZED', t => {
+  const root = createFixture(t);
+  mutateFile(root, 'robots.txt', () => 'User-agent: *\nAllow: /\n');
+  expectLaunchRejected(root, /indexing-blocked sitewide crawl block missing/);
+});
+
+test('rejects sitemap advertising while indexing is NOT AUTHORIZED', t => {
+  const root = createFixture(t);
+  mutateFile(root, 'robots.txt', text => text + '\nSitemap: https://everettchurchofgod.com/sitemap.xml\n');
+  expectLaunchRejected(root, /indexing-blocked state must not advertise sitemap/);
+});
+
+test('rejects Production Indexing AUTHORIZED while crawl blocks remain', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Production Indexing: NOT AUTHORIZED', 'Production Indexing: AUTHORIZED'));
+  expectLaunchRejected(root, /indexing-authorized page must not contain noindex/);
+});
+
+test('launch-state rejects a missing Production Indexing field', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Production Indexing: NOT AUTHORIZED\n', ''));
+  expectLaunchRejected(root, /Production Indexing must appear exactly once/);
+});
+
+test('launch-state rejects a duplicate Production Indexing field', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Production Indexing: NOT AUTHORIZED', 'Production Indexing: NOT AUTHORIZED\nProduction Indexing: NOT AUTHORIZED'));
+  expectLaunchRejected(root, /Production Indexing must appear exactly once/);
+});
+
+test('decoy-section indexing authorization cannot satisfy an invalid P02 field', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text
+    .replace('Production Indexing: NOT AUTHORIZED', 'Production Indexing: UNKNOWN')
+    + '\n## Decoy section\n\nProduction Indexing: AUTHORIZED\n');
+  expectLaunchRejected(root, /Production Indexing must be exactly AUTHORIZED or NOT AUTHORIZED/);
 });

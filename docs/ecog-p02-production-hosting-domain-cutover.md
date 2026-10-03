@@ -34,6 +34,16 @@ PR #15 remains historical evidence only. No stale PR #15 blob is used.
 8. Required replacement evidence: new FAST, exact-head FULL, immutable freeze, and targeted fresh HIGH-risk re-audit.
 9. The previous audited SHA is preserved and is not silently retargeted.
 
+### Failed replacement evidence and scope expansion
+
+- Failed remediation HEAD: `c231fb0c0449ce0d10fe3bd6f9a520bc20b9f46c`.
+- FAST run `37128476415`: **FAILURE** in `scripts/validate-launch-state.js`.
+- All 26 release-shape adversarial tests passed before launch-state validation failed.
+- Release-shape and content/site validation passed; this was not a CNAME-shape failure.
+- Root cause: the old launch-state validator incorrectly inferred production indexing from CNAME presence.
+- Manager scope expansion: PR #20 comment `5969998505`.
+- Authorized correction: custom-domain hosting and production indexing are validated as independent controls, within the exact seven-path cumulative boundary.
+
 ## Preserved facts
 
 - Sunday worship is **10:00 AM**. The old Kingdom 9:30 AM listing is stale historical evidence.
@@ -73,7 +83,7 @@ Repository evidence and FAST must retain:
 - no giving link;
 - Sunday worship at 10:00 AM.
 
-P02 changes hosting and domain routing only. Search-engine indexing requires a later, separately authorized release gate that changes active-page robots metadata and `robots.txt`, then revalidates sitemap/canonical behavior.
+P02 changes hosting and domain routing only. CNAME presence identifies custom-domain hosting but never authorizes indexing. While `Production Indexing: NOT AUTHORIZED`, active pages must remain `noindex,nofollow`, `robots.txt` must keep `Disallow: /`, and robots must not advertise the sitemap. Search-engine indexing requires a later, separately authorized control change and release gate that changes active-page robots metadata and `robots.txt`, then revalidates sitemap/canonical behavior.
 
 ## Custom-domain and repository CNAME procedure
 
