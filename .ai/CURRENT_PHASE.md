@@ -2,9 +2,9 @@
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
-State: PUNCH_LIST
+State: FREEZE_READY
 Risk: HIGH
-Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT
+Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED
 Production Launch: NOT AUTHORIZED
 DNS Changes: NOT AUTHORIZED
 Pages Custom Domain: NOT AUTHORIZED
@@ -22,7 +22,7 @@ ECOG-P01 closure evidence:
 - Closure Sync PR #19 merged to canonical `main` at `fdcb14aede80215f45b898dd725e1ae633afae49`.
 - Canonical closure FAST run `36956218816`: SUCCESS.
 
-ECOG-P02 owner preview is complete. The bounded punch-list control refinement is complete and ready for Manager-led Phase Sync; the runbook remains preparation only and every production mutation remains separately unauthorized.
+ECOG-P02 Phase Sync is complete. The exact synchronized pre-cutover candidate requires Manager-authorized FULL PHASE CI before immutable freeze; every production mutation remains separately unauthorized.
 
 Verified pre-activation hosting evidence:
 - GitHub Pages is enabled from `main` / `/(root)`.

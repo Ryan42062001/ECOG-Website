@@ -5,9 +5,9 @@ const defaultRoot = path.resolve(__dirname, '..');
 const intendedAi = ['ARCHITECTURE.md', 'CURRENT_PHASE.md', 'DECISIONS.md', 'PROJECT.md', 'REPO_MAP.md'];
 const phaseHeading = '## ECOG-P02 — Production Hosting & Domain Cutover';
 const requiredPhaseFields = [
-  ['State', 'PUNCH_LIST'],
+  ['State', 'FREEZE_READY'],
   ['Risk', 'HIGH'],
-  ['Status', 'PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT'],
+  ['Status', 'PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED'],
   ['Production Launch', 'NOT AUTHORIZED'],
   ['DNS Changes', 'NOT AUTHORIZED'],
   ['Pages Custom Domain', 'NOT AUTHORIZED'],

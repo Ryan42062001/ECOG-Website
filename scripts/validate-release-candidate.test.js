@@ -94,7 +94,7 @@ test('rejects a symlink replacing an authorized .ai file when supported', t => {
 
 test('rejects wrong ECOG-P02 State', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('State: PUNCH_LIST', 'State: PREVIEW_READY'));
+  mutatePhase(root, text => text.replace('State: FREEZE_READY', 'State: PREVIEW_READY'));
   expectRejected(root, /State must be exactly/);
 });
 
@@ -106,18 +106,18 @@ test('rejects wrong ECOG-P02 Risk', t => {
 
 test('rejects wrong ECOG-P02 Status', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT', 'Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED'));
+  mutatePhase(root, text => text.replace('Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED', 'Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED'));
   expectRejected(root, /Status must be exactly/);
 });
 
 test('rejects required strings placed outside an invalid ECOG-P02 section', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text
-    .replace('State: PUNCH_LIST', 'State: PREVIEW_READY')
+    .replace('State: FREEZE_READY', 'State: PREVIEW_READY')
     + '\n## Decoy section\n\n'
-    + 'State: PUNCH_LIST\n'
+    + 'State: FREEZE_READY\n'
     + 'Risk: HIGH\n'
-    + 'Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT\n'
+    + 'Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED\n'
     + 'Production Launch: NOT AUTHORIZED\n'
     + 'DNS Changes: NOT AUTHORIZED\n'
     + 'Pages Custom Domain: NOT AUTHORIZED\n');
@@ -174,20 +174,20 @@ test('rejects a duplicate structured field', t => {
 
 test('rejects a missing structured field', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT\n', ''));
+  mutatePhase(root, text => text.replace('Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED\n', ''));
   expectRejected(root, /Status must appear exactly once/);
 });
 
 test('rejects wrong roadmap lifecycle inside the ECOG-P02 section', t => {
   const root = createFixture(t);
-  mutateRoadmap(root, text => text.replace('- State: PUNCH_LIST', '- State: PREVIEW_READY'));
+  mutateRoadmap(root, text => text.replace('- State: FREEZE_READY', '- State: PREVIEW_READY'));
   expectRejected(root, /Roadmap ECOG-P02 State must be exactly/);
 });
 
 test('rejects valid roadmap strings placed only in a decoy section', t => {
   const root = createFixture(t);
   mutateRoadmap(root, text => text
-    .replace('- Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT', '- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED')
-    + '\n## Decoy\n\n- State: PUNCH_LIST\n- Risk: HIGH\n- Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT\n');
+    .replace('- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED', '- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED')
+    + '\n## Decoy\n\n- State: FREEZE_READY\n- Risk: HIGH\n- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED\n');
   expectRejected(root, /Roadmap ECOG-P02 Status must be exactly/);
 });

@@ -1,8 +1,8 @@
 # ECOG-P02 — Production Hosting & Domain Cutover
 
-- State: PUNCH_LIST
+- State: FREEZE_READY
 - Risk: HIGH
-- Status: PUNCH LIST ACTIVE / CUTOVER CONTROL REFINEMENT
+- Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED
 - Product Owner: Ryan
 - Manager / Architect / Planner: ChatGPT
 - Activation baseline: `fdcb14aede80215f45b898dd725e1ae633afae49`
@@ -316,4 +316,4 @@ Owner preview should confirm:
 6. that indexing remains deferred;
 7. which exact mutations may later be authorized.
 
-No production action should be taken during preview. The bounded punch-list refinement is complete and ready for Manager-led Phase Sync.
+No production action should be taken during preview. Phase Sync is complete; exact-head FULL PHASE CI is required before immutable freeze.
