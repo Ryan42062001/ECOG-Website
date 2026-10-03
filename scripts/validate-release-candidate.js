@@ -3,14 +3,18 @@ const path = require('path');
 
 const defaultRoot = path.resolve(__dirname, '..');
 const intendedAi = ['ARCHITECTURE.md', 'CURRENT_PHASE.md', 'DECISIONS.md', 'PROJECT.md', 'REPO_MAP.md'];
-const phaseHeading = '## ECOG-P01 — Production Cutover & Launch Verification';
+const phaseHeading = '## ECOG-P02 — Production Hosting & Domain Cutover';
 const requiredPhaseFields = [
-  ['State', 'CLOSED'],
+  ['State', 'REMEDIATING'],
   ['Risk', 'HIGH'],
-  ['Status', 'CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED'],
-  ['Production Launch', 'NOT AUTHORIZED'],
-  ['DNS Changes', 'NOT AUTHORIZED'],
-  ['Pages Custom Domain', 'NOT AUTHORIZED'],
+  ['Status', 'CUTOVER REMEDIATION / PROTECTED CNAME PATH'],
+  ['Production Launch', 'AUTHORIZED'],
+  ['DNS Changes', 'AUTHORIZED'],
+  ['Pages Custom Domain', 'AUTHORIZED'],
+  ['Cloudflare Cutover', 'AUTHORIZED'],
+  ['DNSSEC Changes', 'NOT AUTHORIZED'],
+  ['Registrar Transfer', 'NOT AUTHORIZED'],
+  ['Production Indexing', 'NOT AUTHORIZED'],
 ];
 
 function validateReleaseCandidate(root = defaultRoot) {
@@ -69,7 +73,7 @@ function validateReleaseCandidate(root = defaultRoot) {
     .map((line, index) => line.trim() === phaseHeading ? index : -1)
     .filter(index => index >= 0);
 
-  assert(headingIndexes.length === 1, 'CURRENT_PHASE must contain exactly one ECOG-P01 section heading');
+  assert(headingIndexes.length === 1, 'CURRENT_PHASE must contain exactly one ECOG-P02 section heading');
   if (headingIndexes.length === 1) {
     const start = headingIndexes[0] + 1;
     let end = phaseLines.length;
@@ -83,9 +87,9 @@ function validateReleaseCandidate(root = defaultRoot) {
     const sectionLines = phaseLines.slice(start, end);
     for (const [key, value] of requiredPhaseFields) {
       const matches = sectionLines.filter(line => line.startsWith(key + ':'));
-      assert(matches.length === 1, `ECOG-P01 ${key} must appear exactly once inside its section`);
+      assert(matches.length === 1, `ECOG-P02 ${key} must appear exactly once inside its section`);
       if (matches.length === 1) {
-        assert(matches[0] === `${key}: ${value}`, `ECOG-P01 ${key} must be exactly "${key}: ${value}"`);
+        assert(matches[0] === `${key}: ${value}`, `ECOG-P02 ${key} must be exactly "${key}: ${value}"`);
       }
     }
   }
@@ -94,7 +98,7 @@ function validateReleaseCandidate(root = defaultRoot) {
   const roadmapHeadingIndexes = roadmapLines
     .map((line, index) => line.trim() === phaseHeading ? index : -1)
     .filter(index => index >= 0);
-  assert(roadmapHeadingIndexes.length === 1, 'Roadmap must contain exactly one ECOG-P01 section heading');
+  assert(roadmapHeadingIndexes.length === 1, 'Roadmap must contain exactly one ECOG-P02 section heading');
   if (roadmapHeadingIndexes.length === 1) {
     const start = roadmapHeadingIndexes[0] + 1;
     let end = roadmapLines.length;
@@ -108,15 +112,29 @@ function validateReleaseCandidate(root = defaultRoot) {
     for (const [key, value] of requiredPhaseFields.slice(0, 3)) {
       const expected = `- ${key}: ${value}`;
       const matches = sectionLines.filter(line => line.startsWith(`- ${key}:`));
-      assert(matches.length === 1, `Roadmap ECOG-P01 ${key} must appear exactly once inside its section`);
+      assert(matches.length === 1, `Roadmap ECOG-P02 ${key} must appear exactly once inside its section`);
       if (matches.length === 1) {
-        assert(matches[0] === expected, `Roadmap ECOG-P01 ${key} must be exactly "${expected}"`);
+        assert(matches[0] === expected, `Roadmap ECOG-P02 ${key} must be exactly "${expected}"`);
       }
     }
   }
   const history = exists('.history/pre-speed-v2-1/README.md') ? read('.history/pre-speed-v2-1/README.md') : '';
   assert(/historical/i.test(history) && /not active workflow authority/i.test(history) && /docs\/WORKFLOW\.md/i.test(history), 'Archive must identify historical, non-authoritative status');
-  assert(!exists('CNAME'), 'CNAME must not exist on the migration candidate');
+  const cnamePath = fullPath('CNAME');
+  let cnameStat = null;
+  try {
+    cnameStat = fs.lstatSync(cnamePath);
+  } catch (error) {
+    if (error.code !== 'ENOENT') failures.push(`Unable to inspect CNAME: ${error.message}`);
+  }
+  assert(Boolean(cnameStat), 'CNAME must exist');
+  if (cnameStat) {
+    assert(cnameStat.isFile() && !cnameStat.isSymbolicLink(), 'CNAME must be a regular file and not a symlink');
+    if (cnameStat.isFile() && !cnameStat.isSymbolicLink()) {
+      const cname = read('CNAME');
+      assert(/^everettchurchofgod\.com(?:\r?\n)?$/.test(cname), 'CNAME must contain exactly everettchurchofgod.com');
+    }
+  }
 
   return failures;
 }

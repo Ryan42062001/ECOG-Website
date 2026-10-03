@@ -4,12 +4,14 @@ const path = require('path');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { validateReleaseCandidate } = require('./validate-release-candidate');
+const { validateLaunchState } = require('./validate-launch-state');
 
 const repoRoot = path.resolve(__dirname, '..');
 const fixturePaths = [
   '.ai',
   '.github/workflows',
   '.history/pre-speed-v2-1',
+  'CNAME',
   'AGENTS.md',
   'docs/WORKFLOW.md',
   'docs/workflow/PHASE_TEMPLATE.md',
@@ -18,6 +20,19 @@ const fixturePaths = [
   'scripts/validate-performance.js',
   'scripts/validate-site.js',
   'scripts/validate-launch-state.js',
+  '404.html',
+  'about.html',
+  'contact.html',
+  'events.html',
+  'give.html',
+  'index.html',
+  'messages.html',
+  'ministries.html',
+  'new-here.html',
+  'ministries',
+  'index.php',
+  'robots.txt',
+  'sitemap.xml',
 ];
 
 function copyFixturePath(root, relativePath) {
@@ -60,8 +75,69 @@ function expectRejected(root, pattern) {
   assert.match(failures.join('\n'), pattern);
 }
 
+function mutateFile(root, relativePath, mutate) {
+  const file = path.join(root, relativePath);
+  const original = fs.readFileSync(file, 'utf8');
+  const updated = mutate(original);
+  assert.notEqual(updated, original, `test setup must change ${relativePath}`);
+  fs.writeFileSync(file, updated);
+}
+
+function expectLaunchRejected(root, pattern) {
+  const result = validateLaunchState(root);
+  assert.ok(result.failures.length > 0, 'launch state unexpectedly passed');
+  assert.match(result.failures.join('\n'), pattern);
+}
+
 test('canonical candidate passes', () => {
   assert.deepEqual(validateReleaseCandidate(repoRoot), []);
+});
+
+test('rejects a missing CNAME', t => {
+  const root = createFixture(t);
+  fs.rmSync(path.join(root, 'CNAME'));
+  expectRejected(root, /CNAME must exist/);
+});
+
+test('rejects a wrong CNAME domain', t => {
+  const root = createFixture(t);
+  fs.writeFileSync(path.join(root, 'CNAME'), 'example.com\n');
+  expectRejected(root, /CNAME must contain exactly/);
+});
+
+test('rejects www instead of the apex CNAME', t => {
+  const root = createFixture(t);
+  fs.writeFileSync(path.join(root, 'CNAME'), 'www.everettchurchofgod.com\n');
+  expectRejected(root, /CNAME must contain exactly/);
+});
+
+test('rejects multiple-domain CNAME content', t => {
+  const root = createFixture(t);
+  fs.writeFileSync(path.join(root, 'CNAME'), 'everettchurchofgod.com\nwww.everettchurchofgod.com\n');
+  expectRejected(root, /CNAME must contain exactly/);
+});
+
+test('rejects a CNAME directory', t => {
+  const root = createFixture(t);
+  fs.rmSync(path.join(root, 'CNAME'));
+  fs.mkdirSync(path.join(root, 'CNAME'));
+  expectRejected(root, /CNAME must be a regular file and not a symlink/);
+});
+
+test('rejects a CNAME symlink when supported', t => {
+  const root = createFixture(t);
+  const target = path.join(root, 'CNAME');
+  fs.rmSync(target);
+  try {
+    fs.symlinkSync('AGENTS.md', target);
+  } catch (error) {
+    if (['EPERM', 'EACCES', 'ENOTSUP'].includes(error.code)) {
+      t.skip('symlink creation is not supported in this environment');
+      return;
+    }
+    throw error;
+  }
+  expectRejected(root, /CNAME must be a regular file and not a symlink/);
 });
 
 test('rejects an extra .ai file', t => {
@@ -92,56 +168,80 @@ test('rejects a symlink replacing an authorized .ai file when supported', t => {
   expectRejected(root, /PROJECT\.md must be a regular file/);
 });
 
-test('rejects wrong ECOG-P01 State', t => {
+test('rejects wrong ECOG-P02 State', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('State: CLOSED', 'State: FREEZE_READY'));
+  mutatePhase(root, text => text.replace('State: REMEDIATING', 'State: PREVIEW_READY'));
   expectRejected(root, /State must be exactly/);
 });
 
-test('rejects wrong ECOG-P01 Risk', t => {
+test('rejects wrong ECOG-P02 Risk', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text.replace('Risk: HIGH', 'Risk: MEDIUM'));
   expectRejected(root, /Risk must be exactly/);
 });
 
-test('rejects wrong ECOG-P01 Status', t => {
+test('rejects wrong ECOG-P02 Status', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED', 'Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED'));
+  mutatePhase(root, text => text.replace('Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH', 'Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED'));
   expectRejected(root, /Status must be exactly/);
 });
 
-test('rejects required strings placed outside an invalid ECOG-P01 section', t => {
+test('rejects required strings placed outside an invalid ECOG-P02 section', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text
-    .replace('State: CLOSED', 'State: PUNCH_LIST')
+    .replace('State: REMEDIATING', 'State: PREVIEW_READY')
     + '\n## Decoy section\n\n'
-    + 'State: CLOSED\n'
+    + 'State: REMEDIATING\n'
     + 'Risk: HIGH\n'
-    + 'Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED\n'
+    + 'Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH\n'
     + 'Production Launch: NOT AUTHORIZED\n'
     + 'DNS Changes: NOT AUTHORIZED\n'
     + 'Pages Custom Domain: NOT AUTHORIZED\n');
   expectRejected(root, /State must be exactly/);
 });
 
-test('rejects Production Launch authorization', t => {
+test('rejects missing Production Launch authorization', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Production Launch: NOT AUTHORIZED', 'Production Launch: AUTHORIZED'));
+  mutatePhase(root, text => text.replace('Production Launch: AUTHORIZED', 'Production Launch: NOT AUTHORIZED'));
   expectRejected(root, /Production Launch must be exactly/);
 });
 
-test('rejects DNS Changes authorization', t => {
+test('rejects missing DNS Changes authorization', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('DNS Changes: NOT AUTHORIZED', 'DNS Changes: AUTHORIZED'));
+  mutatePhase(root, text => text.replace('DNS Changes: AUTHORIZED', 'DNS Changes: NOT AUTHORIZED'));
   expectRejected(root, /DNS Changes must be exactly/);
 });
 
-test('rejects Pages Custom Domain authorization', t => {
+test('rejects missing Pages Custom Domain authorization', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Pages Custom Domain: NOT AUTHORIZED', 'Pages Custom Domain: AUTHORIZED'));
+  mutatePhase(root, text => text.replace('Pages Custom Domain: AUTHORIZED', 'Pages Custom Domain: NOT AUTHORIZED'));
   expectRejected(root, /Pages Custom Domain must be exactly/);
 });
 
+
+test('rejects missing Cloudflare Cutover authorization', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Cloudflare Cutover: AUTHORIZED', 'Cloudflare Cutover: NOT AUTHORIZED'));
+  expectRejected(root, /Cloudflare Cutover must be exactly/);
+});
+
+test('rejects DNSSEC Changes authorization', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('DNSSEC Changes: NOT AUTHORIZED', 'DNSSEC Changes: AUTHORIZED'));
+  expectRejected(root, /DNSSEC Changes must be exactly/);
+});
+
+test('rejects Registrar Transfer authorization', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Registrar Transfer: NOT AUTHORIZED', 'Registrar Transfer: AUTHORIZED'));
+  expectRejected(root, /Registrar Transfer must be exactly/);
+});
+
+test('rejects Production Indexing authorization', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Production Indexing: NOT AUTHORIZED', 'Production Indexing: AUTHORIZED'));
+  expectRejected(root, /Production Indexing must be exactly/);
+});
 test('rejects a duplicate structured field', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text.replace('Risk: HIGH', 'Risk: HIGH\nRisk: HIGH'));
@@ -150,20 +250,85 @@ test('rejects a duplicate structured field', t => {
 
 test('rejects a missing structured field', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED\n', ''));
+  mutatePhase(root, text => text.replace('Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH\n', ''));
   expectRejected(root, /Status must appear exactly once/);
 });
 
-test('rejects wrong roadmap lifecycle inside the ECOG-P01 section', t => {
+test('rejects wrong roadmap lifecycle inside the ECOG-P02 section', t => {
   const root = createFixture(t);
-  mutateRoadmap(root, text => text.replace('- State: CLOSED', '- State: FREEZE_READY'));
-  expectRejected(root, /Roadmap ECOG-P01 State must be exactly/);
+  mutateRoadmap(root, text => text.replace('- State: REMEDIATING', '- State: PREVIEW_READY'));
+  expectRejected(root, /Roadmap ECOG-P02 State must be exactly/);
 });
 
 test('rejects valid roadmap strings placed only in a decoy section', t => {
   const root = createFixture(t);
   mutateRoadmap(root, text => text
-    .replace('- Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED', '- Status: PUNCH LIST COMPLETE / PHASE SYNC READY')
-    + '\n## Decoy\n\n- State: CLOSED\n- Risk: HIGH\n- Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED\n');
-  expectRejected(root, /Roadmap ECOG-P01 Status must be exactly/);
+    .replace('- Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH', '- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED')
+    + '\n## Decoy\n\n- State: REMEDIATING\n- Risk: HIGH\n- Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH\n');
+  expectRejected(root, /Roadmap ECOG-P02 Status must be exactly/);
+});
+
+
+test('rejects the old pre-cutover lifecycle and authorization state', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text
+    .replace('State: REMEDIATING', 'State: FREEZE_READY')
+    .replace('Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH', 'Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED')
+    .replace('Production Launch: AUTHORIZED', 'Production Launch: NOT AUTHORIZED')
+    .replace('DNS Changes: AUTHORIZED', 'DNS Changes: NOT AUTHORIZED')
+    .replace('Pages Custom Domain: AUTHORIZED', 'Pages Custom Domain: NOT AUTHORIZED')
+    .replace('Cloudflare Cutover: AUTHORIZED', 'Cloudflare Cutover: NOT AUTHORIZED'));
+  expectRejected(root, /State must be exactly/);
+});
+
+
+test('custom-domain hosting with indexing NOT AUTHORIZED passes launch-state validation', () => {
+  const result = validateLaunchState(repoRoot);
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.hostingState, 'CUSTOM DOMAIN');
+  assert.equal(result.indexingState, 'NOT AUTHORIZED');
+});
+
+test('rejects an active page missing noindex while indexing is NOT AUTHORIZED', t => {
+  const root = createFixture(t);
+  mutateFile(root, 'index.html', text => text.replace('<meta name="robots" content="noindex,nofollow">', '<meta name="robots" content="index,follow">'));
+  expectLaunchRejected(root, /indexing-blocked noindex,nofollow safeguard missing/);
+});
+
+test('rejects crawl-enabled robots while indexing is NOT AUTHORIZED', t => {
+  const root = createFixture(t);
+  mutateFile(root, 'robots.txt', () => 'User-agent: *\nAllow: /\n');
+  expectLaunchRejected(root, /indexing-blocked sitewide crawl block missing/);
+});
+
+test('rejects sitemap advertising while indexing is NOT AUTHORIZED', t => {
+  const root = createFixture(t);
+  mutateFile(root, 'robots.txt', text => text + '\nSitemap: https://everettchurchofgod.com/sitemap.xml\n');
+  expectLaunchRejected(root, /indexing-blocked state must not advertise sitemap/);
+});
+
+test('rejects Production Indexing AUTHORIZED while crawl blocks remain', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Production Indexing: NOT AUTHORIZED', 'Production Indexing: AUTHORIZED'));
+  expectLaunchRejected(root, /indexing-authorized page must not contain noindex/);
+});
+
+test('launch-state rejects a missing Production Indexing field', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Production Indexing: NOT AUTHORIZED\n', ''));
+  expectLaunchRejected(root, /Production Indexing must appear exactly once/);
+});
+
+test('launch-state rejects a duplicate Production Indexing field', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace('Production Indexing: NOT AUTHORIZED', 'Production Indexing: NOT AUTHORIZED\nProduction Indexing: NOT AUTHORIZED'));
+  expectLaunchRejected(root, /Production Indexing must appear exactly once/);
+});
+
+test('decoy-section indexing authorization cannot satisfy an invalid P02 field', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text
+    .replace('Production Indexing: NOT AUTHORIZED', 'Production Indexing: UNKNOWN')
+    + '\n## Decoy section\n\nProduction Indexing: AUTHORIZED\n');
+  expectLaunchRejected(root, /Production Indexing must be exactly AUTHORIZED or NOT AUTHORIZED/);
 });

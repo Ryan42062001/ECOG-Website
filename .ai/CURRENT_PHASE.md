@@ -1,30 +1,52 @@
 # Current phase
 
-## ECOG-P01 — Production Cutover & Launch Verification
+## ECOG-P02 — Production Hosting & Domain Cutover
 
-State: CLOSED
+State: REMEDIATING
 Risk: HIGH
-Status: CLOSED / PRODUCTION LAUNCH NOT AUTHORIZED
-Production Launch: NOT AUTHORIZED
-DNS Changes: NOT AUTHORIZED
-Pages Custom Domain: NOT AUTHORIZED
+Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH
+Production Launch: AUTHORIZED
+DNS Changes: AUTHORIZED
+Pages Custom Domain: AUTHORIZED
+Cloudflare Cutover: AUTHORIZED
+DNSSEC Changes: NOT AUTHORIZED
+Registrar Transfer: NOT AUTHORIZED
+Production Indexing: NOT AUTHORIZED
 
 Speed Workflow V2.1 migration status: CLOSED.
-
-Migration closure evidence:
-- PR #16 merged to canonical `main` at `bea9bc78776ac2c852d37526b2ef9804744cd3db`.
-- Post-merge FAST run `36809918530`: SUCCESS.
+ECOG-P01 source-readiness status: CLOSED.
 
 ECOG-P01 closure evidence:
 - Frozen/audited source candidate: `c913d2e5ad9cb9e3add2f6bbcd9a73c432727e7d`.
-- Independent HIGH-risk audit: PASS WITH NON-BLOCKING FINDINGS.
-- Product Owner explicitly authorized merge.
 - PR #18 merged to canonical `main` at `9b369af46cee0f4d3fcaf2772b007782287a8e89`.
-- Post-merge FAST run `36955932363`: SUCCESS.
-- The audit's stale lifecycle-header finding is corrected by this Closure Sync.
+- Closure Sync PR #19 merged to canonical `main` at `fdcb14aede80215f45b898dd725e1ae633afae49`.
+- Canonical closure FAST run `36956218816`: SUCCESS.
 
-ECOG-P01 is closed as a source-readiness phase. Production launch is not complete and remains a separate explicit Product Owner decision.
+Previous immutable audit target `c4dc1357c0d363d0a5f43a305a4ad99d808e20b4` passed the independent HIGH-risk audit. Product Owner production-cutover authorization is recorded in PR #20 comment `5969764264`. A GitHub Pages Custom Domain save for `everettchurchofgod.com` was attempted, but Protect Main safely blocked the direct `CNAME` commit. Manager remediation authorization is recorded in PR #20 comment `5969870029`; branch protection remains intact, and the production `CNAME` now travels through the normal protected PR path. This replacement candidate requires new FAST, exact-head FULL, immutable freeze, and targeted fresh HIGH-risk re-audit. The previous audited SHA is not silently retargeted. Failed remediation head `c231fb0c0449ce0d10fe3bd6f9a520bc20b9f46c` produced FAST run `37128476415`: FAILURE after all 26 release-shape adversarial tests, release-shape validation, and content/site validation passed. The failure occurred in `scripts/validate-launch-state.js` because it incorrectly coupled CNAME presence to indexing enablement. Manager scope expansion is recorded in PR #20 comment `5969998505` and authorizes the validator-only seventh cumulative path. First expanded-scope head `e3e74e402b9c3892a7bcacebe1fe686363b0e237` produced FAST run `37129324800`: FAILURE with 33/34 tests passing because an unanchored `Allow:` regex matched the substring inside `Disallow:`. The correction anchors robots directives to complete lines and does not change product state or authorization.
 
-Remaining production launch blockers include Ryan-controlled registrar/DNS access, complete Cloudflare/DNS/routing/TLS handoff, preservation of mail and other non-web records, and a verified Ryan-controlled hosting target.
+Verified pre-activation hosting evidence:
+- GitHub Pages is enabled from `main` / `/(root)`.
+- Staging URL: `https://ryan42062001.github.io/ECOG-Website/`.
+- Pages deployment run `36957798523`: SUCCESS on canonical `main` `fdcb14aede80215f45b898dd725e1ae633afae49`.
+- Owner preview verified desktop, mobile/responsive behavior, navigation, and custom 404 behavior.
 
-PR #15 remains preserved historical production-cutover evidence only. Production launch, DNS changes, GitHub Pages enablement/settings/custom-domain mutation, CNAME activation, production indexing, and deployment remain separately unauthorized.
+Owner-provided DNS / registrar evidence:
+- A Ryan-controlled Cloudflare account contains a pending zone for `everettchurchofgod.com`.
+- New Cloudflare assigned nameservers: `jaime.ns.cloudflare.com` and `meiling.ns.cloudflare.com`.
+- Existing/Kingdom nameservers observed: `amos.ns.cloudflare.com` and `izabella.ns.cloudflare.com`.
+- The pending Ryan-controlled zone is prepared with four GitHub Pages apex A records and a DNS-only `www` CNAME to `Ryan42062001.github.io`.
+- The domain is not used for email.
+- Current registrar evidence identifies eNom; an EPP/auth code was provided, but registrar transfer has not been started.
+- Kingdom reports its existing host/Cloudflare service is expected to be removed October 2, 2026.
+- Owner-preview public lookup reported no DS record for `everettchurchofgod.com`; Kingdom-side authoritative DNS remained visible. This evidence is time-sensitive and must be rechecked immediately before any nameserver mutation.
+- Ryan does not currently have eNom/registrar control-panel access. A future nameserver change therefore requires either authorized church access or exact execution by Kingdom/eNom after immediate Ryan/Manager confirmation.
+
+Current implementation boundary:
+- Production launch, DNS changes, the Pages custom domain, and Cloudflare cutover are authorized, but no corresponding live mutation is claimed complete.
+- The root `CNAME` in this branch is an authorized protected-PR candidate; it is not active on `main` until an explicitly authorized merge.
+- No registrar nameserver delegation or Cloudflare record mutation occurred during this remediation.
+- DNSSEC/DS changes remain NOT AUTHORIZED.
+- Registrar transfer and EPP use remain NOT AUTHORIZED.
+- Custom-domain hosting and production indexing are independent controls: CNAME presence does not authorize indexing.
+- Production indexing remains NOT AUTHORIZED; active-page `noindex,nofollow` and the sitewide `robots.txt` block remain required through domain cutover.
+- PR #15 remains historical evidence only.

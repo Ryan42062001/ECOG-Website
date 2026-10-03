@@ -1,13 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const root = path.resolve(__dirname, '..');
+const defaultRoot = path.resolve(__dirname, '..');
 const productionOrigin = 'https://everettchurchofgod.com';
 const productionHost = 'everettchurchofgod.com';
-const failures = [];
-const assert = (condition, message) => { if (!condition) failures.push(message); };
-const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-const exists = file => fs.existsSync(path.join(root, file));
+const phaseHeading = '## ECOG-P02 — Production Hosting & Domain Cutover';
 const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const getDescription = html => {
   const doubleQuoted = html.match(/<meta\s+name=["']description["']\s+content="([^"]+)"/i);
@@ -46,8 +43,64 @@ const activeCompatibilityPages = [
 ];
 const retiredCompatibilityPage = 'index.php/senior-adults-ministry/index.html';
 
-const cnameExists = exists('CNAME');
-const mode = cnameExists ? 'production' : 'staging';
+function validateLaunchState(root = defaultRoot) {
+  const failures = [];
+  const assert = (condition, message) => { if (!condition) failures.push(message); };
+  const fullPath = file => path.join(root, file);
+  const read = file => fs.readFileSync(fullPath(file), 'utf8');
+
+  let cnameStat = null;
+  try {
+    cnameStat = fs.lstatSync(fullPath('CNAME'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') failures.push(`Unable to inspect CNAME: ${error.message}`);
+  }
+
+  let hostingState = 'STAGING / DEFAULT DOMAIN';
+  if (cnameStat) {
+    hostingState = 'CUSTOM DOMAIN';
+    assert(cnameStat.isFile() && !cnameStat.isSymbolicLink(), 'CNAME must be a regular file and not a symlink');
+    if (cnameStat.isFile() && !cnameStat.isSymbolicLink()) {
+      assert(/^everettchurchofgod\.com(?:\r?\n)?$/.test(read('CNAME')), `CNAME must contain exactly ${productionHost}`);
+    }
+  }
+
+  let phase = '';
+  try {
+    phase = read('.ai/CURRENT_PHASE.md');
+  } catch (error) {
+    failures.push(`Unable to read .ai/CURRENT_PHASE.md: ${error.message}`);
+  }
+
+  const phaseLines = phase.split(/\r?\n/);
+  const headingIndexes = phaseLines
+    .map((line, index) => line.trim() === phaseHeading ? index : -1)
+    .filter(index => index >= 0);
+  assert(headingIndexes.length === 1, 'CURRENT_PHASE must contain exactly one ECOG-P02 section heading');
+
+  let indexingState = 'INVALID';
+  if (headingIndexes.length === 1) {
+    const start = headingIndexes[0] + 1;
+    let end = phaseLines.length;
+    for (let index = start; index < phaseLines.length; index += 1) {
+      if (/^#{1,2}\s/.test(phaseLines[index])) {
+        end = index;
+        break;
+      }
+    }
+    const sectionLines = phaseLines.slice(start, end);
+    const matches = sectionLines.filter(line => line.startsWith('Production Indexing:'));
+    assert(matches.length === 1, 'ECOG-P02 Production Indexing must appear exactly once inside its section');
+    if (matches.length === 1) {
+      if (matches[0] === 'Production Indexing: NOT AUTHORIZED') {
+        indexingState = 'NOT AUTHORIZED';
+      } else if (matches[0] === 'Production Indexing: AUTHORIZED') {
+        indexingState = 'AUTHORIZED';
+      } else {
+        failures.push('ECOG-P02 Production Indexing must be exactly AUTHORIZED or NOT AUTHORIZED');
+      }
+    }
+  }
 
 for (const [file, route] of pages) {
   const html = read(file);
@@ -63,12 +116,12 @@ for (const [file, route] of pages) {
   assert(html.includes('name="twitter:card" content="summary"'), `${file}: twitter summary card missing`);
   assert(!/github\.io\/ECOG-Website/i.test(html), `${file}: staging URL leaked into production metadata`);
 
-  if (mode === 'staging') {
-    assert(/name=["']robots["']\s+content=["']noindex,nofollow["']/i.test(html), `${file}: staging noindex,nofollow safeguard missing`);
-  } else {
-    assert(!/\bnoindex\b/i.test(html), `${file}: production page must not contain noindex`);
+  if (indexingState === 'NOT AUTHORIZED') {
+    assert(/name=["']robots["']\s+content=["']noindex,nofollow["']/i.test(html), `${file}: indexing-blocked noindex,nofollow safeguard missing`);
+  } else if (indexingState === 'AUTHORIZED') {
+    assert(!/\bnoindex\b/i.test(html), `${file}: indexing-authorized page must not contain noindex`);
     const robotsMeta = html.match(/<meta\s+name=["']robots["']\s+content=["']([^"']+)["']/i);
-    if (robotsMeta) assert(/^index,follow$/i.test(robotsMeta[1].replace(/\s+/g, '')), `${file}: production robots meta must be index,follow when present`);
+    if (robotsMeta) assert(/^index,follow$/i.test(robotsMeta[1].replace(/\s+/g, '')), `${file}: indexing-authorized robots meta must be index,follow when present`);
   }
 }
 
@@ -110,23 +163,28 @@ assert(/name=["']robots["']\s+content=["']noindex,follow["']/i.test(retiredCompa
 assert(!/index\.php\//i.test(sitemap), 'sitemap.xml: compatibility routes must remain excluded');
 
 const robots = read('robots.txt');
-if (mode === 'staging') {
-  assert(/User-agent:\s*\*/i.test(robots) && /Disallow:\s*\//i.test(robots), 'robots.txt: staging crawl block missing');
-  assert(!/Sitemap:/i.test(robots), 'robots.txt: staging must not advertise sitemap');
-  assert(!cnameExists, 'staging mode must not have CNAME');
-} else {
-  const cname = read('CNAME').trim();
-  assert(cname === productionHost, `CNAME must contain exactly ${productionHost}`);
-  assert(/User-agent:\s*\*/i.test(robots), 'robots.txt: User-agent * missing');
-  assert(/Allow:\s*\//i.test(robots), 'robots.txt: production Allow: / missing');
-  assert(!/Disallow:\s*\//i.test(robots), 'robots.txt: production must not block all crawling');
-  assert(new RegExp(`Sitemap:\\s*${escapeRegExp(productionOrigin)}/sitemap\\.xml`, 'i').test(robots), 'robots.txt: production sitemap directive missing or incorrect');
+if (indexingState === 'NOT AUTHORIZED') {
+  assert(/^User-agent:\s*\*\s*$/im.test(robots) && /^Disallow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-blocked sitewide crawl block missing');
+  assert(!/^Allow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-blocked state must not allow sitewide crawling');
+  assert(!/Sitemap:/i.test(robots), 'robots.txt: indexing-blocked state must not advertise sitemap');
+} else if (indexingState === 'AUTHORIZED') {
+  assert(/^User-agent:\s*\*\s*$/im.test(robots), 'robots.txt: User-agent * missing');
+  assert(/^Allow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-authorized Allow: / missing');
+  assert(!/^Disallow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-authorized state must not block all crawling');
+  assert(new RegExp(`Sitemap:\\s*${escapeRegExp(productionOrigin)}/sitemap\\.xml`, 'i').test(robots), 'robots.txt: indexing-authorized sitemap directive missing or incorrect');
 }
 
-if (failures.length) {
-  console.error(`Launch-state validation failed in ${mode} mode with ${failures.length} issue(s):`);
-  failures.forEach(failure => console.error(`- ${failure}`));
-  process.exit(1);
+  return { failures, hostingState, indexingState };
 }
 
-console.log(`Launch-state validation passed in ${mode} mode for ${pages.length} active pages, sitemap, robots, retired routes, compatibility routes, and production metadata.`);
+if (require.main === module) {
+  const result = validateLaunchState();
+  if (result.failures.length) {
+    console.error(`Launch-state validation failed: hosting=${result.hostingState}; indexing=${result.indexingState}; ${result.failures.length} issue(s):`);
+    result.failures.forEach(failure => console.error(`- ${failure}`));
+    process.exit(1);
+  }
+  console.log(`Launch-state validation passed: hosting=${result.hostingState}; indexing=${result.indexingState}; ${pages.length} active pages, sitemap, robots, retired routes, compatibility routes, and production metadata checked.`);
+}
+
+module.exports = { validateLaunchState };
