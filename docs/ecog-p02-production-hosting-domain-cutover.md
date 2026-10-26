@@ -1,8 +1,8 @@
 # ECOG-P02 — Production Hosting & Domain Cutover
 
-- State: REMEDIATING
+- State: CLOSED
 - Risk: HIGH
-- Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH
+- Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED
 - Product Owner: Ryan
 - Manager / Architect / Planner: ChatGPT
 - Activation baseline: `fdcb14aede80215f45b898dd725e1ae633afae49`
@@ -10,7 +10,7 @@
 
 ## Release boundary
 
-This is a post-audit protected-path remediation checkpoint. The Product Owner authorized the production launch, DNS changes, Pages custom domain, and Cloudflare cutover, but those authorization fields do not claim that any live mutation has completed. This branch adds the exact production `CNAME` candidate without changing nameservers, Cloudflare records, DNSSEC/DS, registrar/EPP state, indexing, merge state, deployment, or live launch state.
+ECOG-P02 production hosting/domain cutover is verified complete. The Product Owner authorization fields below are preserved as the authority for the completed Pages custom-domain, Cloudflare DNS, and nameserver-delegation actions. Production indexing, registrar transfer/EPP use, and DNSSEC/DS mutation remain outside the completed cutover and remain NOT AUTHORIZED.
 
 Production Launch: AUTHORIZED  
 DNS Changes: AUTHORIZED  
@@ -19,6 +19,21 @@ Cloudflare Cutover: AUTHORIZED
 DNSSEC Changes: NOT AUTHORIZED  
 Registrar Transfer: NOT AUTHORIZED  
 Production Indexing: NOT AUTHORIZED
+
+## Closure outcome
+
+- Audited remediation target: `ffa4ec0580b508ee0ae8771544fdeb67aace1fe3`.
+- Canonical merge SHA: `7637332c3c250e15a723c0c14118c726279bfdd9`.
+- Post-merge FAST `37130439079`: SUCCESS.
+- GitHub Pages deployment `37130438697`: SUCCESS on the canonical merge SHA.
+- Public delegation now uses `jaime.ns.cloudflare.com` and `meiling.ns.cloudflare.com`.
+- Public DS checks showed no DS records at the cutover safety gate and after delegation.
+- Ryan-controlled Cloudflare zone is authoritative and reconciled to the four GitHub Pages apex A records plus DNS-only `www` CNAME.
+- GitHub Pages DNS check: SUCCESS.
+- GitHub Pages certificate issued; Enforce HTTPS enabled.
+- Product Owner smoke-tested apex and `www` successfully.
+- Production indexing remains blocked and NOT AUTHORIZED.
+- PR #15 was closed unmerged as superseded historical evidence.
 
 PR #15 remains historical evidence only. No stale PR #15 blob is used.
 
@@ -45,7 +60,7 @@ PR #15 remains historical evidence only. No stale PR #15 blob is used.
 - Authorized correction: custom-domain hosting and production indexing are validated as independent controls, within the exact seven-path cumulative boundary.
 - Expanded-scope head `e3e74e402b9c3892a7bcacebe1fe686363b0e237` produced FAST run `37129324800`: **FAILURE**, with 33/34 tests passing. The sole failure was an unanchored `Allow:` regex matching the substring inside `Disallow:`; the replacement anchors robots directives to full lines.
 
-## Preserved facts
+## Pre-cutover facts (historical)
 
 - Sunday worship is **10:00 AM**. The old Kingdom 9:30 AM listing is stale historical evidence.
 - Primary production host: `everettchurchofgod.com`.
@@ -56,7 +71,7 @@ PR #15 remains historical evidence only. No stale PR #15 blob is used.
 - Kingdom hosting/Cloudflare service is expected to terminate October 2, 2026.
 - The domain is reported not to be used for email. Even so, the cutover must verify that no MX or other non-web records exist before delegation.
 
-## Read-only Pages evidence
+## Pre-cutover read-only Pages evidence (historical)
 
 | Item | Evidence | Result |
 |---|---|---|

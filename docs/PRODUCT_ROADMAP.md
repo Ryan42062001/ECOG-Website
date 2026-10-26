@@ -16,7 +16,7 @@
 - Phase 12 launch-validation scaffolding — merged/completed as pre-launch infrastructure
 - ECOG-P01 source-readiness work — completed/closed; production launch not authorized
 
-Production launch is not complete. PR #15 remains DRAFT / UNMERGED historical production-cutover evidence.
+Production hosting/domain cutover is complete. Production indexing remains separately controlled and NOT AUTHORIZED. PR #15 is closed unmerged as historical evidence.
 
 ## ECOG-P01 — Production Cutover & Launch Verification
 
@@ -52,15 +52,30 @@ Kingdom Church Websites controlled the observed Cloudflare zone during ECOG-P01,
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
-- State: REMEDIATING
+- State: CLOSED
 - Risk: HIGH
-- Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH
+- Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED
 
 Objective:
 
 Move the already-verified ECOG site from staging hosting to a controlled production-domain cutover without losing DNS authority, breaking unrelated domain services, prematurely enabling indexing, or depending on the cancelled Kingdom hosting environment.
 
-Current verified/prepared state:
+### ECOG-P02 closure outcome
+
+- Production domain cutover: VERIFIED COMPLETE.
+- Canonical production host: `https://everettchurchofgod.com`.
+- `www` production entry point: owner smoke-tested successfully.
+- Authoritative DNS: Ryan-controlled Cloudflare on `jaime.ns.cloudflare.com` / `meiling.ns.cloudflare.com`.
+- GitHub Pages DNS check: SUCCESS.
+- HTTPS certificate: ISSUED; Enforce HTTPS enabled.
+- Production indexing: NOT AUTHORIZED and remains blocked.
+- Registrar transfer/EPP: NOT AUTHORIZED; deferred to a later separately controlled action.
+- DNSSEC/DS changes: NOT AUTHORIZED.
+- Canonical cutover merge SHA: `7637332c3c250e15a723c0c14118c726279bfdd9`.
+- Post-merge FAST: `37130439079` SUCCESS.
+- Pages deployment: `37130438697` SUCCESS.
+
+Activation / pre-cutover state (historical):
 
 1. ECOG-P01 is CLOSED and source readiness is complete.
 2. GitHub Pages is enabled from canonical `main` / `/(root)`.
@@ -72,7 +87,7 @@ Current verified/prepared state:
 8. Kingdom hosting/Cloudflare service is expected to terminate October 2, 2026.
 9. The domain is not used for email.
 
-Phase work must:
+Phase requirements:
 
 1. Independently verify the staging host and current repository launch-state safeguards.
 2. Record the exact Cloudflare/registrar handoff state and cutover dependencies.
@@ -86,14 +101,14 @@ Phase work must:
 10. Obtain explicit Product Owner authorization for the exact production cutover mutations before performing them.
 11. After successful domain/hosting cutover, treat production indexing activation as a separately controlled release decision.
 
-Owner-preview punch-list evidence:
+Owner-preview punch-list evidence (historical):
 
 1. A public lookup reported no parent DS record; this clears the preview-time active-DS blocker only.
 2. DS and current authoritative NS must be queried again immediately before delegation; missing, inconsistent, or inconclusive evidence is a STOP.
 3. Ryan currently lacks eNom control-panel access, so an identified authorized registrar operator remains required.
 4. Any GitHub-created operational `main:/CNAME` commit must be captured by exact SHA, validated by FAST, and reconciled as post-cutover/closure evidence without silently retargeting the pre-cutover audit SHA.
 
-Post-audit cutover remediation:
+Post-audit cutover remediation (historical):
 
 1. Previous immutable audit target `c4dc1357c0d363d0a5f43a305a4ad99d808e20b4` passed the independent HIGH-risk audit.
 2. Product Owner production-cutover authorization is recorded in PR #20 comment `5969764264`.
