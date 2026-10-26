@@ -167,3 +167,20 @@ The released PR #24 touched only the five originally approved paths: `index.html
 Closure Sync itself is limited to the **three documentation paths**. P02 remains CLOSED with all original authorization fields and closure evidence unchanged. Canonical production hosting is not permission to index: active-page `noindex,nofollow` and `robots.txt` sitewide `Disallow: /` remain in force; production indexing, DNSSEC changes and registrar transfer remain NOT AUTHORIZED. No HTML, CSS, JS, contact, CNAME, sitemap, metadata, DNS/Cloudflare, Pages configuration, or infrastructure changes are part of Closure Sync.
 
 Completion of documentation-only Closure Sync requires a NEW exact-head FAST on its own HEAD and Manager review. The Closure Sync draft PR must not be merged or deployed by the Builder. ECOG-P04 source work is separate and does not begin in this assignment.
+
+## ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
+
+- State: BUILDING
+- Risk: LOW
+- Status: BUILDING / OWNER-APPROVED TWO-FEATURE HOMEPAGE SCOPE
+- Manager contract: [Issue #25](https://github.com/Ryan42062001/ECOG-Website/issues/25)
+- Activation clearance: [Comment 6429378217](https://github.com/Ryan42062001/ECOG-Website/issues/25#issuecomment-6429378217)
+- Canonical base: `7037d42005ca50462c65b52c132b6ab277157ce8`
+- Feature branch: `phase/ecog-p04-facebook-branding-homepage-phone`
+- PR: one DRAFT PR targeting main, merge NOT AUTHORIZED
+
+Owner-selected feature A: make the existing hero Visit Our Facebook CTA a #0866FF filled pill with a lightweight decorative white Facebook f SVG, preserving white readable text, safe official URL and accessible new-tab context. Keep Plan Your Visit cyan and first, Watch a Message outlined and second, and the standalone Facebook spotlight unchanged.
+
+Second feature: add a visible, tappable fourth Call Us item to the homepage service-time/location strip showing **814-652-9287**, linking only to `tel:+18146529287`. Preserve the three existing service items, all published church facts, metadata and the Contact page; maintain responsive layout.
+
+Only five cumulative source paths are authorized; P02 and P03 remain CLOSED with all historical evidence unchanged. Indexing remains NOT AUTHORIZED; noindex,nofollow and robots.txt Disallow: / stay enforced. Exact-head FAST and owner desktop/mobile preview required. Stop at PREVIEW_READY; FULL, freeze, audit, merge, production deployment and infrastructure changes are not authorized.

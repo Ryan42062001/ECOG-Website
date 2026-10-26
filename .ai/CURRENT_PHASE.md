@@ -1,5 +1,25 @@
 # Current phase
 
+## ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
+
+State: BUILDING
+Risk: LOW
+Status: BUILDING / OWNER-APPROVED TWO-FEATURE HOMEPAGE SCOPE
+Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/25
+Manager Activation: https://github.com/Ryan42062001/ECOG-Website/issues/25#issuecomment-6429378217
+Product Owner: Ryan
+Execution: Regular Chat / fresh Primary Builder
+Canonical Base: `7037d42005ca50462c65b52c132b6ab277157ce8`
+Feature Branch: `phase/ecog-p04-facebook-branding-homepage-phone`
+Pull Request: one DRAFT PR to main / UNMERGED
+Indexing safeguard: inherited from ECOG-P02; production indexing remains not authorized
+
+P04 scope: brand only the hero Visit Our Facebook link with Facebook-blue #0866FF, white text and an accessible decorative white f SVG; make 814-652-9287 visible as a fourth homepage service-strip item using tel:+18146529287. Preserve cyan Plan Your Visit, outlined Watch a Message, mobile button stacking, unchanged standalone Facebook spotlight, existing church facts and metadata, and all non-homepage pages.
+
+Cumulative path limit: exactly these five possible paths — `index.html`, `assets/css/main.css`, `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, and `docs/ecog-p04-facebook-branding-homepage-phone.md`. ECOG-P02 and ECOG-P03 CLOSED history below must remain exact and unchanged. Production indexing is NOT AUTHORIZED: existing noindex,nofollow and robots.txt Disallow: / are protected. No infrastructure, JS, tracker, external asset, Pages, DNS, registrar, Cloudflare, CNAME or production change.
+
+Gates: coherent implementation, new exact-head FAST, accessible mobile/desktop Vercel preview, then STOP at PREVIEW_READY for Ryan. Owner approval of design scope is not a merge or production-deployment authorization. Manager controls later FULL, freeze, audit determination and explicit merge authorization.
+
 ## ECOG-P03 — Homepage Facebook Spotlight
 
 State (ECOG-P03): CLOSED
