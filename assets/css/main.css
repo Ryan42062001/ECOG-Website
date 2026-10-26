@@ -29,3 +29,15 @@
 .home-facebook__card p:last-child{margin-bottom:0;color:rgba(255,255,255,.82)}
 @media(max-width:860px){.home-facebook{grid-template-columns:1fr}.home-facebook__card{max-width:42rem}}
 @media(max-width:620px){.hero .button-row .button{width:100%}}
+
+/* ECOG-P04: homepage-only Facebook hero and fourth service-strip item */
+.hero .button--facebook{gap:.55rem;border-color:#0866ff;background:#0866ff;color:#fff;box-shadow:0 9px 24px rgba(8,102,255,.23)}
+.hero .button--facebook:hover{border-color:#0758db;background:#0758db;box-shadow:0 12px 28px rgba(8,102,255,.3)}
+.hero .button--facebook:focus-visible{outline:3px solid #fff;outline-offset:3px;box-shadow:0 0 0 5px #0866ff}
+.hero .button--facebook svg{display:block;width:1.125rem;height:1.125rem;flex:0 0 auto;fill:currentColor}
+.service-strip--home .service-strip__grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.service-strip--home .service-strip__grid>div{min-width:0}
+.service-strip--home .service-strip__phone{display:inline-block;color:inherit;font-size:1.03rem;font-weight:850;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:.18em;white-space:nowrap}
+.service-strip--home .service-strip__phone:hover{color:#064267}
+@media(max-width:900px){.service-strip--home .service-strip__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.service-strip--home .service-strip__grid>div:nth-child(2){border-right:0}.service-strip--home .service-strip__grid>div:nth-child(-n+2){border-bottom:1px solid rgba(7,26,43,.18)}}
+@media(max-width:620px){.service-strip--home .service-strip__grid{grid-template-columns:1fr}.service-strip--home .service-strip__grid>div{border-right:0;border-bottom:1px solid rgba(7,26,43,.18)}.service-strip--home .service-strip__grid>div:last-child{border-bottom:0}}
