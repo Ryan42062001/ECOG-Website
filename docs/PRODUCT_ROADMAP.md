@@ -126,18 +126,44 @@ Post-audit cutover remediation (historical):
 
 ## ECOG-P03 — Homepage Facebook Spotlight
 
-- State: FREEZE_READY
+- State: CLOSED
 - Risk: LOW
-- Status: FREEZE_READY / OWNER PREVIEW ACCEPTED — MANAGER FULL PENDING
-- Activation: [Issue #23](https://github.com/Ryan42062001/ECOG-Website/issues/23)
-- Canonical base: `8b78795081f66c72a31432e6e62cc7670decfa47`
-- Branch: `phase/ecog-p03-homepage-facebook-spotlight`
-- PR: one DRAFT PR to `main`; no merge or deployment authorized
+- Status: CLOSED / FACEBOOK HOMEPAGE RELEASE VERIFIED
+- Manager activation: [Issue #23](https://github.com/Ryan42062001/ECOG-Website/issues/23)
+- Original canonical baseline: `8b78795081f66c72a31432e6e62cc7670decfa47`
+- Original feature branch: `phase/ecog-p03-homepage-facebook-spotlight`
+- Release PR: [#24](https://github.com/Ryan42062001/ECOG-Website/pull/24) — MERGED / CLOSED
+- Frozen approved release candidate: `ca84a8930249e127551280bd0b56d6377debed7d`
+- Canonical merge SHA: `8a58798c9784aebef26a39f0880c0ee8aaf5f2cd`
+- Closure Sync: separate `phase/ecog-p03-closure-sync` documentation-only branch and DRAFT PR; separately authorized merge required
+- Indexing: NOT AUTHORIZED
 
-Scope: preserve hero Plan Your Visit and Watch a Message, add an accessible official Facebook action near the hero CTAs, and feature a Stay Connected With Our Church Family section immediately after the service-times strip. The approved destination is https://www.facebook.com/EverettCOG/. Static markup/styles only; no feed, SDK, iframe, tracking, fonts, or authentication. Keep P02 CLOSED, maintain noindex/nofollow and sitewide robots Disallow, and do not mutate production infrastructure. FAST and owner preview precede Phase Sync, Manager FULL/freeze, and any separately authorized merge.
+### Released scope and owner acceptance
 
-- Historical first-preview candidate passed FAST [40402008658](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40402008658) on SHA `346c239118b820f1e67cad6b992dd5e91bb24096`; the later hero-button correction required new evidence.
+Preserved the existing cyan **Plan Your Visit** and outlined **Watch a Message** hero actions, added the matching outlined **Visit Our Facebook** pill button linking to https://www.facebook.com/EverettCOG/, and retained the separate **Stay Connected With Our Church Family** section immediately after service times. The Facebook links are accessible external links with new-tab context; there is no embedded feed, SDK, tracker, new font, authentication, or new library.
 
-Manager-authorized owner punch list: [PR #24 comment 6427620205](https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427620205). Ryan's mobile preview identified the hero Facebook link as visually inconsistent underlined text. The same Primary Builder changed it to the existing outlined pill-button appearance, with concise "Visit Our Facebook" text, official destination and accessible new-tab announcement. The separate featured section remains unchanged. Prior FAST run `40402008658` belongs to the old head only; earlier runs `40401573279` and `40401849954` remain historical FAILURES. Corrected source SHA `4b37841328d1f501dc5b96ae3b0d7026c049c1e3` passed FAST `40404116363` (SUCCESS, 35/35 adversarial tests), and Ryan then accepted the corrected owner preview. PR #24 remains DRAFT / OPEN / UNMERGED.
+Ryan requested the hero correction after an initial mobile preview, then expressly accepted the corrected three-button presentation. After the merged release, Ryan opened the production homepage and confirmed all three hero buttons, including the outlined Facebook action, appear as expected. That confirmation is **owner-observed homepage production smoke evidence**, not independently established coverage for every route. Manager acceptance and Closure Sync authorization: [PR #24 comment 6428217574](https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6428217574).
 
-Phase Sync Manager authorization and owner-preview acceptance: [PR #24 comment 6427794726](https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427794726). Ryan approved the corrected "Visit Our Facebook" outlined pill in the hero at source SHA `4b37841328d1f501dc5b96ae3b0d7026c049c1e3`; this is preview acceptance only, **not merge or production-deployment authorization**. The Phase Sync is documentation-only (`.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/ecog-p03-homepage-facebook-spotlight.md`), preserves approved homepage HTML/CSS byte-for-byte and leaves P02 CLOSED and Production Indexing NOT AUTHORIZED. A **new exact-head Phase Sync FAST** is required; its result must be recorded in PR #24. Next gate is **Manager verification and FULL PHASE CI**, not Builder-triggered FULL, freeze, audit, PR ready, merge, or deployment.
+### Exact release and historical validation evidence
+
+| Stage | SHA / evidence | Verified result |
+| --- | --- | --- |
+| Initial candidate FAST | [40401573279](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40401573279) | FAILURE (historical) |
+| Initial implementation FAST | [40401849954](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40401849954) | FAILURE (historical, 30/35 adversarial tests) |
+| First-preview head | `346c239118b820f1e67cad6b992dd5e91bb24096`; [FAST 40402008658](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40402008658) | SUCCESS (historical, before hero correction) |
+| Manager punch list | [PR #24 comment 6427620205](https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427620205) | Outlined hero Facebook button authorized |
+| Corrected owner-preview head | `4b37841328d1f501dc5b96ae3b0d7026c049c1e3`; [FAST 40404116363](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40404116363) | SUCCESS, 35/35 adversarial tests |
+| Owner preview acceptance and Phase Sync authorization | [PR #24 comment 6427794726](https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427794726) | Preview design accepted, not itself merge/deploy authority |
+| Frozen Phase Sync candidate | `ca84a8930249e127551280bd0b56d6377debed7d`; [FAST 40405308945](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40405308945) | SUCCESS, 35/35 adversarial tests |
+| Protected release merge | PR #24; `8a58798c9784aebef26a39f0880c0ee8aaf5f2cd` | MERGED / CLOSED |
+| Post-merge canonical FAST | [40406287504](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40406287504) | SUCCESS on exact canonical SHA |
+| GitHub Pages deployment | [40406286224](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40406286224) | SUCCESS; build and deploy on exact canonical SHA |
+| Post-production owner homepage smoke | [Manager comment 6428217574](https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6428217574) | Three hero actions observed and accepted |
+
+### Closure boundaries
+
+The released PR #24 touched only the five originally approved paths: `index.html`, `assets/css/main.css`, `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, and `docs/ecog-p03-homepage-facebook-spotlight.md`.
+
+Closure Sync itself is limited to the **three documentation paths**. P02 remains CLOSED with all original authorization fields and closure evidence unchanged. Canonical production hosting is not permission to index: active-page `noindex,nofollow` and `robots.txt` sitewide `Disallow: /` remain in force; production indexing, DNSSEC changes and registrar transfer remain NOT AUTHORIZED. No HTML, CSS, JS, contact, CNAME, sitemap, metadata, DNS/Cloudflare, Pages configuration, or infrastructure changes are part of Closure Sync.
+
+Completion of documentation-only Closure Sync requires a NEW exact-head FAST on its own HEAD and Manager review. The Closure Sync draft PR must not be merged or deployed by the Builder. ECOG-P04 source work is separate and does not begin in this assignment.
