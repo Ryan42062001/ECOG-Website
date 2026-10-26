@@ -264,7 +264,10 @@ test('rejects a missing structured field', t => {
 
 test('rejects wrong roadmap lifecycle inside the ECOG-P02 section', t => {
   const root = createFixture(t);
-  mutateRoadmap(root, text => text.replace('- State: CLOSED', '- State: PREVIEW_READY'));
+  mutateRoadmap(root, text => text.replace(
+    '## ECOG-P02 — Production Hosting & Domain Cutover\n\n- State: CLOSED',
+    '## ECOG-P02 — Production Hosting & Domain Cutover\n\n- State: PREVIEW_READY'
+  ));
   expectRejected(root, /Roadmap ECOG-P02 State must be exactly/);
 });
 
