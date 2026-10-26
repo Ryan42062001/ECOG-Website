@@ -126,12 +126,14 @@ Post-audit cutover remediation (historical):
 
 ## ECOG-P03 — Homepage Facebook Spotlight
 
-- State: BUILDING
+- State: PREVIEW_READY
 - Risk: LOW
-- Status: BUILDING / OWNER-APPROVED LINK-FIRST FACEBOOK PROMINENCE
+- Status: PREVIEW_READY / OWNER REVIEW PENDING
 - Activation: [Issue #23](https://github.com/Ryan42062001/ECOG-Website/issues/23)
 - Canonical base: `8b78795081f66c72a31432e6e62cc7670decfa47`
 - Branch: `phase/ecog-p03-homepage-facebook-spotlight`
 - PR: one DRAFT PR to `main`; no merge or deployment authorized
 
 Scope: preserve hero Plan Your Visit and Watch a Message, add an accessible official Facebook action near the hero CTAs, and feature a Stay Connected With Our Church Family section immediately after the service-times strip. The approved destination is https://www.facebook.com/EverettCOG/. Static markup/styles only; no feed, SDK, iframe, tracking, fonts, or authentication. Keep P02 CLOSED, maintain noindex/nofollow and sitewide robots Disallow, and do not mutate production infrastructure. FAST and owner preview precede Phase Sync, Manager FULL/freeze, and any separately authorized merge.
+
+- Candidate is ready for exact-head FAST and then a desktop/mobile Product Owner preview; record CI run ID and result in draft PR #24. No claim of CI success is made in this source record.

@@ -1,6 +1,6 @@
 # ECOG-P03 — Homepage Facebook Spotlight
 
-- **State:** BUILDING
+- **State:** PREVIEW_READY
 - **Risk:** LOW
 - **Owner:** Ryan
 - **Manager contract:** [Issue #23](https://github.com/Ryan42062001/ECOG-Website/issues/23)
@@ -36,6 +36,16 @@ ECOG-P02 remains CLOSED with its original exact authorization fields and histori
 - Manager controls subsequent Phase Sync, FULL PHASE CI, freeze, and LOW-risk audit determination.
 - **Do not merge or deploy.** Merge requires Ryan's later separate explicit approval.
 
+## Owner preview checklist
+
+- [ ] Desktop: primary Plan Your Visit CTA and Watch a Message remain clear; Facebook hero link is discoverable.
+- [ ] Desktop: featured section sits directly below service times and before New here?; typography, spacing, and contrast look good.
+- [ ] Mobile: hero actions, Facebook panel, menu/toggle, and service strip stack without horizontal scrolling.
+- [ ] Keyboard: skip link, nav, both Facebook anchors, and existing CTAs show visible focus; new tabs are announced.
+- [ ] Both new links open exactly https://www.facebook.com/EverettCOG/; YouTube remains correct.
+- [ ] Events and remaining homepage links work; no embed, SDK, tracker, external font, or authentication introduced.
+- [ ] Production indexing remains blocked; no merge or production changes are authorized.
+
 ## FAST evidence
 
-Pending coherent implementation candidate. No CI conclusion is asserted at BUILDING.
+Coherent PREVIEW_READY candidate submitted for exact-head FAST. Run ID, exact SHA and conclusion belong in PR #24 after the external CI result is observed; do not infer PASS from this statement.

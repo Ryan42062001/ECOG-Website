@@ -2,9 +2,9 @@
 
 ## ECOG-P03 — Homepage Facebook Spotlight
 
-State: BUILDING
+State: PREVIEW_READY
 Risk: LOW
-Status: BUILDING / LINK-FIRST HOMEPAGE FACEBOOK SPOTLIGHT
+Status: PREVIEW_READY / OWNER REVIEW PENDING
 Manager Activation: https://github.com/Ryan42062001/ECOG-Website/issues/23
 Product Owner: Ryan
 Execution: Regular Chat / one Primary Builder
