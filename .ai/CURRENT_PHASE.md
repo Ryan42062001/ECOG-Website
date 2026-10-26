@@ -11,7 +11,7 @@ Execution: Regular Chat / one Primary Builder
 Canonical Base: `8b78795081f66c72a31432e6e62cc7670decfa47`
 Feature Branch: `phase/ecog-p03-homepage-facebook-spotlight`
 Pull Request: DRAFT / UNMERGED
-Production Indexing: NOT AUTHORIZED
+Indexing safeguard: inherited from ECOG-P02; indexing remains not authorized
 
 The owner approved a prominent homepage Facebook link and a featured section, not an embedded feed. Only the five paths in Issue #23 may change. This P03 lifecycle record does not replace, relax, or amend the completed P02 authorization controls below.
 
