@@ -2,9 +2,9 @@
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
-State: REMEDIATING
+State: CLOSED
 Risk: HIGH
-Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH
+Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED
 Production Launch: AUTHORIZED
 DNS Changes: AUTHORIZED
 Pages Custom Domain: AUTHORIZED
@@ -12,6 +12,27 @@ Cloudflare Cutover: AUTHORIZED
 DNSSEC Changes: NOT AUTHORIZED
 Registrar Transfer: NOT AUTHORIZED
 Production Indexing: NOT AUTHORIZED
+
+## ECOG-P02 closure evidence
+
+Operational production hosting/domain cutover is verified complete.
+
+- PR #20 audited remediation head: `ffa4ec0580b508ee0ae8771544fdeb67aace1fe3`.
+- PR #20 merged to canonical `main` at `7637332c3c250e15a723c0c14118c726279bfdd9`.
+- Post-merge FAST run `37130439079`: SUCCESS.
+- GitHub Pages deployment run `37130438697`: SUCCESS on the exact canonical merge SHA.
+- Registrar delegation moved from `amos.ns.cloudflare.com` / `izabella.ns.cloudflare.com` to `jaime.ns.cloudflare.com` / `meiling.ns.cloudflare.com`.
+- Execution-time DS checks showed no DS records before and after delegation.
+- Ryan-controlled Cloudflare became authoritative and was reconciled to the four GitHub Pages apex A records plus DNS-only `www` CNAME.
+- GitHub Pages custom-domain DNS check: SUCCESS.
+- GitHub Pages certificate issued and Enforce HTTPS enabled.
+- Product Owner smoke-tested both `https://everettchurchofgod.com` and `https://www.everettchurchofgod.com` successfully.
+- Production indexing remains NOT AUTHORIZED; active-page `noindex,nofollow`, sitewide `robots.txt` `Disallow: /`, and 404 `noindex` remain required.
+- Registrar transfer/EPP use remains NOT AUTHORIZED and is outside ECOG-P02 closure.
+- DNSSEC/DS mutation remains NOT AUTHORIZED.
+
+Recorded operational evidence is preserved in PR #20 comments through Manager closure authorization comment `6426689576`.
+
 
 Speed Workflow V2.1 migration status: CLOSED.
 ECOG-P01 source-readiness status: CLOSED.
@@ -42,9 +63,9 @@ Owner-provided DNS / registrar evidence:
 - Ryan does not currently have eNom/registrar control-panel access. A future nameserver change therefore requires either authorized church access or exact execution by Kingdom/eNom after immediate Ryan/Manager confirmation.
 
 Current implementation boundary:
-- Production launch, DNS changes, the Pages custom domain, and Cloudflare cutover are authorized, but no corresponding live mutation is claimed complete.
-- The root `CNAME` in this branch is an authorized protected-PR candidate; it is not active on `main` until an explicitly authorized merge.
-- No registrar nameserver delegation or Cloudflare record mutation occurred during this remediation.
+- Production hosting/domain cutover is verified complete. The authorization fields are preserved as historical authority for the completed mutations.
+- The root `CNAME` is active on canonical `main` as part of the audited and merged PR #20 cutover.
+- Registrar nameserver delegation and the Ryan-controlled Cloudflare DNS reconciliation were completed and verified during the authorized cutover.
 - DNSSEC/DS changes remain NOT AUTHORIZED.
 - Registrar transfer and EPP use remain NOT AUTHORIZED.
 - Custom-domain hosting and production indexing are independent controls: CNAME presence does not authorize indexing.
