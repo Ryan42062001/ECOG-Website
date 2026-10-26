@@ -1,6 +1,6 @@
 # ECOG-P03 — Homepage Facebook Spotlight
 
-- **State:** PREVIEW_READY
+- **State:** PUNCH_LIST
 - **Risk:** LOW
 - **Owner:** Ryan
 - **Manager contract:** [Issue #23](https://github.com/Ryan42062001/ECOG-Website/issues/23)
@@ -46,6 +46,18 @@ ECOG-P02 remains CLOSED with its original exact authorization fields and histori
 - [ ] Events and remaining homepage links work; no embed, SDK, tracker, external font, or authentication introduced.
 - [ ] Production indexing remains blocked; no merge or production changes are authorized.
 
+## Owner punch list (Manager-authorized)
+
+- **Status:** PUNCH_LIST / bounded hero-button correction complete; owner re-preview pending.
+- **Authorization:** https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427620205.
+- **Feedback:** Ryan's mobile screenshot showed the hero Facebook action rendered as underlined text rather than a button.
+- **Correction:** Use the existing `button button--outline-light` style for **Visit Our Facebook**, preserving the official Everett Church of God destination and screen-reader new-tab announcement.
+- **Mobile:** scope full-width stacking for all three hero actions at viewport widths 620px and below.
+- **Unchanged:** primary cyan Plan Your Visit, Watch a Message, the standalone featured Facebook section, existing page behaviors, and all P02/indexing protections.
+- **Gate:** stop at corrected owner re-preview after a NEW exact-head FAST. No FULL, freeze, audit, merge, promotion, or production deploy.
+
 ## FAST evidence
 
-Coherent PREVIEW_READY candidate submitted for exact-head FAST. Run ID, exact SHA and conclusion belong in PR #24 after the external CI result is observed; do not infer PASS from this statement.
+Historical completed first-preview FAST: [40402008658](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40402008658), SUCCESS on previous SHA `346c239118b820f1e67cad6b992dd5e91bb24096` only. Earlier FAST failures [40401573279](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40401573279) and [40401849954](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40401849954) are historical failures.
+
+New PUNCH_LIST candidate FAST: **pending external GitHub Actions conclusion**. Exact run ID, SHA, result and preview evidence will be recorded in PR #24 after verification; no PASS is claimed by this document.

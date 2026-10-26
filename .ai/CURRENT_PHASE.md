@@ -2,9 +2,9 @@
 
 ## ECOG-P03 — Homepage Facebook Spotlight
 
-State: PREVIEW_READY
+State: PUNCH_LIST
 Risk: LOW
-Status: PREVIEW_READY / OWNER REVIEW PENDING
+Status: PUNCH_LIST / HERO FACEBOOK CTA CORRECTED — OWNER RE-PREVIEW PENDING
 Manager Activation: https://github.com/Ryan42062001/ECOG-Website/issues/23
 Product Owner: Ryan
 Execution: Regular Chat / one Primary Builder
@@ -14,6 +14,8 @@ Pull Request: DRAFT / UNMERGED
 Indexing safeguard: inherited from ECOG-P02; indexing remains not authorized
 
 The owner approved a prominent homepage Facebook link and a featured section, not an embedded feed. Only the five paths in Issue #23 may change. This P03 lifecycle record does not replace, relax, or amend the completed P02 authorization controls below.
+
+Owner-reviewed mobile punch list: the hero Facebook link had appeared as underlined text. Manager authorization: https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427620205. The same Primary Builder replaced that presentation with the existing pill-shaped outlined button and a concise label; the featured Facebook section is unchanged. New exact-head FAST and owner re-preview are required; prior run `40402008658` applies only to the previous SHA. No FULL, freeze, audit, merge, or production deployment is authorized.
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 

@@ -18,8 +18,6 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.button:hover,.feature-card:hover{transform:none}}
 
 /* ECOG-P03: static, accessible, link-first Facebook spotlight */
-.hero__facebook-link{display:inline-flex;align-items:center;gap:.35rem;min-height:3rem;padding:.6rem .4rem;color:var(--color-accent);font-size:.84rem;font-weight:800;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.25em}
-.hero__facebook-link:hover{color:var(--color-white)}
 .home-facebook-section{padding-block:clamp(3.75rem,6vw,5.5rem);background:var(--color-surface-muted)}
 .home-facebook{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(17rem,.75fr);align-items:center;gap:clamp(2rem,5vw,4rem)}
 .home-facebook__copy{max-width:48rem}
@@ -30,4 +28,4 @@
 .home-facebook__card strong{display:block;margin-bottom:1rem;font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.2;letter-spacing:-.02em}
 .home-facebook__card p:last-child{margin-bottom:0;color:rgba(255,255,255,.82)}
 @media(max-width:860px){.home-facebook{grid-template-columns:1fr}.home-facebook__card{max-width:42rem}}
-@media(max-width:390px){.hero__facebook-link{width:100%;justify-content:center;text-align:center}}
+@media(max-width:620px){.hero .button-row .button{width:100%}}

@@ -126,9 +126,9 @@ Post-audit cutover remediation (historical):
 
 ## ECOG-P03 — Homepage Facebook Spotlight
 
-- State: PREVIEW_READY
+- State: PUNCH_LIST
 - Risk: LOW
-- Status: PREVIEW_READY / OWNER REVIEW PENDING
+- Status: PUNCH_LIST / HERO FACEBOOK CTA CORRECTED — OWNER RE-PREVIEW PENDING
 - Activation: [Issue #23](https://github.com/Ryan42062001/ECOG-Website/issues/23)
 - Canonical base: `8b78795081f66c72a31432e6e62cc7670decfa47`
 - Branch: `phase/ecog-p03-homepage-facebook-spotlight`
@@ -137,3 +137,5 @@ Post-audit cutover remediation (historical):
 Scope: preserve hero Plan Your Visit and Watch a Message, add an accessible official Facebook action near the hero CTAs, and feature a Stay Connected With Our Church Family section immediately after the service-times strip. The approved destination is https://www.facebook.com/EverettCOG/. Static markup/styles only; no feed, SDK, iframe, tracking, fonts, or authentication. Keep P02 CLOSED, maintain noindex/nofollow and sitewide robots Disallow, and do not mutate production infrastructure. FAST and owner preview precede Phase Sync, Manager FULL/freeze, and any separately authorized merge.
 
 - Candidate is ready for exact-head FAST and then a desktop/mobile Product Owner preview; record CI run ID and result in draft PR #24. No claim of CI success is made in this source record.
+
+Manager-authorized owner punch list: [PR #24 comment 6427620205](https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427620205). Ryan's mobile preview identified the hero Facebook link as visually inconsistent underlined text. The same Primary Builder changed it to the existing outlined pill-button appearance, with concise "Visit Our Facebook" text, official destination and accessible new-tab announcement. The separate featured section remains unchanged. Prior FAST run `40402008658` belongs to the old head only; a new exact-head FAST and corrected owner preview are required before Manager Phase Sync. PR #24 remains DRAFT / UNMERGED.
