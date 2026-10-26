@@ -2,9 +2,9 @@
 
 ## ECOG-P03 — Homepage Facebook Spotlight
 
-State: PUNCH_LIST
+State: FREEZE_READY
 Risk: LOW
-Status: PUNCH_LIST / HERO FACEBOOK CTA CORRECTED — OWNER RE-PREVIEW PENDING
+Status: FREEZE_READY / OWNER PREVIEW ACCEPTED — MANAGER FULL PENDING
 Manager Activation: https://github.com/Ryan42062001/ECOG-Website/issues/23
 Product Owner: Ryan
 Execution: Regular Chat / one Primary Builder
@@ -15,7 +15,9 @@ Indexing safeguard: inherited from ECOG-P02; indexing remains not authorized
 
 The owner approved a prominent homepage Facebook link and a featured section, not an embedded feed. Only the five paths in Issue #23 may change. This P03 lifecycle record does not replace, relax, or amend the completed P02 authorization controls below.
 
-Owner-reviewed mobile punch list: the hero Facebook link had appeared as underlined text. Manager authorization: https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427620205. The same Primary Builder replaced that presentation with the existing pill-shaped outlined button and a concise label; the featured Facebook section is unchanged. New exact-head FAST and owner re-preview are required; prior run `40402008658` applies only to the previous SHA. No FULL, freeze, audit, merge, or production deployment is authorized.
+Owner-reviewed mobile punch list: the hero Facebook link had appeared as underlined text. Manager authorization: https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427620205. The same Primary Builder replaced that presentation with the existing pill-shaped outlined button and a concise label; the featured Facebook section is unchanged. Corrected source candidate `4b37841328d1f501dc5b96ae3b0d7026c049c1e3` passed exact-head FAST run `40404116363` (SUCCESS, 35/35 adversarial tests). Earlier run `40402008658` remains historical PASS for the prior source SHA, with original failed runs preserved in the P03 phase record. Ryan accepted the corrected mobile hero design; this is not merge or production-deployment approval. No FULL, immutable freeze, audit, PR ready transition, merge, or production deployment is authorized.
+
+Owner preview accepted / Phase Sync authorized: https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427794726. Ryan approved the corrected outlined "Visit Our Facebook" hero button on the mobile preview. Approved product-source SHA: `4b37841328d1f501dc5b96ae3b0d7026c049c1e3`; source FAST [40404116363](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40404116363) COMPLETED / SUCCESS (35/35 adversarial tests). Phase Sync changes documentation only and retains the approved `index.html` and `assets/css/main.css` blobs. New Phase Sync FAST must pass on its exact commit before Manager FULL. Owner visual acceptance does not authorize merge, Pages publication, indexing, infrastructure, or other production changes.
 
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
