@@ -2,7 +2,7 @@
 
 ## ECOG-P03 — Homepage Facebook Spotlight
 
-State: CLOSED
+State (ECOG-P03): CLOSED
 Risk: LOW
 Status: CLOSED / FACEBOOK HOMEPAGE RELEASE VERIFIED
 Manager Activation: https://github.com/Ryan42062001/ECOG-Website/issues/23
