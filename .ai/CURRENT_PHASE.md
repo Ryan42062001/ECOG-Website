@@ -2,9 +2,9 @@
 
 ## ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
 
-State: BUILDING
+State: PREVIEW_READY
 Risk: LOW
-Status: BUILDING / OWNER-APPROVED TWO-FEATURE HOMEPAGE SCOPE
+Status: PREVIEW_READY / OWNER DESKTOP AND MOBILE REVIEW PENDING
 Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/25
 Manager Activation: https://github.com/Ryan42062001/ECOG-Website/issues/25#issuecomment-6429378217
 Product Owner: Ryan
@@ -19,6 +19,10 @@ P04 scope: brand only the hero Visit Our Facebook link with Facebook-blue #0866F
 Cumulative path limit: exactly these five possible paths — `index.html`, `assets/css/main.css`, `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, and `docs/ecog-p04-facebook-branding-homepage-phone.md`. ECOG-P02 and ECOG-P03 CLOSED history below must remain exact and unchanged. Production indexing is NOT AUTHORIZED: existing noindex,nofollow and robots.txt Disallow: / are protected. No infrastructure, JS, tracker, external asset, Pages, DNS, registrar, Cloudflare, CNAME or production change.
 
 Gates: coherent implementation, new exact-head FAST, accessible mobile/desktop Vercel preview, then STOP at PREVIEW_READY for Ryan. Owner approval of design scope is not a merge or production-deployment authorization. Manager controls later FULL, freeze, audit determination and explicit merge authorization.
+
+Implementation completed on the P04 feature branch: only the hero Facebook action now uses a scoped filled #0866FF pill with a decorative white inline SVG f icon, readable white text, darker hover and white keyboard focus outline. The three original hero action order and mobile full-width stacking remain. The new fourth home-only service-strip item displays 814-652-9287 and links to tel:+18146529287, with four desktop, two tablet and one mobile columns; Sunday/Wednesday/Join Us facts are retained. Standalone Facebook spotlight and all prior phase histories are unchanged.
+
+This is a PREVIEW_READY candidate conditional on exact-head FAST SUCCESS and READY preview being observed; record those outcomes in PR #27, not by making unverified claims in source. Owner visual approval, Phase Sync, Manager FULL, freeze, audit, merge and production release are NOT yet authorized. Production Indexing remains NOT AUTHORIZED; noindex,nofollow and robots.txt Disallow: / remain intact.
 
 ## ECOG-P03 — Homepage Facebook Spotlight
 

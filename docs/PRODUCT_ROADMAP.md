@@ -170,9 +170,9 @@ Completion of documentation-only Closure Sync requires a NEW exact-head FAST on 
 
 ## ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
 
-- State: BUILDING
+- State: PREVIEW_READY
 - Risk: LOW
-- Status: BUILDING / OWNER-APPROVED TWO-FEATURE HOMEPAGE SCOPE
+- Status: PREVIEW_READY / OWNER DESKTOP AND MOBILE REVIEW PENDING
 - Manager contract: [Issue #25](https://github.com/Ryan42062001/ECOG-Website/issues/25)
 - Activation clearance: [Comment 6429378217](https://github.com/Ryan42062001/ECOG-Website/issues/25#issuecomment-6429378217)
 - Canonical base: `7037d42005ca50462c65b52c132b6ab277157ce8`
@@ -184,3 +184,7 @@ Owner-selected feature A: make the existing hero Visit Our Facebook CTA a #0866F
 Second feature: add a visible, tappable fourth Call Us item to the homepage service-time/location strip showing **814-652-9287**, linking only to `tel:+18146529287`. Preserve the three existing service items, all published church facts, metadata and the Contact page; maintain responsive layout.
 
 Only five cumulative source paths are authorized; P02 and P03 remain CLOSED with all historical evidence unchanged. Indexing remains NOT AUTHORIZED; noindex,nofollow and robots.txt Disallow: / stay enforced. Exact-head FAST and owner desktop/mobile preview required. Stop at PREVIEW_READY; FULL, freeze, audit, merge, production deployment and infrastructure changes are not authorized.
+
+Implementation candidate: `index.html` changes only the existing hero Facebook anchor visual/icon and adds the fourth Call Us service-strip entry; existing Facebook section markup is identical. `assets/css/main.css` gains scoped P04 rules only. Four equal desktop strip columns, two columns up to 900px and one up to 620px; all three hero pills retain the established mobile full-width stack. White-on-blue text contrast is at least 4.5:1 for normal and hovered states by color calculation. Owner-requested church phone display and `tel:+18146529287` match contact-page facts.
+
+Exact-head FAST and Vercel preview must be verified before final owner handoff and recorded in DRAFT PR #27. No historical lifecycle text above P04 was changed, and no merge, production deploy or indexing approval is implied.
