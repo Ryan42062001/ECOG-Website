@@ -5,9 +5,9 @@ const defaultRoot = path.resolve(__dirname, '..');
 const intendedAi = ['ARCHITECTURE.md', 'CURRENT_PHASE.md', 'DECISIONS.md', 'PROJECT.md', 'REPO_MAP.md'];
 const phaseHeading = '## ECOG-P02 — Production Hosting & Domain Cutover';
 const requiredPhaseFields = [
-  ['State', 'REMEDIATING'],
+  ['State', 'CLOSED'],
   ['Risk', 'HIGH'],
-  ['Status', 'CUTOVER REMEDIATION / PROTECTED CNAME PATH'],
+  ['Status', 'CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED'],
   ['Production Launch', 'AUTHORIZED'],
   ['DNS Changes', 'AUTHORIZED'],
   ['Pages Custom Domain', 'AUTHORIZED'],
