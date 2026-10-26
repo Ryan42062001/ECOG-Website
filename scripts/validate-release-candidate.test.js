@@ -170,8 +170,16 @@ test('rejects a symlink replacing an authorized .ai file when supported', t => {
 
 test('rejects wrong ECOG-P02 State', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('State: REMEDIATING', 'State: PREVIEW_READY'));
+  mutatePhase(root, text => text.replace('State: CLOSED', 'State: PREVIEW_READY'));
   expectRejected(root, /State must be exactly/);
+});
+
+test('rejects regression to the remediation lifecycle', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text
+    .replace('State: CLOSED', 'State: REMEDIATING')
+    .replace('Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED', 'Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH'));
+  expectRejected(root, /State must be exactly|Status must be exactly/);
 });
 
 test('rejects wrong ECOG-P02 Risk', t => {
@@ -182,18 +190,18 @@ test('rejects wrong ECOG-P02 Risk', t => {
 
 test('rejects wrong ECOG-P02 Status', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH', 'Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED'));
+  mutatePhase(root, text => text.replace('Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED', 'Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED'));
   expectRejected(root, /Status must be exactly/);
 });
 
 test('rejects required strings placed outside an invalid ECOG-P02 section', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text
-    .replace('State: REMEDIATING', 'State: PREVIEW_READY')
+    .replace('State: CLOSED', 'State: PREVIEW_READY')
     + '\n## Decoy section\n\n'
-    + 'State: REMEDIATING\n'
+    + 'State: CLOSED\n'
     + 'Risk: HIGH\n'
-    + 'Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH\n'
+    + 'Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED\n'
     + 'Production Launch: NOT AUTHORIZED\n'
     + 'DNS Changes: NOT AUTHORIZED\n'
     + 'Pages Custom Domain: NOT AUTHORIZED\n');
@@ -250,21 +258,21 @@ test('rejects a duplicate structured field', t => {
 
 test('rejects a missing structured field', t => {
   const root = createFixture(t);
-  mutatePhase(root, text => text.replace('Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH\n', ''));
+  mutatePhase(root, text => text.replace('Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED\n', ''));
   expectRejected(root, /Status must appear exactly once/);
 });
 
 test('rejects wrong roadmap lifecycle inside the ECOG-P02 section', t => {
   const root = createFixture(t);
-  mutateRoadmap(root, text => text.replace('- State: REMEDIATING', '- State: PREVIEW_READY'));
+  mutateRoadmap(root, text => text.replace('- State: CLOSED', '- State: PREVIEW_READY'));
   expectRejected(root, /Roadmap ECOG-P02 State must be exactly/);
 });
 
 test('rejects valid roadmap strings placed only in a decoy section', t => {
   const root = createFixture(t);
   mutateRoadmap(root, text => text
-    .replace('- Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH', '- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED')
-    + '\n## Decoy\n\n- State: REMEDIATING\n- Risk: HIGH\n- Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH\n');
+    .replace('- Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED', '- Status: CUTOVER RUNBOOK READY / OWNER PREVIEW REQUIRED')
+    + '\n## Decoy\n\n- State: CLOSED\n- Risk: HIGH\n- Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED\n');
   expectRejected(root, /Roadmap ECOG-P02 Status must be exactly/);
 });
 
@@ -272,8 +280,8 @@ test('rejects valid roadmap strings placed only in a decoy section', t => {
 test('rejects the old pre-cutover lifecycle and authorization state', t => {
   const root = createFixture(t);
   mutatePhase(root, text => text
-    .replace('State: REMEDIATING', 'State: FREEZE_READY')
-    .replace('Status: CUTOVER REMEDIATION / PROTECTED CNAME PATH', 'Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED')
+    .replace('State: CLOSED', 'State: FREEZE_READY')
+    .replace('Status: CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED', 'Status: PHASE SYNC COMPLETE / FULL PHASE CI REQUIRED')
     .replace('Production Launch: AUTHORIZED', 'Production Launch: NOT AUTHORIZED')
     .replace('DNS Changes: AUTHORIZED', 'DNS Changes: NOT AUTHORIZED')
     .replace('Pages Custom Domain: AUTHORIZED', 'Pages Custom Domain: NOT AUTHORIZED')
