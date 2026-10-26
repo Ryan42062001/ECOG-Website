@@ -1,5 +1,20 @@
 # Current phase
 
+## ECOG-P03 — Homepage Facebook Spotlight
+
+State: BUILDING
+Risk: LOW
+Status: BUILDING / LINK-FIRST HOMEPAGE FACEBOOK SPOTLIGHT
+Manager Activation: https://github.com/Ryan42062001/ECOG-Website/issues/23
+Product Owner: Ryan
+Execution: Regular Chat / one Primary Builder
+Canonical Base: `8b78795081f66c72a31432e6e62cc7670decfa47`
+Feature Branch: `phase/ecog-p03-homepage-facebook-spotlight`
+Pull Request: DRAFT / UNMERGED
+Production Indexing: NOT AUTHORIZED
+
+The owner approved a prominent homepage Facebook link and a featured section, not an embedded feed. Only the five paths in Issue #23 may change. This P03 lifecycle record does not replace, relax, or amend the completed P02 authorization controls below.
+
 ## ECOG-P02 — Production Hosting & Domain Cutover
 
 State: CLOSED

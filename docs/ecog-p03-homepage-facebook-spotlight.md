@@ -1,0 +1,41 @@
+# ECOG-P03 — Homepage Facebook Spotlight
+
+- **State:** BUILDING
+- **Risk:** LOW
+- **Owner:** Ryan
+- **Manager contract:** [Issue #23](https://github.com/Ryan42062001/ECOG-Website/issues/23)
+- **Canonical base:** `8b78795081f66c72a31432e6e62cc7670decfa47`
+- **Branch:** `phase/ecog-p03-homepage-facebook-spotlight`
+- **PR:** one DRAFT PR targeting `main`, no automatic merge
+- **Execution:** Regular Chat / one Primary Builder
+- **Indexing:** NOT AUTHORIZED
+
+## Owner-approved outcome
+
+The pastor wants church life on Facebook highlighted prominently. Ryan approved the **link-first** design, not an embedded feed. Both the hero-level link and the featured homepage section point only to https://www.facebook.com/EverettCOG/.
+
+## Bounded implementation
+
+1. Preserve the existing hero content and primary **Plan Your Visit** CTA, alongside **Watch a Message**.
+2. Offer a discoverable, accessible Facebook link beside those hero actions.
+3. Place a featured **Stay Connected With Our Church Family** section directly after service times and before **New here?**.
+4. Preserve responsive/mobile navigation, keyboard focus, and safe external-link behavior.
+5. Use only static HTML and CSS. Do not add Facebook embeds, iframe/SDK, trackers, external fonts, APIs, or sign-in surfaces.
+
+Authorized cumulative paths: `index.html`, `assets/css/main.css` when needed, `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, and this new file.
+
+## Protected controls
+
+ECOG-P02 remains CLOSED with its original exact authorization fields and historical closure evidence untouched. CNAME, robots.txt, sitemap.xml, active-page robots metadata, canonical/OG hosts, DNS, Cloudflare, Pages configuration, DNSSEC, registrar/EPP, and all production infrastructure stay unchanged. **Production Indexing: NOT AUTHORIZED** and sitewide `Disallow: /` remain in force.
+
+## Validation and handoff
+
+- Commit a coherent implementation candidate and collect exact-head FAST evidence (run ID, URL, conclusion).
+- Verify two Facebook destinations, existing CTA/navigation/YouTube links, responsive focus, no embed/tracker or indexing changes, and the exact five-path boundary.
+- Stop at PREVIEW_READY for Ryan to check desktop/mobile and provide one consolidated punch list.
+- Manager controls subsequent Phase Sync, FULL PHASE CI, freeze, and LOW-risk audit determination.
+- **Do not merge or deploy.** Merge requires Ryan's later separate explicit approval.
+
+## FAST evidence
+
+Pending coherent implementation candidate. No CI conclusion is asserted at BUILDING.

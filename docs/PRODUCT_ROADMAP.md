@@ -122,3 +122,16 @@ Post-audit cutover remediation (historical):
 10. Manager scope expansion in PR #20 comment `5969998505` authorizes the seventh cumulative path so hosting and indexing validation can be separated.
 11. Custom-domain hosting does not authorize search indexing. The current authorized CNAME must coexist with active-page `noindex,nofollow` and the blocking `robots.txt` until a later separate indexing release.
 12. Expanded-scope head `e3e74e402b9c3892a7bcacebe1fe686363b0e237` produced FAST run `37129324800`: FAILURE with 33/34 tests passing; the sole failure was an unanchored `Allow:` directive regex matching inside `Disallow:`. The bounded replacement anchors directives to complete lines.
+
+
+## ECOG-P03 — Homepage Facebook Spotlight
+
+- State: BUILDING
+- Risk: LOW
+- Status: BUILDING / OWNER-APPROVED LINK-FIRST FACEBOOK PROMINENCE
+- Activation: [Issue #23](https://github.com/Ryan42062001/ECOG-Website/issues/23)
+- Canonical base: `8b78795081f66c72a31432e6e62cc7670decfa47`
+- Branch: `phase/ecog-p03-homepage-facebook-spotlight`
+- PR: one DRAFT PR to `main`; no merge or deployment authorized
+
+Scope: preserve hero Plan Your Visit and Watch a Message, add an accessible official Facebook action near the hero CTAs, and feature a Stay Connected With Our Church Family section immediately after the service-times strip. The approved destination is https://www.facebook.com/EverettCOG/. Static markup/styles only; no feed, SDK, iframe, tracking, fonts, or authentication. Keep P02 CLOSED, maintain noindex/nofollow and sitewide robots Disallow, and do not mutate production infrastructure. FAST and owner preview precede Phase Sync, Manager FULL/freeze, and any separately authorized merge.
