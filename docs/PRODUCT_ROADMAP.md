@@ -122,3 +122,22 @@ Post-audit cutover remediation (historical):
 10. Manager scope expansion in PR #20 comment `5969998505` authorizes the seventh cumulative path so hosting and indexing validation can be separated.
 11. Custom-domain hosting does not authorize search indexing. The current authorized CNAME must coexist with active-page `noindex,nofollow` and the blocking `robots.txt` until a later separate indexing release.
 12. Expanded-scope head `e3e74e402b9c3892a7bcacebe1fe686363b0e237` produced FAST run `37129324800`: FAILURE with 33/34 tests passing; the sole failure was an unanchored `Allow:` directive regex matching inside `Disallow:`. The bounded replacement anchors directives to complete lines.
+
+
+## ECOG-P03 — Homepage Facebook Spotlight
+
+- State: FREEZE_READY
+- Risk: LOW
+- Status: FREEZE_READY / OWNER PREVIEW ACCEPTED — MANAGER FULL PENDING
+- Activation: [Issue #23](https://github.com/Ryan42062001/ECOG-Website/issues/23)
+- Canonical base: `8b78795081f66c72a31432e6e62cc7670decfa47`
+- Branch: `phase/ecog-p03-homepage-facebook-spotlight`
+- PR: one DRAFT PR to `main`; no merge or deployment authorized
+
+Scope: preserve hero Plan Your Visit and Watch a Message, add an accessible official Facebook action near the hero CTAs, and feature a Stay Connected With Our Church Family section immediately after the service-times strip. The approved destination is https://www.facebook.com/EverettCOG/. Static markup/styles only; no feed, SDK, iframe, tracking, fonts, or authentication. Keep P02 CLOSED, maintain noindex/nofollow and sitewide robots Disallow, and do not mutate production infrastructure. FAST and owner preview precede Phase Sync, Manager FULL/freeze, and any separately authorized merge.
+
+- Historical first-preview candidate passed FAST [40402008658](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40402008658) on SHA `346c239118b820f1e67cad6b992dd5e91bb24096`; the later hero-button correction required new evidence.
+
+Manager-authorized owner punch list: [PR #24 comment 6427620205](https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427620205). Ryan's mobile preview identified the hero Facebook link as visually inconsistent underlined text. The same Primary Builder changed it to the existing outlined pill-button appearance, with concise "Visit Our Facebook" text, official destination and accessible new-tab announcement. The separate featured section remains unchanged. Prior FAST run `40402008658` belongs to the old head only; earlier runs `40401573279` and `40401849954` remain historical FAILURES. Corrected source SHA `4b37841328d1f501dc5b96ae3b0d7026c049c1e3` passed FAST `40404116363` (SUCCESS, 35/35 adversarial tests), and Ryan then accepted the corrected owner preview. PR #24 remains DRAFT / OPEN / UNMERGED.
+
+Phase Sync Manager authorization and owner-preview acceptance: [PR #24 comment 6427794726](https://github.com/Ryan42062001/ECOG-Website/pull/24#issuecomment-6427794726). Ryan approved the corrected "Visit Our Facebook" outlined pill in the hero at source SHA `4b37841328d1f501dc5b96ae3b0d7026c049c1e3`; this is preview acceptance only, **not merge or production-deployment authorization**. The Phase Sync is documentation-only (`.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/ecog-p03-homepage-facebook-spotlight.md`), preserves approved homepage HTML/CSS byte-for-byte and leaves P02 CLOSED and Production Indexing NOT AUTHORIZED. A **new exact-head Phase Sync FAST** is required; its result must be recorded in PR #24. Next gate is **Manager verification and FULL PHASE CI**, not Builder-triggered FULL, freeze, audit, PR ready, merge, or deployment.

@@ -16,3 +16,16 @@
 @media(max-width:620px){h1{font-size:clamp(2.6rem,14vw,4.5rem)}.hero h1{max-width:10ch;font-size:clamp(2.65rem,12vw,3.8rem)}.hero__lead{font-size:clamp(1.3rem,6.4vw,1.85rem)}.hero__copy{font-size:.98rem}.service-strip__grid{grid-template-columns:1fr}.service-strip__grid>div{padding:1rem;border-right:0;border-bottom:1px solid rgba(7,26,43,.18)}.service-strip__grid>div:last-child{border-bottom:0}.placeholder-media{min-height:18rem}.brand__text{font-size:.84rem}.brand__text small{font-size:.52rem}.brand__mark{width:2.8rem}.section{padding:4rem 0}}
 @media(max-width:390px){.brand__text{font-size:.76rem}.brand__text small{display:none}.brand__mark{width:2.55rem}.container{width:min(calc(100% - 1.25rem),var(--container))}.button-row .button{width:100%}.hero__content{padding-block:3.75rem}.nav__links{right:-.15rem;width:min(20rem,calc(100vw - 1.25rem))}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.button:hover,.feature-card:hover{transform:none}}
+
+/* ECOG-P03: static, accessible, link-first Facebook spotlight */
+.home-facebook-section{padding-block:clamp(3.75rem,6vw,5.5rem);background:var(--color-surface-muted)}
+.home-facebook{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(17rem,.75fr);align-items:center;gap:clamp(2rem,5vw,4rem)}
+.home-facebook__copy{max-width:48rem}
+.home-facebook__copy h2{max-width:21ch;font-size:clamp(2rem,4vw,3.2rem)}
+.home-facebook__copy>p:not(.eyebrow){max-width:41rem;color:var(--color-muted)}
+.home-facebook__card{padding:clamp(1.75rem,4vw,3rem);border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--color-dark-soft),var(--color-dark));color:var(--color-white);box-shadow:var(--shadow-soft)}
+.home-facebook__card-label{color:var(--color-accent);font-size:.72rem;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
+.home-facebook__card strong{display:block;margin-bottom:1rem;font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.2;letter-spacing:-.02em}
+.home-facebook__card p:last-child{margin-bottom:0;color:rgba(255,255,255,.82)}
+@media(max-width:860px){.home-facebook{grid-template-columns:1fr}.home-facebook__card{max-width:42rem}}
+@media(max-width:620px){.hero .button-row .button{width:100%}}
