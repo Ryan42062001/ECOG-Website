@@ -218,9 +218,9 @@ Closure Sync requires a **NEW exact-head FAST**, Manager independent review and 
 - Status (ECOG-P06): READINESS_REVIEW / MANAGER SOURCE-CANDIDATE AUTHORIZATION PENDING
 - Contract: [Issue #30](https://github.com/Ryan42062001/ECOG-Website/issues/30)
 - Dependency: [P05 #29](https://github.com/Ryan42062001/ECOG-Website/issues/29) — registrar transfer PENDING
-- Canonical base: \`27051868f0ebb2432efe19e5f5b1634b4876c27d\`
-- Branch: \`phase/ecog-p06-indexing-readiness\` / one documentation-only DRAFT PR
-- Stage 1 authorized paths: \`.ai/CURRENT_PHASE.md\`, \`docs/PRODUCT_ROADMAP.md\`, \`docs/ecog-p06-search-indexing-readiness.md\` (new)
+- Canonical base: `27051868f0ebb2432efe19e5f5b1634b4876c27d`
+- Branch: `phase/ecog-p06-indexing-readiness` / one documentation-only DRAFT PR
+- Stage 1 authorized paths: `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/ecog-p06-search-indexing-readiness.md` (new)
 
 The 12 intended sitemap URLs have page-specific title/description, HTTPS apex self-canonical equal to OG URL and active noindex,nofollow; sitewide robots Disallow remains and current sitemap has not been submitted. The Oct 21 Google cross-domain selected canonical is historical, the Oct 26 live inspection was robots-blocked, and the GSC verified property has no trusted current indexing counts. The obsolete 2014 sitemap.txt submission was removed. [Detailed 12-page matrix, legacy/retired/404/host audit, preview header gate, controlled validation and future rollback plan](docs/ecog-p06-search-indexing-readiness.md).
 
