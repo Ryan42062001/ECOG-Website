@@ -213,24 +213,35 @@ Closure Sync requires a **NEW exact-head FAST**, Manager independent review and 
 
 ## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
-- State (ECOG-P06): STAGE2B_PREVIEW_READY
+- State (ECOG-P06): FREEZE_READY
 - Risk (ECOG-P06): HIGH
-- Status (ECOG-P06): STAGE2B_PREVIEW_READY / OWNER PREVIEW AND MANAGER PHASE SYNC PENDING
+- Status (ECOG-P06): FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING
 - Manager contract: [Issue #30](https://github.com/Ryan42062001/ECOG-Website/issues/30)
-- Stage 2A authority: [PR #31 comment #6431997735](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6431997735)
-- Canonical baseline: `27051868f0ebb2432efe19e5f5b1634b4876c27d`
-- PR #31: `phase/ecog-p06-indexing-readiness` — DRAFT / OPEN / UNMERGED
-- P05: [Issue #29](https://github.com/Ryan42062001/ECOG-Website/issues/29) — domain registrar transfer PENDING
-- P06 draft-branch source mode: `INDEXABLE_CANDIDATE` (NOT owner indexing or production-release approval)
+- Stage 2A authority: [#6431997735](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6431997735)
+- Stage 2B authority: [#6432299293](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432299293)
+- Manager Phase Sync authority and owner-preview acceptance: [#6432931901](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432931901)
+- Original canonical base: `27051868f0ebb2432efe19e5f5b1634b4876c27d`
+- Accepted indexing-candidate product SHA: `6fb12ab5da5874dad0e0b1809ecf21c7fe84a722`
+- Accepted exact product FAST: [#40439661687](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40439661687) — SUCCESS, 68/68 plus complete validation union
+- Pull request: [#31](https://github.com/Ryan42062001/ECOG-Website/pull/31) — DRAFT / OPEN / UNMERGED
+- Branch source mode: `INDEXABLE_CANDIDATE` / Production indexing release authority **NOT GRANTED**
+- P05 status: [Issue #29](https://github.com/Ryan42062001/ECOG-Website/issues/29) OPEN — operational registrar transfer complete, **final ownership/email/MFA/billing assurance pending** ([evidence](https://github.com/Ryan42062001/ECOG-Website/issues/29#issuecomment-6432876462)).
+- Indexing production release: NOT AUTHORIZED.
 
-Stage 1 accepted after [FAST #40436219160](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40436219160) SUCCESS with all 35 original tests. The P06 readiness document inventories twelve HTTPS apex canonical/OG/sitemap public pages currently all noindex, the unsubmitted sitemap, sitewide robots Disallow, GSC historical cross-domain Google-selected canonical and robots-blocked live test, eleven active HTML meta-refresh legacy URLs, retired/404 routes, www/apex redirect checks, preview/staging header protection and rollback.
+### Accepted owner preview and candidate boundaries
 
-Stage 2A added fail-closed unique P06-scoped `P06 Candidate Source Mode` parsing, preserving historic P02 indexing authority; validator enforces the existing real blocked state and tests coherent hypothetical `INDEXABLE_CANDIDATE` only in temporary fixtures. Appended 33 negative/positive fixture cases; none of the original 35 adversarial tests were deleted or weakened. [Interim FAST #40437322497](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40437322497) SUCCESS (66/66) on Stage 2A test SHA `2c407248d868ad85f3c5d5112b3b32ad47a8bdac`. Documentation checkpoint needs NEW exact-head FAST and Manager review before Stage 2B.
+Ryan accepted the unchanged visual design and intended **12 public indexing pages** at exact SHA `6fb12ab5da5874dad0e0b1809ecf21c7fe84a722`. In that unmerged source candidate, precisely twelve intended HTML pages have one `index,follow` robots meta; draft-branch `robots.txt` is exactly `User-agent: *`, `Allow: /` and `Sitemap: https://everettchurchofgod.com/sitemap.xml`. Original titles/descriptions/apex self-canonicals/OG URLs, church facts, page content/links, 12-entry `sitemap.xml`, CSS/JS/assets, CNAME, 11 active legacy meta-refresh routes and retired/404 pages are unchanged. **Protected live `main` still has 12 `noindex,nofollow` pages and robots `Disallow: /`**; no Google submission/indexing request has been made.
 
-Cumulative PR changes are ONLY five paths: `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/ecog-p06-search-indexing-readiness.md`, `scripts/validate-launch-state.js`, and `scripts/validate-release-candidate.test.js`. The separately allowed sixth `scripts/validate-release-candidate.js` was not necessary and remains unchanged. P02/P03/P04 CLOSED histories and earlier roadmap are exact, as are all actual HTML/CSS/JS, sitemap, CNAME, robots and infrastructure.
+The exact source FAST [#40439661687](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40439661687) passed all 68 tests (original 35 cases + 33 Stage 2A fixtures), full launch/content/site/performance validations. Owner's 2026-10-26 23:03 ET read-only HEAD evidence ([comment #6432713858](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432713858)) proves **302 to Vercel SSO with `X-Robots-Tag: noindex`** on immutable source preview root, /about.html and branch alias. It does not prove authenticated HTTP 200 header coverage. GitHub Pages project staging root/about previously redirected 301 to canonical production; ten additional legacy HTTP statuses remain unverified.
 
-The actual Vercel `X-Robots-Tag: noindex`, GitHub staging behavior, current www/apex HTTP Location chain and exact served HTTP status on each legacy route remain **UNVERIFIED**, not implied by provider defaults. Stage 2B source changes require distinct Manager approval AND proof of preview protection. Production indexing stays blocked until P05 transfer verified and Ryan separately approves the precise frozen SHA following HIGH-risk FULL/freeze/fresh independent audit. **STOP at STAGE2A_VALIDATOR_READY**: no source unblock, FULL, freeze, audit, merge, deploy, Google submission or DNS/registrar/infrastructure changes.
+### Timeline and fail-closed safeguards
 
-### Stage 2B — gated indexable source candidate on draft branch only
+- Stage 1: [FAST #40436219160](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40436219160) SUCCESS, 35/35; 12-page SEO/sitemap/GSC historical inspection recorded.
+- Stage 2A: [FAST #40437724407](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40437724407) SUCCESS, 68/68; earlier [#40437658742](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40437658742) FAILED 67/68 (preview-check test assertion wording; later corrected). Unique P06 candidate source mode validated separately from historical P02 restriction.
+- Stage 2B first candidate: [FAST #40439468163](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40439468163) FAILED 37/68 due to old BLOCKED fixture assumptions; original 35 test bodies preserved, fixtures isolated in temporary blocked snapshot.
+- Owner-accepted exact Stage 2B product: `6fb12ab5da5874dad0e0b1809ecf21c7fe84a722`, [FAST #40439661687](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40439661687) SUCCESS 68/68. Owner acceptance and docs-only Phase Sync authorized in [#6432931901](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432931901).
+- Phase Sync: ONLY `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/ecog-p06-search-indexing-readiness.md` changed. The cumulative PR remains **18 authorized paths** (3 docs + 2 scripts + 12 HTML + robots); both scripts and the approved 12+robots product blobs are unchanged. The Phase Sync commit requires its own **NEW exact-head FAST**, which is recorded in PR #31 after observation rather than falsely copied from the earlier source run.
 
-Manager source-scope authority: [comment #6432299293](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432299293). Twelve approved HTML robots metas change to `index,follow` and only branch robots allows crawling with the existing apex sitemap directive. The twelve-entry `sitemap.xml`, CNAME, all CSS/JS, historical compatibility/retired/404 pages, and previous content/metadata remain unchanged. P02/P03/P04 CLOSED records above and P02 historical indexing authority are immutable. Canonical main still blocks robots crawling and all twelve noindex pages. PREVIEW protection requires unauthenticated SSO 302 with real X-Robots-Tag noindex on exact deployed SHA/branch alias; accessible 200 without noindex is a STOP. Manager Phase Sync and owner preview are pending. The original 35 plus 33 Stage 2A tests and validator union remain intact. No FULL, freeze, audit, PR-ready, merge, production deploy, indexing submission or infrastructure changes. P05 transfer completion and later exact-frozen-SHA owner consent are required for any actual release.
+Earlier P02/P03/P04 CLOSED history above is preserved byte-for-byte. Historical P02 `Production Indexing: NOT AUTHORIZED` remains intact. P05 Cloudflare registration/transfer operationally confirmed Active, transfer within last 60 days, expiry 2027-11-28, auto-renew on, but legal/church registration authorization, church-controlled email verification, MFA/admin/backup access and billing assurance are still outstanding. Do not declare P05 CLOSED or indexing authorized.
+
+**STOP at FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING.** Manager next reviews Phase Sync SHA/FAST and separately controls FULL, HIGH-risk immutable freeze, fresh independent HIGH-risk audit, P05 final release prerequisites and Ryan's subsequent exact-frozen-SHA protected-merge/indexing consent. No Builder FULL, freeze, audit, PR-ready, merge, deploy, sitemap submit, GSC indexing request, registrar/DNS/Cloudflare/Vercel/Pages change or production release.
