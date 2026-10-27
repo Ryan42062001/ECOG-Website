@@ -167,3 +167,28 @@ The released PR #24 touched only the five originally approved paths: `index.html
 Closure Sync itself is limited to the **three documentation paths**. P02 remains CLOSED with all original authorization fields and closure evidence unchanged. Canonical production hosting is not permission to index: active-page `noindex,nofollow` and `robots.txt` sitewide `Disallow: /` remain in force; production indexing, DNSSEC changes and registrar transfer remain NOT AUTHORIZED. No HTML, CSS, JS, contact, CNAME, sitemap, metadata, DNS/Cloudflare, Pages configuration, or infrastructure changes are part of Closure Sync.
 
 Completion of documentation-only Closure Sync requires a NEW exact-head FAST on its own HEAD and Manager review. The Closure Sync draft PR must not be merged or deployed by the Builder. ECOG-P04 source work is separate and does not begin in this assignment.
+
+## ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
+
+- State: FREEZE_READY
+- Risk: LOW
+- Status: FREEZE_READY / OWNER PREVIEW ACCEPTED — MANAGER FULL PENDING
+- Manager contract: [Issue #25](https://github.com/Ryan42062001/ECOG-Website/issues/25)
+- Manager activation: [Comment #6429378217](https://github.com/Ryan42062001/ECOG-Website/issues/25#issuecomment-6429378217)
+- Owner acceptance: [PR #27 comment #6430262021](https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430262021)
+- Manager Phase Sync authorization: [PR #27 comment #6430296767](https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430296767)
+- Canonical baseline: `7037d42005ca50462c65b52c132b6ab277157ce8`
+- Approved product-source SHA: `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3`
+- Approved exact-head FAST: [40418871876](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40418871876) — SUCCESS (35/35 adversarial tests)
+- Feature branch: `phase/ecog-p04-facebook-branding-homepage-phone`
+- PR #27: DRAFT / OPEN / UNMERGED
+
+Scope and result: the homepage hero "Visit Our Facebook" pill alone uses Facebook-blue `#0866FF` fill, a small white decorative f SVG, white text, darker blue hover and visible white focus affordance. Original first cyan "Plan Your Visit" and second outlined "Watch a Message" CTAs, approved external Facebook destination/new-tab context, mobile full-width stack and separate Facebook spotlight remain unchanged.
+
+The fourth homepage service-strip item reads **Call Us — 814-652-9287**, with an actual `tel:+18146529287` link; existing Sunday 10:00 AM, Wednesday 7:00 PM and Everett, PA items are preserved. The scoped home strip uses four columns desktop, two tablet, one mobile; `contact.html` and other pages remain unchanged. Color calculation found white-on-blue 4.82:1 normal and 6.13:1 hover contrast. No external logo asset, new JS, embed or tracker.
+
+Ryan's owner-preview acceptance: "Yes I like that" (PR #27 comment #6430262021), recorded at https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430262021. Manager documentation-only Phase Sync authorization: https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430296767. Approved product source SHA `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3`; exact source FAST [40418871876](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40418871876) COMPLETED / SUCCESS, 35/35 adversarial tests. The source preview deployment `dpl_3sfCwNKATkR69XL5GfPQSUvKFuiB` was READY at that SHA. The owner accepted BOTH presented designs; this does not imply independent validation of every route, viewport or dialer nor authorize release. Approved source FAST is historical product evidence; the documentation-only Phase Sync must pass a NEW exact-head FAST recorded on PR #27.
+
+Cumulative PR scope is exactly five originally authorized paths. The Phase Sync itself changes only `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/ecog-p04-facebook-branding-homepage-phone.md`. Existing `index.html` and `assets/css/main.css` stay byte-for-byte unchanged from the approved source. All P02/P03 history above is retained without revision. Production Indexing remains NOT AUTHORIZED with noindex,nofollow and robots `Disallow: /` safeguarded. No infrastructure, Pages, DNS, Cloudflare, registrar, DNSSEC, CNAME, canonical/OG or production changes are authorized.
+
+STOP at FREEZE_READY for Manager verification and FULL; no Builder FULL, freeze, audit, PR ready transition, merge, production deployment or promotion. A separate explicit Ryan merge authorization remains required.
