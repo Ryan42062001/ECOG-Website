@@ -6,7 +6,8 @@ const assert = require('node:assert/strict');
 const { validateReleaseCandidate } = require('./validate-release-candidate');
 const { validateLaunchState } = require('./validate-launch-state');
 
-const repoRoot = path.resolve(__dirname, '..');
+const checkoutRoot = path.resolve(__dirname, '..');
+const repoRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ecog-p06-blocked-baseline-'));
 const fixturePaths = [
   '.ai',
   '.github/workflows',
@@ -34,6 +35,42 @@ const fixturePaths = [
   'robots.txt',
   'sitemap.xml',
 ];
+
+// Keep the existing 35 historical BLOCKED-state tests and their mutation
+// bodies unchanged, even when the unmerged P06 source candidate is indexable.
+// Every original test reads a disposable BLOCKED snapshot of the checkout.
+// Separately assert the REAL checkout remains a coherent candidate below.
+const p06FixturePublicFiles = [
+  'index.html', 'new-here.html', 'about.html', 'ministries.html',
+  'ministries/children.html', 'ministries/students.html',
+  'ministries/men.html', 'ministries/women.html',
+  'messages.html', 'events.html', 'give.html', 'contact.html'
+];
+for (const relativePath of fixturePaths) {
+  const original = path.join(checkoutRoot, relativePath);
+  const target = path.join(repoRoot, relativePath);
+  fs.mkdirSync(path.dirname(target), {recursive: true});
+  if (fs.statSync(original).isDirectory()) fs.cpSync(original, target, {recursive: true});
+  else fs.copyFileSync(original, target);
+}
+function replaceFixtureExact(relativePath, from, to) {
+  const file = path.join(repoRoot, relativePath);
+  const content = fs.readFileSync(file, 'utf8');
+  assert.equal(content.split(from).length, 2,
+    'P06 blocked-fixture setup: exactly one required candidate marker in ' + relativePath);
+  fs.writeFileSync(file, content.replace(from, to));
+}
+replaceFixtureExact('.ai/CURRENT_PHASE.md',
+  'P06 Candidate Source Mode: INDEXABLE_CANDIDATE',
+  'P06 Candidate Source Mode: BLOCKED');
+for (const file of p06FixturePublicFiles) {
+  replaceFixtureExact(file, '<meta name="robots" content="index,follow">',
+    '<meta name="robots" content="noindex,nofollow">');
+}
+replaceFixtureExact('robots.txt',
+  'User-agent: *\nAllow: /\nSitemap: https://everettchurchofgod.com/sitemap.xml\n',
+  'User-agent: *\nDisallow: /\n\n# Development/staging site. Crawling will be enabled at production launch.\n');
+process.on('exit', () => fs.rmSync(repoRoot, {recursive: true, force: true}));
 
 function copyFixturePath(root, relativePath) {
   const source = path.join(repoRoot, relativePath);
@@ -371,14 +408,16 @@ function makeP06IndexableFixture(t) {
   return root;
 }
 
-test('P06 real branch remains BLOCKED, without production indexing authority', () => {
-  const phase = fs.readFileSync(path.join(repoRoot, '.ai/CURRENT_PHASE.md'), 'utf8');
-  assert.ok(phase.includes(blockedP06));
-  assert.ok(!phase.includes(indexableP06));
-  const result = validateLaunchState(repoRoot);
+test('P06 real draft branch is a coherent INDEXABLE_CANDIDATE without production release authority', () => {
+  const phase = fs.readFileSync(path.join(checkoutRoot, '.ai/CURRENT_PHASE.md'), 'utf8');
+  assert.ok(phase.includes(indexableP06));
+  assert.ok(!phase.includes(blockedP06));
+  assert.ok(phase.includes('P06 Production Indexing Release Authority: NOT GRANTED'));
+  assert.deepEqual(validateReleaseCandidate(checkoutRoot), []);
+  const result = validateLaunchState(checkoutRoot);
   assert.deepEqual(result.failures, []);
-  assert.equal(result.indexingState, 'NOT AUTHORIZED');
-  assert.equal(result.p06CandidateMode, 'BLOCKED');
+  assert.equal(result.indexingState, 'INDEXABLE_CANDIDATE');
+  assert.equal(result.p06CandidateMode, 'INDEXABLE_CANDIDATE');
 });
 
 test('P06 synthetic coherent 12-page indexable source candidate passes in temp fixture only', t => {
