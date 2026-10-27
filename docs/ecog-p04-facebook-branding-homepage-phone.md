@@ -1,8 +1,8 @@
 # ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
 
-- **State:** FREEZE_READY
+- **State (ECOG-P04):** CLOSED
 - **Risk:** LOW
-- **Status:** FREEZE_READY / OWNER PREVIEW ACCEPTED — MANAGER FULL PENDING
+- **Status:** CLOSED / FACEBOOK HERO BRANDING & HOMEPAGE PHONE RELEASE VERIFIED
 - **Manager contract:** [Issue #25](https://github.com/Ryan42062001/ECOG-Website/issues/25)
 - **Activation:** [comment 6429378217](https://github.com/Ryan42062001/ECOG-Website/issues/25#issuecomment-6429378217)
 - **Canonical base:** `7037d42005ca50462c65b52c132b6ab277157ce8`
@@ -11,7 +11,10 @@
 - **Owner approval:** [Comment #6430262021](https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430262021)
 - **Manager Phase Sync authorization:** [Comment #6430296767](https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430296767)
 - **Feature branch:** `phase/ecog-p04-facebook-branding-homepage-phone`
-- **Pull request:** [#27 DRAFT / UNMERGED](https://github.com/Ryan42062001/ECOG-Website/pull/27)
+- **Release PR:** [#27 MERGED / CLOSED](https://github.com/Ryan42062001/ECOG-Website/pull/27)
+- **Frozen release candidate:** `c995fc16a0b9923037261e41639bec9f806a4567`
+- **Canonical merge SHA:** `a9207c879220c0a8b121eabae0155c9cfcf1aa58`
+- **Closure branch:** `phase/ecog-p04-closure-sync` — separate documentation-only DRAFT PR / UNMERGED
 - **Owner:** Ryan
 - **Execution:** fresh Primary Builder, Regular Chat
 - **Indexing:** NOT AUTHORIZED
@@ -42,7 +45,7 @@ Do not change `contact.html`, other pages, social-featured section, JS, header/f
 
 ECOG-P02 stays **CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED** with its authorization controls unchanged. ECOG-P03 stays **CLOSED / FACEBOOK HOMEPAGE RELEASE VERIFIED** with complete historical merge and closure evidence. P03 closure post-merge FAST `40416668780` and Pages deployment `40416671137` passed on canonical starting main; they are baseline history, not validation of P04.
 
-Ryan's owner-preview acceptance: "Yes I like that" (PR #27 comment #6430262021), recorded at https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430262021. Manager documentation-only Phase Sync authorization: https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430296767. Approved product source SHA `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3`; exact source FAST [40418871876](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40418871876) COMPLETED / SUCCESS, 35/35 adversarial tests. The source preview deployment `dpl_3sfCwNKATkR69XL5GfPQSUvKFuiB` was READY at that SHA. The preview acceptance covers both designs but does not assert full mobile, route, accessibility interaction or dialer testing. The subsequent documentation-only Phase Sync requires its own new exact-head FAST. Owner approval is NOT release or merge authorization.
+Ryan's owner-preview acceptance: "Yes I like that" (PR #27 comment #6430262021), recorded at https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430262021. Manager documentation-only Phase Sync authorization: https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430296767. Approved product source SHA `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3`; exact source FAST [40418871876](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40418871876) COMPLETED / SUCCESS, 35/35 adversarial tests. The source preview deployment `dpl_3sfCwNKATkR69XL5GfPQSUvKFuiB` was READY at that SHA. The preview acceptance covers both designs but does not assert full mobile, route, accessibility interaction or dialer testing. The historical Phase Sync HEAD `c995fc16a0b9923037261e41639bec9f806a4567` passed exact-head FAST [40424969206](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40424969206); subsequent Manager FULL [40425362804](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40425362804) and immutable LOW-risk freeze also passed. Ryan later separately authorized the protected merge and automatic Pages publication, as recorded in https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430512182. The earlier preview-only approval itself was not release authorization.
 
 ## Historical owner-preview criteria (not individually certified tests)
 
@@ -54,4 +57,19 @@ Ryan's owner-preview acceptance: "Yes I like that" (PR #27 comment #6430262021),
 - [ ] Standalone Facebook feature section, mobile menu, YouTube/messages links and all other homepage content are unchanged.
 - [ ] No page robots/indexing change, third-party embed, new library, tracker or production release occurred.
 
-**FREEZE_READY / OWNER PREVIEW ACCEPTED — MANAGER FULL PENDING.** Ryan accepted the Facebook-blue hero with white decorative f SVG and the visible 814-652-9287 / `tel:+18146529287` phone item, with original CTA order, separate Facebook feature and 4/2/1 service-strip layout preserved. The source SHA `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3` passed source FAST `40418871876` SUCCESS. This Phase Sync changes three documentation paths only and leaves approved product HTML/CSS identical. Run NEW exact-head FAST; STOP for Manager FULL, freeze and separately authorized merge. No indexing, infrastructure, PR ready, audit or production deployment.
+**Historical Phase Sync / FREEZE_READY gate, now satisfied:** Ryan had accepted the Facebook-blue hero and 814-652-9287 phone presentation; source FAST `40418871876`, Phase Sync FAST `40424969206`, exact-head FULL `40425362804` and immutable LOW-risk freeze on `c995fc16a0b9923037261e41639bec9f806a4567` all succeeded. The frozen product files were unchanged through the release. The separate explicit protected merge and Pages publication authority was then granted and executed; details follow in the production closure record. This historic stop gate is not a current pending P04 release blocker.
+
+## Post-production Closure Sync — release verified
+
+- **Final lifecycle:** CLOSED / FACEBOOK HERO BRANDING & HOMEPAGE PHONE RELEASE VERIFIED.
+- **Manager administrative closure authorization:** https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430627525.
+- **Immutable frozen release HEAD:** `c995fc16a0b9923037261e41639bec9f806a4567`; **PR #27 MERGED / CLOSED** into canonical protected main `a9207c879220c0a8b121eabae0155c9cfcf1aa58`.
+- **Separate owner merge and publication approval:** https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430512182. Protected merge verification: https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430534874.
+- **Exact merge-SHA post-merge FAST:** [40425685834](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40425685834), COMPLETED / SUCCESS.
+- **Exact merge-SHA GitHub Pages build/deploy:** [40425685263](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40425685263), COMPLETED / SUCCESS with build, report-build-status and deploy jobs successful.
+- **Owner production smoke:** Ryan confirmed on the live homepage: "Ya i like it" after observing both the Facebook-blue hero with white logo and the visible **Call Us 814-652-9287** item, as recorded in https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430627525. This is owner-observed homepage visual acceptance, not comprehensive independent dialer, keyboard, device or all-route testing.
+- **Product blob preservation:** `index.html` `58014608ba0490ed3706512f68ce51841fdcad7b`; `assets/css/main.css` `935c03f82d1d51d891383f46e9cfd34783ceb130`. No subsequent source/UI edits.
+- **Closure PR scope:** documentation only: `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/ecog-p04-facebook-branding-homepage-phone.md`. Existing P02 and P03 historical CLOSED records and prior roadmap evidence remain untouched.
+- **Safeguards:** `noindex,nofollow` and `robots.txt` sitewide `Disallow: /` unchanged; Production Indexing NOT AUTHORIZED. No product assets, phone facts, Contact page, CNAME, robots, sitemap, metadata, DNS, Cloudflare, Pages settings, registrar/EPP, DNSSEC, TLS, secrets or infrastructure modified.
+
+This closure document records a previously completed and owner-observed production release. The separate documentation-only closure PR remains DRAFT / OPEN / UNMERGED pending its own **NEW exact-head FAST**, Manager review, and **separate explicit Ryan closure-PR merge authorization**. No Builder FULL, freeze, audit, PR-ready transition, merge, deploy or new-phase implementation is authorized here.
