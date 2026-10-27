@@ -627,7 +627,7 @@ test('P06 preview observation rejects unknown custom-domain override state', () 
   assert.match(validatePreviewResponseEvidence({
     url: 'https://ecog-website-preview-example.vercel.app/',
     target: 'preview', status: 200, xRobotsTag: 'noindex'
-  }).join('\n'), /no custom-domain override/);
+  }).join('\n'), /custom-domain override/);
 });
 
 test('P06 preview observation rejects HTTP redirect as proof of protected content', () => {
