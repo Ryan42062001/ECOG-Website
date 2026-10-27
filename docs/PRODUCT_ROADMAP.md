@@ -170,21 +170,25 @@ Completion of documentation-only Closure Sync requires a NEW exact-head FAST on 
 
 ## ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
 
-- State: PREVIEW_READY
+- State: FREEZE_READY
 - Risk: LOW
-- Status: PREVIEW_READY / OWNER DESKTOP AND MOBILE REVIEW PENDING
+- Status: FREEZE_READY / OWNER PREVIEW ACCEPTED — MANAGER FULL PENDING
 - Manager contract: [Issue #25](https://github.com/Ryan42062001/ECOG-Website/issues/25)
-- Activation clearance: [Comment 6429378217](https://github.com/Ryan42062001/ECOG-Website/issues/25#issuecomment-6429378217)
-- Canonical base: `7037d42005ca50462c65b52c132b6ab277157ce8`
+- Manager activation: [Comment #6429378217](https://github.com/Ryan42062001/ECOG-Website/issues/25#issuecomment-6429378217)
+- Owner acceptance: [PR #27 comment #6430262021](https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430262021)
+- Manager Phase Sync authorization: [PR #27 comment #6430296767](https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430296767)
+- Canonical baseline: `7037d42005ca50462c65b52c132b6ab277157ce8`
+- Approved product-source SHA: `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3`
+- Approved exact-head FAST: [40418871876](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40418871876) — SUCCESS (35/35 adversarial tests)
 - Feature branch: `phase/ecog-p04-facebook-branding-homepage-phone`
-- PR: one DRAFT PR targeting main, merge NOT AUTHORIZED
+- PR #27: DRAFT / OPEN / UNMERGED
 
-Owner-selected feature A: make the existing hero Visit Our Facebook CTA a #0866FF filled pill with a lightweight decorative white Facebook f SVG, preserving white readable text, safe official URL and accessible new-tab context. Keep Plan Your Visit cyan and first, Watch a Message outlined and second, and the standalone Facebook spotlight unchanged.
+Scope and result: the homepage hero "Visit Our Facebook" pill alone uses Facebook-blue `#0866FF` fill, a small white decorative f SVG, white text, darker blue hover and visible white focus affordance. Original first cyan "Plan Your Visit" and second outlined "Watch a Message" CTAs, approved external Facebook destination/new-tab context, mobile full-width stack and separate Facebook spotlight remain unchanged.
 
-Second feature: add a visible, tappable fourth Call Us item to the homepage service-time/location strip showing **814-652-9287**, linking only to `tel:+18146529287`. Preserve the three existing service items, all published church facts, metadata and the Contact page; maintain responsive layout.
+The fourth homepage service-strip item reads **Call Us — 814-652-9287**, with an actual `tel:+18146529287` link; existing Sunday 10:00 AM, Wednesday 7:00 PM and Everett, PA items are preserved. The scoped home strip uses four columns desktop, two tablet, one mobile; `contact.html` and other pages remain unchanged. Color calculation found white-on-blue 4.82:1 normal and 6.13:1 hover contrast. No external logo asset, new JS, embed or tracker.
 
-Only five cumulative source paths are authorized; P02 and P03 remain CLOSED with all historical evidence unchanged. Indexing remains NOT AUTHORIZED; noindex,nofollow and robots.txt Disallow: / stay enforced. Exact-head FAST and owner desktop/mobile preview required. Stop at PREVIEW_READY; FULL, freeze, audit, merge, production deployment and infrastructure changes are not authorized.
+Ryan's owner-preview acceptance: "Yes I like that" (PR #27 comment #6430262021), recorded at https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430262021. Manager documentation-only Phase Sync authorization: https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430296767. Approved product source SHA `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3`; exact source FAST [40418871876](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40418871876) COMPLETED / SUCCESS, 35/35 adversarial tests. The source preview deployment `dpl_3sfCwNKATkR69XL5GfPQSUvKFuiB` was READY at that SHA. The owner accepted BOTH presented designs; this does not imply independent validation of every route, viewport or dialer nor authorize release. Approved source FAST is historical product evidence; the documentation-only Phase Sync must pass a NEW exact-head FAST recorded on PR #27.
 
-Implementation candidate: `index.html` changes only the existing hero Facebook anchor visual/icon and adds the fourth Call Us service-strip entry; existing Facebook section markup is identical. `assets/css/main.css` gains scoped P04 rules only. Four equal desktop strip columns, two columns up to 900px and one up to 620px; all three hero pills retain the established mobile full-width stack. White-on-blue text contrast is at least 4.5:1 for normal and hovered states by color calculation. Owner-requested church phone display and `tel:+18146529287` match contact-page facts.
+Cumulative PR scope is exactly five originally authorized paths. The Phase Sync itself changes only `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, `docs/ecog-p04-facebook-branding-homepage-phone.md`. Existing `index.html` and `assets/css/main.css` stay byte-for-byte unchanged from the approved source. All P02/P03 history above is retained without revision. Production Indexing remains NOT AUTHORIZED with noindex,nofollow and robots `Disallow: /` safeguarded. No infrastructure, Pages, DNS, Cloudflare, registrar, DNSSEC, CNAME, canonical/OG or production changes are authorized.
 
-Exact-head FAST and Vercel preview must be verified before final owner handoff and recorded in DRAFT PR #27. No historical lifecycle text above P04 was changed, and no merge, production deploy or indexing approval is implied.
+STOP at FREEZE_READY for Manager verification and FULL; no Builder FULL, freeze, audit, PR ready transition, merge, production deployment or promotion. A separate explicit Ryan merge authorization remains required.

@@ -1,11 +1,15 @@
 # ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
 
-- **State:** PREVIEW_READY
+- **State:** FREEZE_READY
 - **Risk:** LOW
-- **Status:** PREVIEW_READY / OWNER DESKTOP AND MOBILE REVIEW PENDING
+- **Status:** FREEZE_READY / OWNER PREVIEW ACCEPTED — MANAGER FULL PENDING
 - **Manager contract:** [Issue #25](https://github.com/Ryan42062001/ECOG-Website/issues/25)
 - **Activation:** [comment 6429378217](https://github.com/Ryan42062001/ECOG-Website/issues/25#issuecomment-6429378217)
 - **Canonical base:** `7037d42005ca50462c65b52c132b6ab277157ce8`
+- **Approved product source SHA:** `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3`
+- **Approved source FAST:** [40418871876](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40418871876) — COMPLETED / SUCCESS
+- **Owner approval:** [Comment #6430262021](https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430262021)
+- **Manager Phase Sync authorization:** [Comment #6430296767](https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430296767)
 - **Feature branch:** `phase/ecog-p04-facebook-branding-homepage-phone`
 - **Pull request:** [#27 DRAFT / UNMERGED](https://github.com/Ryan42062001/ECOG-Website/pull/27)
 - **Owner:** Ryan
@@ -38,9 +42,9 @@ Do not change `contact.html`, other pages, social-featured section, JS, header/f
 
 ECOG-P02 stays **CLOSED / PRODUCTION HOSTING & DOMAIN CUTOVER VERIFIED** with its authorization controls unchanged. ECOG-P03 stays **CLOSED / FACEBOOK HOMEPAGE RELEASE VERIFIED** with complete historical merge and closure evidence. P03 closure post-merge FAST `40416668780` and Pages deployment `40416671137` passed on canonical starting main; they are baseline history, not validation of P04.
 
-This PREVIEW_READY source candidate needs its own exact-HEAD FAST and a READY Vercel preview verified externally. CI run IDs/results and preview deployment details belong in the draft PR after observation, not as unverified source claims. Ryan's approval of the two feature directions is NOT approval to merge or deploy P04.
+Ryan's owner-preview acceptance: "Yes I like that" (PR #27 comment #6430262021), recorded at https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430262021. Manager documentation-only Phase Sync authorization: https://github.com/Ryan42062001/ECOG-Website/pull/27#issuecomment-6430296767. Approved product source SHA `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3`; exact source FAST [40418871876](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40418871876) COMPLETED / SUCCESS, 35/35 adversarial tests. The source preview deployment `dpl_3sfCwNKATkR69XL5GfPQSUvKFuiB` was READY at that SHA. The preview acceptance covers both designs but does not assert full mobile, route, accessibility interaction or dialer testing. The subsequent documentation-only Phase Sync requires its own new exact-head FAST. Owner approval is NOT release or merge authorization.
 
-## Owner desktop/mobile preview checklist
+## Historical owner-preview criteria (not individually certified tests)
 
 - [ ] Desktop hero: first **Plan Your Visit** is cyan, second **Watch a Message** outlined, third **Visit Our Facebook** filled Facebook blue with white f and white legible label.
 - [ ] On mobile (including narrow screens), hero pills stack full-width with no clipping, and the blue icon, text, hover and keyboard focus states remain visible.
@@ -50,4 +54,4 @@ This PREVIEW_READY source candidate needs its own exact-HEAD FAST and a READY Ve
 - [ ] Standalone Facebook feature section, mobile menu, YouTube/messages links and all other homepage content are unchanged.
 - [ ] No page robots/indexing change, third-party embed, new library, tracker or production release occurred.
 
-**STOP at PREVIEW_READY.** Await owner feedback and Manager-controlled punch list, Phase Sync, exact-head FULL, immutable freeze/audit decision and separately authorized protected merge. Do not manually deploy/promote.
+**FREEZE_READY / OWNER PREVIEW ACCEPTED — MANAGER FULL PENDING.** Ryan accepted the Facebook-blue hero with white decorative f SVG and the visible 814-652-9287 / `tel:+18146529287` phone item, with original CTA order, separate Facebook feature and 4/2/1 service-strip layout preserved. The source SHA `6e9a4a5c7ab3c48fd473b18539191a5a64f399b3` passed source FAST `40418871876` SUCCESS. This Phase Sync changes three documentation paths only and leaves approved product HTML/CSS identical. Run NEW exact-head FAST; STOP for Manager FULL, freeze and separately authorized merge. No indexing, infrastructure, PR ready, audit or production deployment.
