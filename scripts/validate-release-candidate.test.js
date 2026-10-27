@@ -343,3 +343,280 @@ test('decoy-section indexing authorization cannot satisfy an invalid P02 field',
     + '\n## Decoy section\n\nProduction Indexing: AUTHORIZED\n');
   expectLaunchRejected(root, /Production Indexing must be exactly AUTHORIZED or NOT AUTHORIZED/);
 });
+
+
+// ECOG-P06 Stage 2A: these tests create disposable files under OS temp.
+// NO committed public HTML, robots, sitemap, or production permissions change.
+const p06PublicFiles = [
+  'index.html', 'new-here.html', 'about.html', 'ministries.html',
+  'ministries/children.html', 'ministries/students.html',
+  'ministries/men.html', 'ministries/women.html',
+  'messages.html', 'events.html', 'give.html', 'contact.html'
+];
+const blockedP06 = 'P06 Candidate Source Mode: BLOCKED';
+const indexableP06 = 'P06 Candidate Source Mode: INDEXABLE_CANDIDATE';
+
+function makeP06IndexableFixture(t) {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace(blockedP06, indexableP06));
+  for (const file of p06PublicFiles) {
+    mutateFile(root, file, html => html.replace(
+      '<meta name="robots" content="noindex,nofollow">',
+      '<meta name="robots" content="index,follow">'
+    ));
+  }
+  mutateFile(root, 'robots.txt', () =>
+    'User-agent: *\nAllow: /\nSitemap: https://everettchurchofgod.com/sitemap.xml\n'
+  );
+  return root;
+}
+
+test('P06 real branch remains BLOCKED, without production indexing authority', () => {
+  const phase = fs.readFileSync(path.join(repoRoot, '.ai/CURRENT_PHASE.md'), 'utf8');
+  assert.ok(phase.includes(blockedP06));
+  assert.ok(!phase.includes(indexableP06));
+  const result = validateLaunchState(repoRoot);
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.indexingState, 'NOT AUTHORIZED');
+  assert.equal(result.p06CandidateMode, 'BLOCKED');
+});
+
+test('P06 synthetic coherent 12-page indexable source candidate passes in temp fixture only', t => {
+  const root = makeP06IndexableFixture(t);
+  assert.deepEqual(validateReleaseCandidate(root), []);
+  const result = validateLaunchState(root);
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.indexingState, 'INDEXABLE_CANDIDATE');
+  assert.equal(result.p06CandidateMode, 'INDEXABLE_CANDIDATE');
+});
+
+test('P06 rejects missing scoped candidate mode', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace(blockedP06 + '\n', ''));
+  expectLaunchRejected(root, /candidate source mode must appear exactly once/);
+});
+
+test('P06 rejects duplicated candidate mode inside its section', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace(blockedP06, blockedP06 + '\n' + blockedP06));
+  expectLaunchRejected(root, /candidate source mode must appear exactly once/);
+});
+
+test('P06 rejects a candidate mode in a decoy section instead of P06', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace(blockedP06 + '\n', '') +
+    '\n## P06 Decoy\n' + blockedP06 + '\n');
+  expectLaunchRejected(root, /candidate source mode missing inside P06 section/);
+});
+
+test('P06 rejects invalid candidate mode', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace(blockedP06, 'P06 Candidate Source Mode: LIVE_NOW'));
+  expectLaunchRejected(root, /candidate source mode invalid/);
+});
+
+test('P06 rejects missing phase heading', t => {
+  const root = createFixture(t);
+  mutatePhase(root, text => text.replace(
+    '## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch',
+    '## ECOG-P06 — Broken Heading'
+  ));
+  expectLaunchRejected(root, /ECOG-P06 heading must appear exactly once/);
+});
+
+test('P06 blocks 1 of 12 public pages going indexable prematurely', t => {
+  const root = createFixture(t);
+  mutateFile(root, 'contact.html', s => s.replace(
+    '<meta name="robots" content="noindex,nofollow">',
+    '<meta name="robots" content="index,follow">'
+  ));
+  expectLaunchRejected(root, /contact.html: indexing-blocked noindex,nofollow safeguard missing/);
+});
+
+test('P06 synthetic candidate rejects 11-of-12 mixed public page state', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'contact.html', s => s.replace(
+    '<meta name="robots" content="index,follow">',
+    '<meta name="robots" content="noindex,nofollow">'
+  ));
+  expectLaunchRejected(root, /contact.html: indexing-authorized page must not contain noindex/);
+});
+
+test('P06 synthetic candidate rejects duplicate robots meta', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'about.html', s => s.replace(
+    '<meta name="robots" content="index,follow">',
+    '<meta name="robots" content="index,follow"><meta name="robots" content="index,follow">'
+  ));
+  expectLaunchRejected(root, /about.html: expected exactly one explicit robots meta/);
+});
+
+test('P06 blocks premature crawl-enable before candidate mode', t => {
+  const root = createFixture(t);
+  mutateFile(root, 'robots.txt', () => 'User-agent: *\nAllow: /\n');
+  expectLaunchRejected(root, /indexing-blocked sitewide crawl block missing/);
+});
+
+test('P06 synthetic candidate rejects robots remaining sitewide blocked', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'robots.txt', () => 'User-agent: *\nDisallow: /\n');
+  expectLaunchRejected(root, /indexing-authorized Allow: \/ missing/);
+});
+
+test('P06 synthetic candidate rejects missing Sitemap directive', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'robots.txt', s => s.replace(
+    'Sitemap: https://everettchurchofgod.com/sitemap.xml\n', ''
+  ));
+  expectLaunchRejected(root, /indexing-authorized sitemap directive missing/);
+});
+
+test('P06 synthetic candidate rejects wrong Sitemap host', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'robots.txt', s => s.replace(
+    'https://everettchurchofgod.com/sitemap.xml',
+    'https://www.everettchurchofgod.com/sitemap.xml'
+  ));
+  expectLaunchRejected(root, /indexing-authorized sitemap directive missing/);
+});
+
+test('P06 synthetic candidate rejects duplicate Sitemap directives', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'robots.txt', s => s + 'Sitemap: https://everettchurchofgod.com/sitemap.xml\n');
+  expectLaunchRejected(root, /sitemap must appear exactly once/);
+});
+
+test('P06 synthetic candidate rejects extra sitemap location', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'sitemap.xml', s => s.replace(
+    '</urlset>', '<url><loc>https://everettchurchofgod.com/unknown.html</loc></url></urlset>'
+  ));
+  expectLaunchRejected(root, /sitemap.xml: unexpected count or duplicate URLs/);
+});
+
+test('P06 synthetic candidate rejects wrong sitemap domain', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'sitemap.xml', s => s.replace(
+    'https://everettchurchofgod.com/contact.html',
+    'https://www.everettchurchofgod.com/contact.html'
+  ));
+  expectLaunchRejected(root, /sitemap.xml: missing https:\/\/everettchurchofgod.com\/contact.html/);
+});
+
+test('P06 synthetic candidate rejects a non-apex page canonical', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'about.html', s => s.replace(
+    '<link rel="canonical" href="https://everettchurchofgod.com/about.html">',
+    '<link rel="canonical" href="https://www.everettchurchofgod.com/about.html">'
+  ));
+  expectLaunchRejected(root, /about.html: canonical must be/);
+});
+
+test('P06 synthetic candidate rejects a wrong OG URL', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'about.html', s => s.replace(
+    'property="og:url" content="https://everettchurchofgod.com/about.html"',
+    'property="og:url" content="https://example.com/about.html"'
+  ));
+  expectLaunchRejected(root, /about.html: og:url must be/);
+});
+
+test('P06 synthetic candidate rejects preview/staging hostname leaked into public source', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'about.html', s => s.replace(
+    '</title>', '</title><!-- https://ecog-example.vercel.app/ -->'
+  ));
+  expectLaunchRejected(root, /staging\/preview URL leaked into public HTML/);
+});
+
+test('P06 synthetic candidate preserves retired ministry noindex', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'ministries/senior-adults.html', s => s.replace(
+    'content="noindex,follow"', 'content="index,follow"'
+  ));
+  expectLaunchRejected(root, /Senior Adults retired page must remain noindex/);
+});
+
+test('P06 synthetic candidate preserves 404 noindex', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, '404.html', s => s.replace(
+    'content="noindex"', 'content="index,follow"'
+  ));
+  expectLaunchRejected(root, /404.html must remain noindex/);
+});
+
+test('P06 synthetic candidate preserves retired compatibility route noindex', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'index.php/senior-adults-ministry/index.html', s => s.replace(
+    'content="noindex,follow"', 'content="index,follow"'
+  ));
+  expectLaunchRejected(root, /retired compatibility noindex missing/);
+});
+
+test('P06 synthetic candidate rejects altered active legacy redirect target', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'index.php/messages/index.html', s => s.replace(
+    '../../messages.html', '../../contact.html'
+  ));
+  expectLaunchRejected(root, /legacy compatibility immediate refresh destination invalid/);
+});
+
+test('P06 synthetic candidate rejects altered active legacy canonical', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'index.php/messages/index.html', s => s.replace(
+    'https://everettchurchofgod.com/messages.html',
+    'https://everettchurchofgod.com/contact.html'
+  ));
+  expectLaunchRejected(root, /legacy compatibility canonical destination invalid/);
+});
+
+test('P06 synthetic candidate rejects active legacy noindex contrary to current policy', t => {
+  const root = makeP06IndexableFixture(t);
+  mutateFile(root, 'index.php/messages/index.html', s => s.replace(
+    '</head>', '<meta name="robots" content="noindex"></head>'
+  ));
+  expectLaunchRejected(root, /active compatibility route must remain crawlable/);
+});
+
+test('P06 never treats altered P02 historical indexing authority as permission', t => {
+  const root = makeP06IndexableFixture(t);
+  mutatePhase(root, s => s.replace(
+    'Production Indexing: NOT AUTHORIZED',
+    'Production Indexing: AUTHORIZED'
+  ));
+  expectLaunchRejected(root, /ECOG-P02 historical indexing authority must remain NOT AUTHORIZED/);
+  expectRejected(root, /ECOG-P02 Production Indexing must be exactly/);
+});
+
+test('P06 preview response fixture accepts observed noindex only with actual HTTP fields', () => {
+  const {validatePreviewResponseEvidence} = require('./validate-launch-state');
+  assert.deepEqual(validatePreviewResponseEvidence({
+    url: 'https://ecog-website-preview-example.vercel.app/',
+    target: 'preview', customDomain: false, status: 200,
+    xRobotsTag: 'noindex, nofollow'
+  }), []);
+});
+
+test('P06 preview response fixture rejects missing X-Robots-Tag', () => {
+  const {validatePreviewResponseEvidence} = require('./validate-launch-state');
+  assert.match(validatePreviewResponseEvidence({
+    url: 'https://ecog-website-preview-example.vercel.app/',
+    target: 'preview', customDomain: false, status: 200, xRobotsTag: ''
+  }).join('\n'), /X-Robots-Tag: noindex missing/);
+});
+
+test('P06 preview response fixture rejects production/custom-domain override', () => {
+  const {validatePreviewResponseEvidence} = require('./validate-launch-state');
+  assert.match(validatePreviewResponseEvidence({
+    url: 'https://everettchurchofgod.com/',
+    target: 'production', customDomain: true, status: 200, xRobotsTag: 'noindex'
+  }).join('\n'), /HTTPS vercel.app deployment hostname/);
+});
+
+test('P06 preview response fixture rejects unreachable/protected status', () => {
+  const {validatePreviewResponseEvidence} = require('./validate-launch-state');
+  assert.match(validatePreviewResponseEvidence({
+    url: 'https://ecog-website-preview-example.vercel.app/',
+    target: 'preview', customDomain: false, status: 401, xRobotsTag: 'noindex'
+  }).join('\n'), /status unverified or unsuccessful/);
+});
