@@ -213,9 +213,9 @@ Closure Sync requires a **NEW exact-head FAST**, Manager independent review and 
 
 ## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
-- State (ECOG-P06): FREEZE_READY
+- State (ECOG-P06): PUNCH_LIST
 - Risk (ECOG-P06): HIGH
-- Status (ECOG-P06): FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING
+- Status (ECOG-P06): PUNCH_LIST REMEDIATION VERIFIED / MANAGER FULL, NEW FREEZE AND INDEPENDENT RE-AUDIT PENDING
 - Manager contract: [Issue #30](https://github.com/Ryan42062001/ECOG-Website/issues/30)
 - Stage 2A authority: [#6431997735](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6431997735)
 - Stage 2B authority: [#6432299293](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432299293)
@@ -245,3 +245,15 @@ The exact source FAST [#40439661687](https://github.com/Ryan42062001/ECOG-Websit
 Earlier P02/P03/P04 CLOSED history above is preserved byte-for-byte. Historical P02 `Production Indexing: NOT AUTHORIZED` remains intact. P05 Cloudflare registration/transfer operationally confirmed Active, transfer within last 60 days, expiry 2027-11-28, auto-renew on, but legal/church registration authorization, church-controlled email verification, MFA/admin/backup access and billing assurance are still outstanding. Do not declare P05 CLOSED or indexing authorized.
 
 **STOP at FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING.** Manager next reviews Phase Sync SHA/FAST and separately controls FULL, HIGH-risk immutable freeze, fresh independent HIGH-risk audit, P05 final release prerequisites and Ryan's subsequent exact-frozen-SHA protected-merge/indexing consent. No Builder FULL, freeze, audit, PR-ready, merge, deploy, sitemap submit, GSC indexing request, registrar/DNS/Cloudflare/Vercel/Pages change or production release.
+
+### Independent audit punch-list — Jekyll publish boundary remediation
+
+Manager remediation authority: [PR #31 comment #6433412720](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6433412720). Owner's read-only live HTTP checks on protected `main` showed direct requests to `docs/PRODUCT_ROADMAP.md` and `scripts/validate-launch-state.js` return **200**, making the former frozen candidate inadequate for a controlled Google indexing release. Neither file was asserted to expose credentials. The previously immutable SHA `aa9ea1599b947f006d4947a9ed4fefd210fea3bc` is **STALE / NO LONGER VALID FOR AUDIT OR RELEASE**.
+
+A focused `_config.yml` excludes only engineering-only paths `docs/`, `scripts/`, `.ai/`, `.github/`, `.history/`, `README.md`, and `AGENTS.md`. The `data/` directory is deliberately NOT excluded: both browser-required `data/events.json` and `data/sermons.json` are retained and verified byte-identical to source, along with all twelve public HTML pages, twelve legacy compatibility files, retired/404 pages, CSS/JS, sitemap, CNAME and robots. FIVE new negative/positive tests use the actual output of a scratch build with `ghcr.io/actions/jekyll-build-pages:v1.0.13`, the same GitHub Pages production Jekyll builder. The artifact scanner verifies engineering documents/scripts are absent and necessary public files present. All prior 68 cases are preserved.
+
+The code-only remediation SHA `b7ad1d3900b8c52b531c0e03688bc0207816d2d1` passed [FAST #40448024210](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40448024210) **SUCCESS, 73/73**, complete validation union, FULL skipped. NEW exact-head FAST is required for the P06 documentation lifecycle checkpoint and will be recorded in PR #31 after observation. Exactly **19 authorized cumulative PR paths**: original 18 plus only `_config.yml`. Twelve accepted public HTML/robots blobs, scripts other than the bounded existing test file, CSS/JS, JSON content, legacy routes, sitemap, CNAME and workflows stay byte-identical.
+
+P06 source mode remains `INDEXABLE_CANDIDATE` on **DRAFT / UNMERGED** PR only. Production indexing release authority remains **NOT GRANTED**; protected `main` retains original noindex and robots Disallow. Passing Jekyll output tests proves a representative build, **not that existing live 200 engineering URLs have disappeared**; only a later separately authorized deployment permits production HTTP recheck. Existing preview SSO/noindex evidence applies to the earlier exact SHA; new preview protection must be rechecked. P05 registration transfer is operationally complete but final administrative assurances remain outstanding.
+
+**STOP for Manager**: new exact-head FULL and deterministic repeat, NEW immutable HIGH-risk freeze, FRESH independent re-audit, final P05 administrative control checks, and Ryan's separate exact-frozen-SHA protected merge/indexing authorization. No Builder FULL, freeze, audit, merge, publishing, sitemap submission, Search Console indexing request or infrastructure changes.

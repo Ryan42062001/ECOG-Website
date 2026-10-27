@@ -2,13 +2,14 @@
 
 ## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
-State (ECOG-P06): FREEZE_READY
+State (ECOG-P06): PUNCH_LIST
 Risk (ECOG-P06): HIGH
-Status (ECOG-P06): FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING
+Status (ECOG-P06): PUNCH_LIST REMEDIATION VERIFIED / MANAGER FULL, NEW FREEZE AND INDEPENDENT RE-AUDIT PENDING
 Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/30
 Manager Stage 2A Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6431997735
 Manager Stage 2B Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432299293
 Manager Documentation Phase Sync Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432931901
+Manager Audit Punch List Remediation Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6433412720
 Owner Preview Acceptance: https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432931901
 Original Canonical Base: `27051868f0ebb2432efe19e5f5b1634b4876c27d`
 Owner-Accepted Product Source SHA: `6fb12ab5da5874dad0e0b1809ecf21c7fe84a722`
@@ -35,6 +36,20 @@ Exactly **18 cumulative authorized PR paths** remain: the three P06 documentatio
 **Historical source and CI sequence:** Stage 1 FAST #40436219160 SUCCESS 35/35; Stage 2A validator hardening #40437724407 SUCCESS 68/68, following earlier fixture evidence and documented #40437658742 FAILURE 67/68 (assertion text corrected). Initial Stage 2B source #40439468163 FAILURE 37/68 due to blocked-state fixture assumptions; preserving all original 35 case definitions and isolating the historical blocked snapshot corrected it, then owner-accepted exact source FAST #40439661687 SUCCESS 68/68. All failures remain recorded honestly, not reclassified as PASS.
 
 **STOP: FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING.** Manager independently reviews the documentation-only Phase Sync SHA and NEW exact-head FAST before deciding whether to run Manager-controlled FULL. Subsequent immutable HIGH-risk freeze and FRESH independent HIGH-risk audit in a different chat, administrative P05 completion, and Ryan's separately explicit **exact frozen SHA** protected-merge/production-indexing authorization are distinct future gates. No Builder FULL, freeze, auditor, PR ready transition, merge, deployment, Google sitemap submission/indexing request, DNS, registrar, Cloudflare, Vercel, Pages setting, secrets or infrastructure change.
+
+### Jekyll publish-boundary audit punch-list remediation — controls current stage
+
+An Independent HIGH-risk audit identified a release-blocking publish-scope defect. Owner-operated production HTTP GET/HEAD evidence showed `/docs/PRODUCT_ROADMAP.md` and `/scripts/validate-launch-state.js` publicly served **HTTP 200** on protected `main`; directory-only 404 observations had been insufficient to establish individual-file safety. The Manager authorized a bounded nonproduction fix in https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6433412720. This is **not** an asserted secret leak; however enabling Google crawling would risk indexing engineering documents or validation code.
+
+The remediation adds root `_config.yml` with a narrow Jekyll `exclude` list for `.ai/`, `.github/`, `.history/`, `docs/`, `scripts/`, `README.md` and `AGENTS.md`, without excluding `data/` or other real site assets. The two required browser-fetched `data/events.json` and `data/sermons.json` remain published byte-identically. Added **five** fail-closed generated-output test cases to the existing P06 test file; all original 68 tests retain their definitions. The Jekyll artifact test runs the SAME `ghcr.io/actions/jekyll-build-pages:v1.0.13` image used by production Pages, builds an isolated checkout, and checks the actual `_site` output for absence of engineering paths and presence of all 12 public pages, retired/404 and 12 legacy routes, CSS/JS, both JSON files, CNAME, robots and sitemap. Negative tests inject engineering leaks or delete required assets and MUST fail the artifact checker.
+
+**Observed remediation-code FAST** [#40448024210](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40448024210) COMPLETED / SUCCESS on code HEAD `b7ad1d3900b8c52b531c0e03688bc0207816d2d1`: **73/73 passed**, release-shape, site/full-site, launch-state and performance validations PASS; FULL SKIPPED. A NEW exact-head FAST is required on this subsequent documentation checkpoint; keep results distinct.
+
+The previous immutability checkpoint/freeze `aa9ea1599b947f006d4947a9ed4fefd210fea3bc` was **INVALIDATED** immediately when remediation code was committed; it must NOT be reused for FULL, freeze, audit or release. The Manager must verify the new exact HEAD, order new exact-head FULL and deterministic repeat, create a NEW immutable HIGH-risk freeze, and commission a FRESH independent HIGH-risk re-audit in a separate chat. The original owner-accepted public-page HTML and `robots.txt` remain byte-identical to `6fb12ab5da5874dad0e0b1809ecf21c7fe84a722`. Cumulative draft PR diff is exactly **19 authorized paths** (original 18 plus `_config.yml`); no workflow/dependency/CI provider changes.
+
+**Remaining live and preview limits:** Production `main` was not changed and the owner's existing 200 responses may persist until a separately authorized protected merge and GitHub Pages deployment; passing an isolated build is NOT proof that live URLs now return 404. The exact old candidate Vercel unauthenticated redirect checks showed 302 SSO plus `X-Robots-Tag: noindex`; any new preview SHA must be independently checked rather than assuming old evidence or provider defaults. P05 transfer is operationally complete but final registrant/email/MFA/admin/billing assurances remain OPEN under Issue #29. `P06 Candidate Source Mode: INDEXABLE_CANDIDATE` remains on the unmerged draft; `P06 Production Indexing Release Authority: NOT GRANTED`, historical P02 indexing NOT AUTHORIZED and all P02/P03/P04 CLOSED records remain intact.
+
+**Mandatory STOP after new FAST:** Manager review / FULL / new freeze / independent re-audit only; no Builder FULL, freeze, audit, ready-for-review, merge, Pages deployment, production indexing, sitemap submission, Search Console indexing request, DNS/Cloudflare/Vercel/registrar change or infrastructure mutation.
 
 ## ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
 
