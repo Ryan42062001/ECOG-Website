@@ -5,6 +5,32 @@ const defaultRoot = path.resolve(__dirname, '..');
 const productionOrigin = 'https://everettchurchofgod.com';
 const productionHost = 'everettchurchofgod.com';
 const phaseHeading = '## ECOG-P02 — Production Hosting & Domain Cutover';
+const p06Heading = '## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch';
+const p06Field = 'P06 Candidate Source Mode:';
+const candidateModes = ['BLOCKED', 'INDEXABLE_CANDIDATE'];
+
+// Pure checker for a separately observed HTTP response: does not make network
+// requests and does not constitute evidence that a live preview is protected.
+function validatePreviewResponseEvidence(observation) {
+  const failures = [];
+  if (!observation || typeof observation !== 'object') return ['Preview HTTP response evidence missing'];
+  let url;
+  try { url = new URL(observation.url); }
+  catch { return ['Preview HTTP response URL invalid']; }
+  if (url.protocol !== 'https:' || !/^[a-z0-9-]+\.vercel\.app$/i.test(url.hostname)) {
+    failures.push('Preview must use an HTTPS vercel.app deployment hostname');
+  }
+  if (observation.target !== 'preview' || observation.customDomain === true) {
+    failures.push('Preview target must be preview without a custom-domain override');
+  }
+  if (!Number.isInteger(observation.status) || observation.status < 200 || observation.status >= 400) {
+    failures.push('Preview HTTP response status unverified or unsuccessful');
+  }
+  const tag = typeof observation.xRobotsTag === 'string' ? observation.xRobotsTag : '';
+  if (!/(?:^|[,;\s])noindex(?:$|[,;\s])/i.test(tag)) failures.push('Preview X-Robots-Tag: noindex missing');
+  return failures;
+}
+
 const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const getDescription = html => {
   const doubleQuoted = html.match(/<meta\s+name=["']description["']\s+content="([^"]+)"/i);
@@ -78,6 +104,30 @@ function validateLaunchState(root = defaultRoot) {
     .filter(index => index >= 0);
   assert(headingIndexes.length === 1, 'CURRENT_PHASE must contain exactly one ECOG-P02 section heading');
 
+  // Distinct P06 *source mode*, never a substitute for external P05/owner
+  // authorization. Fail closed on absent, duplicate, malformed or decoy fields.
+  const p06Positions = phaseLines
+    .map((line, index) => line.trim() === p06Heading ? index : -1)
+    .filter(index => index >= 0);
+  assert(p06Positions.length === 1, 'ECOG-P06 heading must appear exactly once');
+  const globallyScopedFields = phaseLines.filter(line => line.startsWith(p06Field));
+  assert(globallyScopedFields.length === 1, 'ECOG-P06 candidate source mode must appear exactly once');
+  let p06CandidateMode = 'INVALID';
+  if (p06Positions.length === 1) {
+    const start = p06Positions[0] + 1;
+    let end = phaseLines.length;
+    for (let i = start; i < phaseLines.length; i += 1) {
+      if (/^#{1,2}\s/.test(phaseLines[i])) { end = i; break; }
+    }
+    const scoped = phaseLines.slice(start, end).filter(line => line.startsWith(p06Field));
+    assert(scoped.length === 1, 'ECOG-P06 candidate source mode missing inside P06 section');
+    if (scoped.length === 1 && globallyScopedFields.length === 1) {
+      const value = scoped[0].slice(p06Field.length).trim();
+      if (candidateModes.includes(value)) p06CandidateMode = value;
+      else failures.push('ECOG-P06 candidate source mode invalid');
+    }
+  }
+
   let indexingState = 'INVALID';
   if (headingIndexes.length === 1) {
     const start = headingIndexes[0] + 1;
@@ -102,6 +152,14 @@ function validateLaunchState(root = defaultRoot) {
     }
   }
 
+// Historical P02 control is immutable. Preserve the original mutation-test
+// diagnostic branch if it is tampered with, but ALWAYS reject such tampering.
+if (indexingState === 'AUTHORIZED') failures.push('ECOG-P02 historical indexing authority must remain NOT AUTHORIZED');
+const sourceIndexingState = indexingState === 'AUTHORIZED' ? 'AUTHORIZED'
+  : indexingState === 'NOT AUTHORIZED' && p06CandidateMode === 'BLOCKED' ? 'NOT AUTHORIZED'
+    : indexingState === 'NOT AUTHORIZED' && p06CandidateMode === 'INDEXABLE_CANDIDATE' ? 'INDEXABLE_CANDIDATE' : 'INVALID';
+if (sourceIndexingState === 'INVALID') failures.push('ECOG-P06 candidate source state fails closed');
+
 for (const [file, route] of pages) {
   const html = read(file);
   const canonical = `${productionOrigin}${route}`;
@@ -116,12 +174,17 @@ for (const [file, route] of pages) {
   assert(html.includes('name="twitter:card" content="summary"'), `${file}: twitter summary card missing`);
   assert(!/github\.io\/ECOG-Website/i.test(html), `${file}: staging URL leaked into production metadata`);
 
-  if (indexingState === 'NOT AUTHORIZED') {
+  const robotsMetas = [...html.matchAll(/<meta\s+name=["']robots["']\s+content=["']([^"']+)["']/gi)];
+  assert(robotsMetas.length === 1, String(file) + ': expected exactly one explicit robots meta');
+  if (/https?:\/\/[^"'<>\s]*(?:github\.io|vercel\.app)/i.test(html)) {
+    failures.push(file + ': staging/preview URL leaked into public HTML');
+  }
+  if (sourceIndexingState === 'NOT AUTHORIZED') {
     assert(/name=["']robots["']\s+content=["']noindex,nofollow["']/i.test(html), `${file}: indexing-blocked noindex,nofollow safeguard missing`);
-  } else if (indexingState === 'AUTHORIZED') {
+  } else if (sourceIndexingState === 'AUTHORIZED' || sourceIndexingState === 'INDEXABLE_CANDIDATE') {
     assert(!/\bnoindex\b/i.test(html), `${file}: indexing-authorized page must not contain noindex`);
     const robotsMeta = html.match(/<meta\s+name=["']robots["']\s+content=["']([^"']+)["']/i);
-    if (robotsMeta) assert(/^index,follow$/i.test(robotsMeta[1].replace(/\s+/g, '')), `${file}: indexing-authorized robots meta must be index,follow when present`);
+    assert(!!robotsMeta && /^index,follow$/i.test(robotsMeta[1].replace(/\s+/g, '')), `${file}: indexing-authorized robots meta must be index,follow when present`);
   }
 }
 
@@ -154,27 +217,59 @@ assert(!/rel=["']canonical["']/i.test(retired), 'Senior Adults retired page must
 const notFound = read('404.html');
 assert(/name=["']robots["']\s+content=["'][^"']*noindex/i.test(notFound), '404.html must remain noindex');
 
-for (const file of activeCompatibilityPages) {
+const activeCompatibilityTargets = [
+  ['messages.html', '../../messages.html'],
+  ['contact.html', '../../contact.html'],
+  ['give.html', '../../give.html'],
+  ['new-here.html', '../../new-here.html#visit-details'],
+  ['about.html', '../../about.html#leadership-title'],
+  ['about.html', '../../about.html#beliefs-title'],
+  ['ministries.html', '../../ministries.html'],
+  ['ministries/children.html', '../../ministries/children.html'],
+  ['ministries/students.html', '../../ministries/students.html'],
+  ['ministries/men.html', '../../ministries/men.html'],
+  ['ministries/women.html', '../../ministries/women.html']
+];
+for (const [index, file] of activeCompatibilityPages.entries()) {
   const html = read(file);
   assert(!/\bnoindex\b/i.test(html), `${file}: active compatibility route must remain crawlable`);
+  const [destination, refresh] = activeCompatibilityTargets[index];
+  const refreshMatch = html.match(/<meta\s+http-equiv=["']refresh["']\s+content=["']0;\s*url=([^"']+)["']/i);
+  assert(!!refreshMatch && refreshMatch[1] === refresh,
+    `${file}: legacy compatibility immediate refresh destination invalid`);
+  assert(html.includes(`<link rel="canonical" href="${productionOrigin}/${destination}">`),
+    `${file}: legacy compatibility canonical destination invalid`);
 }
 const retiredCompatibility = read(retiredCompatibilityPage);
 assert(/name=["']robots["']\s+content=["']noindex,follow["']/i.test(retiredCompatibility), `${retiredCompatibilityPage}: retired compatibility noindex missing`);
 assert(!/index\.php\//i.test(sitemap), 'sitemap.xml: compatibility routes must remain excluded');
 
 const robots = read('robots.txt');
-if (indexingState === 'NOT AUTHORIZED') {
+const directives = robots.split(/\r?\n/).map(line => line.trim()).filter(line => line && !line.startsWith('#'));
+const agents = directives.filter(line => /^User-agent:/i.test(line));
+assert(agents.length === 1 && /^User-agent:\s*\*$/.test(agents[0]),
+  'robots.txt: exactly one global User-agent required');
+if (sourceIndexingState === 'NOT AUTHORIZED') {
   assert(/^User-agent:\s*\*\s*$/im.test(robots) && /^Disallow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-blocked sitewide crawl block missing');
   assert(!/^Allow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-blocked state must not allow sitewide crawling');
   assert(!/Sitemap:/i.test(robots), 'robots.txt: indexing-blocked state must not advertise sitemap');
-} else if (indexingState === 'AUTHORIZED') {
+  assert(directives.filter(line => /^Disallow:/i.test(line)).length === 1,
+    'robots.txt: blocked state must have exactly one disallow rule');
+} else if (sourceIndexingState === 'INDEXABLE_CANDIDATE' || sourceIndexingState === 'AUTHORIZED') {
   assert(/^User-agent:\s*\*\s*$/im.test(robots), 'robots.txt: User-agent * missing');
   assert(/^Allow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-authorized Allow: / missing');
   assert(!/^Disallow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-authorized state must not block all crawling');
-  assert(new RegExp(`Sitemap:\\s*${escapeRegExp(productionOrigin)}/sitemap\\.xml`, 'i').test(robots), 'robots.txt: indexing-authorized sitemap directive missing or incorrect');
+  assert(new RegExp(`Sitemap:\s\${escapeRegExp(productionOrigin)}/sitemap\.xml`, 'i').test(robots),
+    'robots.txt: indexing-authorized sitemap directive missing or incorrect');
+  assert(directives.filter(line => /^Sitemap:/i.test(line)).length === 1,
+    'robots.txt: indexing-authorized sitemap must appear exactly once');
+  assert(directives.filter(line => /^Allow:/i.test(line)).length === 1,
+    'robots.txt: indexing-authorized allow must appear exactly once');
+  assert(!directives.some(line => /^Disallow:/i.test(line)),
+    'robots.txt: indexing-authorized unexpected Disallow rule');
 }
 
-  return { failures, hostingState, indexingState };
+  return { failures, hostingState, indexingState: sourceIndexingState, p06CandidateMode };
 }
 
 if (require.main === module) {
@@ -187,4 +282,4 @@ if (require.main === module) {
   console.log(`Launch-state validation passed: hosting=${result.hostingState}; indexing=${result.indexingState}; ${pages.length} active pages, sitemap, robots, retired routes, compatibility routes, and production metadata checked.`);
 }
 
-module.exports = { validateLaunchState };
+module.exports = { validateLaunchState, validatePreviewResponseEvidence };
