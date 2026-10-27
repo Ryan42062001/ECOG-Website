@@ -20,10 +20,10 @@ function validatePreviewResponseEvidence(observation) {
   if (url.protocol !== 'https:' || !/^[a-z0-9-]+\.vercel\.app$/i.test(url.hostname)) {
     failures.push('Preview must use an HTTPS vercel.app deployment hostname');
   }
-  if (observation.target !== 'preview' || observation.customDomain === true) {
+  if (observation.target !== 'preview' || observation.customDomain !== false) {
     failures.push('Preview target must be preview without a custom-domain override');
   }
-  if (!Number.isInteger(observation.status) || observation.status < 200 || observation.status >= 400) {
+  if (observation.status !== 200) {
     failures.push('Preview HTTP response status unverified or unsuccessful');
   }
   const tag = typeof observation.xRobotsTag === 'string' ? observation.xRobotsTag : '';

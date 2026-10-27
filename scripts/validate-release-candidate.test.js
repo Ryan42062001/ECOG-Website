@@ -620,3 +620,20 @@ test('P06 preview response fixture rejects unreachable/protected status', () => 
     target: 'preview', customDomain: false, status: 401, xRobotsTag: 'noindex'
   }).join('\n'), /status unverified or unsuccessful/);
 });
+
+
+test('P06 preview observation rejects unknown custom-domain override state', () => {
+  const {validatePreviewResponseEvidence} = require('./validate-launch-state');
+  assert.match(validatePreviewResponseEvidence({
+    url: 'https://ecog-website-preview-example.vercel.app/',
+    target: 'preview', status: 200, xRobotsTag: 'noindex'
+  }).join('\n'), /no custom-domain override/);
+});
+
+test('P06 preview observation rejects HTTP redirect as proof of protected content', () => {
+  const {validatePreviewResponseEvidence} = require('./validate-launch-state');
+  assert.match(validatePreviewResponseEvidence({
+    url: 'https://ecog-website-preview-example.vercel.app/',
+    target: 'preview', customDomain: false, status: 302, xRobotsTag: 'noindex'
+  }).join('\n'), /status unverified or unsuccessful/);
+});
