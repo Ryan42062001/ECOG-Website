@@ -1,6 +1,6 @@
 # ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
-**READINESS_REVIEW / MANAGER SOURCE-CANDIDATE AUTHORIZATION PENDING** — Stage 1 DOCS ONLY. HIGH risk.
+**STAGE2A_VALIDATOR_READY / MANAGER STAGE2B SOURCE AUTHORIZATION PENDING** — Stage 1 inventory accepted; Stage 2A validator/test fixture hardening only. HIGH risk.
 
 **Authority:** [Issue #30](https://github.com/Ryan42062001/ECOG-Website/issues/30); baseline `27051868f0ebb2432efe19e5f5b1634b4876c27d`. **Dependency:** [P05 #29](https://github.com/Ryan42062001/ECOG-Website/issues/29) OPEN / registrar transfer PENDING. **Branch:** `phase/ecog-p06-indexing-readiness`; one DRAFT PR. **Only authorized changed files:** `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, this new document. No source or live indexing authorization.
 
@@ -114,3 +114,84 @@ Official resources:
 - https://developers.google.com/search/docs/crawling-indexing/block-indexing
 - https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls
 - https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap
+
+
+## Stage 2A implemented validator hardening and read-only HTTP verification plan
+
+**Stage 2A authority:** [Manager comment 6431997735](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6431997735). This section supersedes the old Stage 1 handoff/pending-code language above; Stage 1 matrix and historical observations are preserved as evidence. **Current status: STAGE2A_VALIDATOR_READY / MANAGER STAGE2B SOURCE AUTHORIZATION PENDING.**
+
+### What is implemented and what it does NOT authorize
+
+- Real branch declaration in P06 section: `P06 Candidate Source Mode: BLOCKED`. The only other accepted value `INDEXABLE_CANDIDATE` is exercised in temporary test directories. It describes a coherent *source test fixture*, not production authority, P05 transfer confirmation, audit status, or Ryan approval. The release authority remains NOT GRANTED.
+- `scripts/validate-launch-state.js` now rejects absent, malformed, duplicate, misplaced/decoy or wrong-heading P06 mode; requires historical P02 authority unchanged; fails on mixed HTML/robots mode; checks exact one public robots meta on all twelve, twelve self-canonicals/OG and exact sitemap, excluded retired/404 pages, eleven exact legacy meta-refresh destinations and canonicals, and stricter robots rules. P02 historical state/authorization remains validated and all existing 35 mutation tests retained.
+- `scripts/validate-release-candidate.test.js` appends **31** disposable fixture tests. One positive BLOCKED test checks the committed checkout, another positive `INDEXABLE_CANDIDATE` scenario mutates *only temporary copies* of all twelve public HTML files and robots to create a coherent prospective candidate. Negative fixtures reject premature one-page unblocking, an 11/12 mixed candidate, malformed/duplicate/decoy authority, P02 tampering, conflicting robots, wrong/duplicated sitemap and host, invalid canonical/OG, unwanted staging host leak, retired/404 noindex loss, and legacy refresh/canonical/noindex regressions. Synthetic preview-header examples exercise a pure `validatePreviewResponseEvidence` helper for URL/target/status/noindex and negative cases; they are NOT actual observed live HTTP headers.
+- `scripts/validate-release-candidate.js` was **not changed**. No broad weakening of P02's historical structured fields or original 35 tests. No HTML/CSS/JS/robot/sitemap/CNAME/legacy/staging/redirect change on the real branch.
+
+**Stage 2A interim CI:** [FAST #40437322497](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40437322497) SUCCESS on `2c407248d868ad85f3c5d5112b3b32ad47a8bdac`: **66/66 test cases** with complete validation union. A new exact-head FAST is REQUIRED for the final documentation checkpoint and is recorded on PR #31 only after observation.
+
+### Read-only HTTP evidence procedure (commands for an authorized operator, NOT executed by this Builder)
+
+Run the following on a network with DNS, TLS and access to the exact PR preview. Save response **status, Date, URL, Location chain, Content-Type, X-Robots-Tag**, and for served HTML, actual canonical and robots tags. Follow redirects only after recording the first hop. No mutation, credentials or Search Console indexing actions:
+
+```sh
+# Use the exact PR deployment hostname from Vercel deployment metadata.
+PREVIEW='https://ecog-website-preview-1gey753ph-ryan-s-team9.vercel.app'
+curl --silent --show-error --head --max-time 20 "$PREVIEW/"
+curl --silent --show-error --head --max-time 20 "$PREVIEW/about.html"
+curl --silent --show-error --location --max-redirs 8 --dump-header - --output /dev/null "$PREVIEW/"
+# Require a real x-robots-tag: noindex on 200 content. A 401/403
+# means the underlying content-header check remains unverified.
+# Also check the currently assigned branch alias and Vercel Preview target.
+
+# Check GitHub project/staging behavior separately. No assumptions that
+# a Vercel response header applies to github.io.
+curl --silent --show-error --head --max-time 20 \
+  'https://ryan42062001.github.io/ECOG-Website/'
+curl --silent --show-error --location --max-redirs 8 \
+  --dump-header - --output /dev/null \
+  'https://ryan42062001.github.io/ECOG-Website/'
+
+# Record the first status and subsequent Location chain for each host.
+for url in \
+  'http://everettchurchofgod.com/' \
+  'https://everettchurchofgod.com/' \
+  'http://www.everettchurchofgod.com/' \
+  'https://www.everettchurchofgod.com/'; do
+  curl --silent --show-error --head --max-time 20 "$url"
+  curl --silent --show-error --location --max-redirs 8 \
+    --dump-header - --output /dev/null --max-time 40 "$url"
+done
+
+# All eleven historical compatibility entries, read-only.
+for slug in messages contact-us donations services our-pastors \
+  what-we-believe ways-to-connect childrens-ministry \
+  amplify-students-ministry guys-ministry womens-ministry; do
+  url="https://everettchurchofgod.com/index.php/$slug/"
+  curl --silent --show-error --head --max-time 20 "$url"
+  curl --silent --show-error --location --max-redirs 8 \
+    --dump-header - --output /dev/null --max-time 40 "$url"
+  # Then inspect GET HTML for refresh=0 and destination canonical;
+  # HEAD/Location alone cannot prove a meta-refresh or HTTP 301.
+done
+
+# Include additional checks for unknown path HTTP 404, the retired
+# ministries/senior-adults.html and index.php/senior-adults-ministry/,
+# served sitemap.xml and robots.txt. Do not submit anything to Google.
+```
+
+**Evaluation:** actual preview content must have an observed `X-Robots-Tag: noindex` on the preview hostname and representative subpage, along with verified deployment target Preview and no custom-domain override. A synthetic unit test does not prove this header. HTTP 401/403, failed DNS/TLS or inaccessible preview is **UNVERIFIED**, not PASS. The `github.io` staging endpoint must independently demonstrate safe nonindexable behavior for eventual candidate sources; otherwise pause Stage 2B and obtain approved mitigation. For www/apex, capture every status/Location and final HTTPS apex canonical. For eleven meta-refresh URLs, note actual HTTP status rather than claiming permanent server-side redirects from source markup. Capture timestamped evidence and share only nonsecret/public headers.
+
+### Observed results during Stage 2A (limited; not replacements for headers)
+
+- Read-only Vercel connector: project `ecog-website-preview`; Stage 2A interim Git-linked deployment `dpl_2SfvyXiPwgKfC9xkHWRzkUR8Qjm1` is **READY** on SHA `2c407248d868ad85f3c5d5112b3b32ad47a8bdac`, deployment target `null` (Preview), URL `ecog-website-preview-1gey753ph-ryan-s-team9.vercel.app`. The checked project domain list contains only `ecog-website-preview.vercel.app` and no observed custom preview domain override. Neither deployment metadata nor Vercel's [published defaults](https://vercel.com/docs/headers/response-headers) is a substitute for actual headers.
+- Direct web reader **could retrieve** rendered `https://everettchurchofgod.com/` page content and the `http://everettchurchofgod.com/` request resolved to the HTTPS apex, but the web reader did NOT expose raw redirect/Location/status headers. No 301/308 assertion is made.
+- The exact Vercel branch-alias preview and `https://ryan42062001.github.io/ECOG-Website/` were **INACCESSIBLE** to this environment. `https://www.everettchurchofgod.com/` also did not yield readable evidence. Current live `X-Robots-Tag`, staging exclusion and full www/apex redirect chain therefore remain **UNVERIFIED**.
+- One web reader legacy result for `/index.php/messages/` was a **historically cached older page**, not current served HTTP status. No current HTTP 301/200 claim can be made about any of the eleven. Source-only meta-refresh and canonical behavior is checked in CI; real network verification remains **UNVERIFIED**.
+
+### Stage 2B Manager decisions, strict stop and sources
+
+Manager must separately authorize a bounded Stage 2B source/test path expansion, resolve the legacy 11-route indexing policy, and obtain measured Preview and GitHub staging noindex proof *before* any source unblocking. P05 #29 remains OPEN/pending; it is a different, indispensable production-release gate. The eventual HIGH-risk release requires owner-approved exact frozen SHA, Manager FULL, immutable freeze, fresh independent auditor in another chat, P05 verified complete, and separately explicit Ryan consent to production Google indexing.
+
+This Stage 2A draft must remain **nonindexable** and DRAFT / UNMERGED. No FULL, freeze, audit, merge, production deploy, Google sitemap submission/indexing request, registrar/DNS/Cloudflare/Pages/Vercel settings or infrastructure changes.
+
+Official references: [Vercel response headers](https://vercel.com/docs/headers/response-headers), [Vercel preview indexing](https://vercel.com/kb/guide/are-vercel-preview-deployment-indexed-by-search-engines), [GitHub Pages custom-domain redirects](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site), [Google redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects).

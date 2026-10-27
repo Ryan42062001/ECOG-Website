@@ -6,25 +6,26 @@ State (ECOG-P06): STAGE2A_VALIDATOR_READY
 Risk (ECOG-P06): HIGH
 Status (ECOG-P06): STAGE2A_VALIDATOR_READY / MANAGER STAGE2B SOURCE AUTHORIZATION PENDING
 Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/30
-Dependency: ECOG-P05 registrar transfer Issue #29 — PENDING
-Canonical Base: `27051868f0ebb2432efe19e5f5b1634b4876c27d`
-Feature Branch: `phase/ecog-p06-indexing-readiness`
-Pull Request: one Stage 1 DRAFT PR / UNMERGED
-Execution: Regular Chat / fresh Primary Builder
-P06 indexing-release authority: NOT GRANTED
-P06 Candidate Source Mode: BLOCKED
 Manager Stage 2A Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6431997735
+P05 Dependency: Issue #29 — REGISTRAR TRANSFER PENDING
+Original Canonical Base: `27051868f0ebb2432efe19e5f5b1634b4876c27d`
+Feature Branch: `phase/ecog-p06-indexing-readiness`
+Pull Request: #31 — DRAFT / OPEN / UNMERGED
+Execution: Regular Chat / same fresh P06 Primary Builder
+P06 Candidate Source Mode: BLOCKED
+P06 Production Indexing Release Authority: NOT GRANTED
 
-Only Stage 1 research/documentation is authorized: the exact 12-page self-canonical/OG/title/description/noindex and sitemap inventory; historic GSC anomaly; legacy, retired and 404 URL review; staging/Vercel header gates; proposed P06-specific dual-authority validators; independent P05 dependency, HIGH-risk release and rollback plan. Read `docs/ecog-p06-search-indexing-readiness.md` for the proposed contract and pending checks. Google Search Console's Oct 21 cross-domain canonical selection and Oct 26 robots-blocked live test are historical evidence, not current crawl status. Old 2014 sitemap.txt submission was removed; current sitemap.xml has not been submitted.
+Stage 1 completed a verified twelve-page title/description/HTTPS apex canonical/OG/sitemap/noindex inventory and documented GSC history, legacy URL/retired/404/preview/redirect gaps. Manager accepted its exact-head FAST [40436219160](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40436219160) SUCCESS, 35/35 original adversarial tests. Stage 2A alone now authorizes fail-closed P06-scoped validator code and temporary synthetic fixtures within the existing draft PR, NOT the future Stage 2B source candidate. See `docs/ecog-p06-search-indexing-readiness.md`.
 
-At verified baseline all 12 intended pages retain `noindex,nofollow`, `robots.txt` remains sitewide `Disallow: /`, and P05 registrar transfer is unverified. Keep the P02 indexing authority and every P02/P03/P04 CLOSED section below byte-for-byte; the P06 phase uses its own scoped lifecycle names so existing P02 adversarial fixtures target their original historical fields. Do not add new generic phase or indexing authority field names above P02. There is no Stage 1 permission to modify source, robots, sitemap, canonical, validators/tests, deploy, or ask Google to index.
+Current actual P06 source mode is BLOCKED: all twelve public HTML pages retain `noindex,nofollow`; `robots.txt` retains sitewide `Disallow: /`; the twelve-entry sitemap is not submitted to Google. P02 historic indexing authority, P02/P03/P04 CLOSED blocks and their original authorization fields below remain exactly byte-for-byte unchanged. The P06 source-mode field in this top section is unique and intentionally avoids historic P02 generic field names. A hypothetical `INDEXABLE_CANDIDATE` state exists ONLY in disposable test fixtures and never grants registrar custody, Search Console submissions, production deployment or owner indexing authorization.
 
-Stage 1 changed-path boundary: ONLY `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, and new `docs/ecog-p06-search-indexing-readiness.md`. Run a NEW exact-head FAST, then STOP for Manager at READINESS_REVIEW. Stage 2 source and test expansion requires written Manager permission. Before any future exact-SHA indexing publication: verified P05 completion, owner authorization, Manager exact-head FULL, immutable HIGH-risk freeze and FRESH independent HIGH-risk audit in a separate chat. Do not merge, publish, enable indexing, submit sitemap/indexing requests or alter infrastructure as part of Stage 1.
+Stage 2A adds `scripts/validate-launch-state.js` dual-state P06 validation (and a pure synthetic preview-header observation checker) and APPENDS tests to `scripts/validate-release-candidate.test.js`; preserves all existing 35 tests, P02 historical field validation, and `scripts/validate-release-candidate.js` unchanged. No actual HTML, CSS, JS, assets, `robots.txt`, sitemap, CNAME, legacy pages, 404, workflows, DNS, Cloudflare, registrar, Vercel settings, Pages configuration, infrastructure, secrets or production files were changed. Cumulative PR limit: current 5 paths (the 3 P06 documentation paths + those 2 validation/test scripts); the sixth `scripts/validate-release-candidate.js` is not used.
 
+Interim Stage 2A exact-head FAST [40437322497](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40437322497) SUCCESS on test implementation SHA `2c407248d868ad85f3c5d5112b3b32ad47a8bdac`: **66/66 tests (original 35 + 31 new)** and complete validation union. A NEW FAST on the subsequent documentation/evidence HEAD is still required and is distinct from that interim result.
 
-Stage 2A is strictly validator and synthetic-fixture hardening, not an indexable source candidate. The checked-in P06 Candidate Source Mode remains BLOCKED; all twelve public HTML pages still carry noindex,nofollow and root robots continues Disallow: /. The P06-specific candidate switch may be INDEXABLE_CANDIDATE only in isolated temporary fixtures until the Manager separately approves Stage 2B. This source switch is not production permission, P05 registrar evidence, or owner release authorization. The historical P02 authority and P02–P04 CLOSED blocks are immutable.
+Live HTTP proof is an external gate. Read-only Vercel connector found `ecog-website-preview` git-linked stage deployments READY, target Preview, domain inventory only `vercel.app`; real `X-Robots-Tag: noindex` headers still UNVERIFIED due to inaccessible preview. GitHub `github.io` staging address and full www/apex/legacy HTTP 3xx/200/404 chains likewise remain UNVERIFIED. Vercel defaults are documentation, not observed headers. Exact reproducible HEAD/GET/Location tests and a list of all eleven legacy URLs are in the readiness record. **No future source unblocking while this gate lacks proof.**
 
-Stage 2A validates both blocked and coherent prospective public-page source modes, with negative coverage for mode spoofing, mixed HTML/robots, sitemap/canonicals, legacy/retired/404 controls and synthetic preview header policies. Actual Vercel response headers, GitHub staging and host redirect chains are independent live HTTP gates; a documentation claim or a simulated header is not proof of protection. NEW exact-head FAST must pass before Manager Stage 2B decision. No unblocking or Stage 2B source paths authorized.
+Stage 2A stops at STAGE2A_VALIDATOR_READY / MANAGER STAGE2B SOURCE AUTHORIZATION PENDING. No source unblock, FULL, immutable freeze, audit, PR ready transition, merge, deployment, sitemap submission, Google indexing request or infrastructure/registrar/DNS change. Later Stage 2B must receive explicit Manager permission for additional source paths; actual HIGH-risk publication also requires P05 independently verified complete, exact-head FULL, immutable freeze, FRESH independent auditor in separate chat and separate explicit Ryan exact-SHA indexing release authority.
 
 ## ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
 
