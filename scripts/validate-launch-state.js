@@ -259,7 +259,7 @@ if (sourceIndexingState === 'NOT AUTHORIZED') {
   assert(/^User-agent:\s*\*\s*$/im.test(robots), 'robots.txt: User-agent * missing');
   assert(/^Allow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-authorized Allow: / missing');
   assert(!/^Disallow:\s*\/\s*$/im.test(robots), 'robots.txt: indexing-authorized state must not block all crawling');
-  assert(new RegExp(`Sitemap:\s\${escapeRegExp(productionOrigin)}/sitemap\.xml`, 'i').test(robots),
+  assert(/^Sitemap:\s*https:\/\/everettchurchofgod\.com\/sitemap\.xml\s*$/im.test(robots),
     'robots.txt: indexing-authorized sitemap directive missing or incorrect');
   assert(directives.filter(line => /^Sitemap:/i.test(line)).length === 1,
     'robots.txt: indexing-authorized sitemap must appear exactly once');
