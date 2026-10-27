@@ -1,6 +1,6 @@
 # ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
-**STAGE2A_VALIDATOR_READY / MANAGER STAGE2B SOURCE AUTHORIZATION PENDING** — Stage 1 inventory accepted; Stage 2A validator/test fixture hardening only. HIGH risk.
+**STAGE2B_PREVIEW_READY / OWNER PREVIEW AND MANAGER PHASE SYNC PENDING** — branch-only prospective indexing source; production indexing NOT authorized. HIGH risk.
 
 **Authority:** [Issue #30](https://github.com/Ryan42062001/ECOG-Website/issues/30); baseline `27051868f0ebb2432efe19e5f5b1634b4876c27d`. **Dependency:** [P05 #29](https://github.com/Ryan42062001/ECOG-Website/issues/29) OPEN / registrar transfer PENDING. **Branch:** `phase/ecog-p06-indexing-readiness`; one DRAFT PR. **Only authorized changed files:** `.ai/CURRENT_PHASE.md`, `docs/PRODUCT_ROADMAP.md`, this new document. No source or live indexing authorization.
 
@@ -195,3 +195,17 @@ Manager must separately authorize a bounded Stage 2B source/test path expansion,
 This Stage 2A draft must remain **nonindexable** and DRAFT / UNMERGED. No FULL, freeze, audit, merge, production deploy, Google sitemap submission/indexing request, registrar/DNS/Cloudflare/Pages/Vercel settings or infrastructure changes.
 
 Official references: [Vercel response headers](https://vercel.com/docs/headers/response-headers), [Vercel preview indexing](https://vercel.com/kb/guide/are-vercel-preview-deployment-indexed-by-search-engines), [GitHub Pages custom-domain redirects](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site), [Google redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects).
+
+## Stage 2B authorized nonproduction source candidate
+
+**Manager authority:** [PR #31 comment #6432299293](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432299293). This Stage 2B statement supersedes the earlier Stage 1/Stage 2A *pending source changes* claims above. Historical GSC, preparation and validator results remain in sequence.
+
+- **Actual DRAFT branch source state:** `P06 Candidate Source Mode: INDEXABLE_CANDIDATE`. Separately, **P06 Production Indexing Release Authority: NOT GRANTED**. A source-mode switch is not owner permission, completion of P05, approval to merge, or permission to submit to Google.
+- Exactly twelve approved public pages: each has a single `<meta name="robots" content="index,follow">` replacing the former `noindex,nofollow`. All other page source/metadata bytes remain unchanged. `robots.txt` on this UNMERGED branch is precisely `User-agent: *`, `Allow: /`, `Sitemap: https://everettchurchofgod.com/sitemap.xml`.
+- All other files remain unchanged from the authorized baseline, including `sitemap.xml` (12 intended HTTPS apex URLs, not submitted), CNAME, CSS/JS, legacy meta-refresh routes, retired/404 pages, workflow and infrastructure. Cumulative draft PR scope is at most 18 paths (five existing plus these thirteen).
+- Main protected production remains separately and fully BLOCKED with page noindex and robots `Disallow: /`. No deployment or production indexing was authorized by this stage.
+- Ryan's previous Stage 2A owner-operated checks observed unauthenticated **302 SSO + X-Robots-Tag: noindex** on the preceding exact Vercel immutable preview and branch alias; GitHub project staging root and /about.html 301 to canonical production; https-www and HTTP apex 301 to HTTPS apex; legacy /index.php/messages/ served 200 meta-refresh (NOT 301). Other ten legacy HTTP statuses remain UNVERIFIED. Those results do **not** prove protections on the NEW candidate HEAD; independently reverify exact immutable URL home/about and branch alias including real status/headers and domain assignments.
+- If the new candidate publicly serves indexable 200 without noindex, or SSO protection is bypassed (including any custom domain), **STOP** immediately; do not loosen provider SSO or publish to production. Reproducible read-only curl procedures appear in the Stage 2A section.
+- NEW exact-head FAST must confirm original 35 + 33 synthetic tests (**68/68 minimum**), complete validation union including intended candidate mode and legacy/retired/404 invariants. Stage 2B review requires authenticated Ryan owner preview and Manager Phase Sync; HIGH-risk exact-head FULL, immutable freeze, independent audit, verified P05 registrar transfer and separate owner exact-SHA release approval are subsequent gates.
+
+**STOP at STAGE2B_PREVIEW_READY.** No FULL, freeze, audit, PR ready, merge, Pages deployment, Google sitemap submission, Search Console indexing request, DNS/Cloudflare/registrar or other infrastructure mutations.
