@@ -1,0 +1,11 @@
+# ECOG-P06: GitHub Pages Jekyll output boundary.
+# Do not publish repository governance/engineering material as website assets.
+# The browser-required data/events.json and data/sermons.json remain INCLUDED.
+exclude:
+  - .ai/
+  - .github/
+  - .history/
+  - docs/
+  - scripts/
+  - README.md
+  - AGENTS.md

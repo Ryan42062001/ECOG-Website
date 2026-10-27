@@ -676,3 +676,166 @@ test('P06 preview observation rejects HTTP redirect as proof of protected conten
     target: 'preview', customDomain: false, status: 302, xRobotsTag: 'noindex'
   }).join('\n'), /status unverified or unsuccessful/);
 });
+
+
+// ECOG-P06 audit punch-list: prove the real generated GitHub Pages Jekyll
+// publish artifact boundary. Uses the SAME pinned container image recorded
+// in the production GitHub Pages build, without editing any CI workflow.
+// Failure to build is a FAIL, never a skipped/config-text-only PASS.
+const {spawnSync} = require('node:child_process');
+const jekyllImage = 'ghcr.io/actions/jekyll-build-pages:v1.0.13';
+const requiredPublishedFiles = [
+  ...p06FixturePublicFiles,
+  '404.html', 'ministries/senior-adults.html',
+  'index.php/messages/index.html',
+  'index.php/contact-us/index.html',
+  'index.php/donations/index.html',
+  'index.php/services/index.html',
+  'index.php/our-pastors/index.html',
+  'index.php/what-we-believe/index.html',
+  'index.php/ways-to-connect/index.html',
+  'index.php/childrens-ministry/index.html',
+  'index.php/amplify-students-ministry/index.html',
+  'index.php/guys-ministry/index.html',
+  'index.php/womens-ministry/index.html',
+  'index.php/senior-adults-ministry/index.html',
+  'data/events.json', 'data/sermons.json',
+  'assets/css/components.css', 'assets/css/events.css',
+  'assets/css/giving-contact.css', 'assets/css/main.css',
+  'assets/css/messages.css', 'assets/css/ministries.css',
+  'assets/css/responsive.css',
+  'assets/js/components.js', 'assets/js/events.js',
+  'assets/js/main.js', 'assets/js/messages.js',
+  'robots.txt', 'sitemap.xml', 'CNAME'
+];
+const internalPublishedPathDenials = [
+  'docs', 'docs/PRODUCT_ROADMAP.md', 'docs/WORKFLOW.md',
+  'scripts', 'scripts/validate-launch-state.js',
+  'scripts/validate-release-candidate.test.js',
+  'README.md', 'AGENTS.md',
+  '.ai', '.ai/CURRENT_PHASE.md',
+  '.github', '.github/workflows/ci.yml',
+  '.history', '_config.yml', '.gitignore'
+];
+
+function checkGeneratedPagesArtifact(root) {
+  const problems = [];
+  for (const relativePath of requiredPublishedFiles) {
+    const fullPath = path.join(root, relativePath);
+    if (!fs.existsSync(fullPath) || !fs.statSync(fullPath).isFile()) {
+      problems.push('required published asset absent: ' + relativePath);
+    }
+  }
+  for (const relativePath of internalPublishedPathDenials) {
+    if (fs.existsSync(path.join(root, relativePath))) {
+      problems.push('engineering-only path exposed in Jekyll output: ' + relativePath);
+    }
+  }
+  for (const relativePath of ['data/events.json', 'data/sermons.json']) {
+    const generated = path.join(root, relativePath);
+    const source = path.join(checkoutRoot, relativePath);
+    if (fs.existsSync(generated) &&
+        !fs.readFileSync(generated).equals(fs.readFileSync(source))) {
+      problems.push('required public JSON not identical to source: ' + relativePath);
+    }
+  }
+  return problems;
+}
+
+let cachedActualPagesOutput = null;
+function buildActualPagesOutput() {
+  if (cachedActualPagesOutput) return cachedActualPagesOutput;
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ecog-p06-jekyll-site-'));
+  const source = path.join(tempDir, 'site-source');
+  fs.cpSync(checkoutRoot, source, {
+    recursive: true,
+    filter: item => {
+      const relative = path.relative(checkoutRoot, item);
+      return !relative.split(path.sep).some(segment =>
+        segment === '.git' || segment === '_site' || segment === 'node_modules');
+    }
+  });
+  const identity = typeof process.getuid === 'function'
+    ? [String(process.getuid()), String(process.getgid())].join(':') : null;
+  const args = ['run', '--rm'];
+  if (identity) args.push('--user', identity);
+  args.push(
+    '-e', 'GITHUB_WORKSPACE=/github/workspace',
+    '-e', 'GITHUB_REPOSITORY=Ryan42062001/ECOG-Website',
+    '-e', 'GITHUB_API_URL=https://api.github.com',
+    '-e', 'INPUT_SOURCE=.',
+    '-e', 'INPUT_DESTINATION=./_site',
+    '-e', 'INPUT_FUTURE=false',
+    '-e', 'INPUT_VERBOSE=false',
+    '-e', 'INPUT_BUILD_REVISION=' + (process.env.GITHUB_SHA || 'local-reproducible-check'),
+    '-e', 'INPUT_TOKEN=',
+    '-v', source + ':/github/workspace',
+    jekyllImage
+  );
+  const built = spawnSync('docker', args, {
+    encoding: 'utf8', timeout: 300000, maxBuffer: 10 * 1024 * 1024
+  });
+  assert.ifError(built.error || null);
+  assert.equal(built.status, 0,
+    'actual GitHub Pages Jekyll container build failed:\n' +
+    (built.stderr || '').slice(-6000) + '\n' + (built.stdout || '').slice(-6000));
+  const output = path.join(source, '_site');
+  assert.ok(fs.existsSync(output) && fs.statSync(output).isDirectory(),
+    'Jekyll did not produce a real _site artifact');
+  cachedActualPagesOutput = output;
+  return output;
+}
+
+function temporaryGeneratedOutput(t) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ecog-p06-published-negative-'));
+  t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+  fs.cpSync(buildActualPagesOutput(), root, {recursive: true});
+  return root;
+}
+
+test('P06 real GitHub Pages Jekyll v1.0.13 build publishes public assets but excludes engineering files', () => {
+  const actual = buildActualPagesOutput();
+  assert.deepEqual(checkGeneratedPagesArtifact(actual), [],
+    'actual Jekyll-generated _site content must match the checked publication boundary');
+});
+
+test('P06 generated-artifact checker rejects a published internal roadmap or script', t => {
+  const generated = temporaryGeneratedOutput(t);
+  for (const relativePath of ['docs/PRODUCT_ROADMAP.md', 'scripts/validate-launch-state.js']) {
+    const leaked = path.join(generated, relativePath);
+    fs.mkdirSync(path.dirname(leaked), {recursive: true});
+    fs.writeFileSync(leaked, 'published engineering file\n');
+  }
+  const problems = checkGeneratedPagesArtifact(generated).join('\n');
+  assert.match(problems, /engineering-only path exposed.*docs\/PRODUCT_ROADMAP\.md/);
+  assert.match(problems, /engineering-only path exposed.*scripts\/validate-launch-state\.js/);
+});
+
+test('P06 generated-artifact checker rejects missing required events or sermons JSON', t => {
+  const generated = temporaryGeneratedOutput(t);
+  fs.rmSync(path.join(generated, 'data/events.json'));
+  fs.rmSync(path.join(generated, 'data/sermons.json'));
+  const problems = checkGeneratedPagesArtifact(generated).join('\n');
+  assert.match(problems, /required published asset absent: data\/events\.json/);
+  assert.match(problems, /required published asset absent: data\/sermons\.json/);
+});
+
+test('P06 generated-artifact checker rejects missing public pages and required browser JS', t => {
+  const generated = temporaryGeneratedOutput(t);
+  fs.rmSync(path.join(generated, 'about.html'));
+  fs.rmSync(path.join(generated, 'assets/js/events.js'));
+  const problems = checkGeneratedPagesArtifact(generated).join('\n');
+  assert.match(problems, /required published asset absent: about\.html/);
+  assert.match(problems, /required published asset absent: assets\/js\/events\.js/);
+});
+
+test('P06 generated-artifact checker rejects missing sitemap, CNAME and legacy route', t => {
+  const generated = temporaryGeneratedOutput(t);
+  for (const relativePath of ['sitemap.xml', 'CNAME', 'index.php/messages/index.html']) {
+    fs.rmSync(path.join(generated, relativePath));
+  }
+  const problems = checkGeneratedPagesArtifact(generated).join('\n');
+  assert.match(problems, /required published asset absent: sitemap\.xml/);
+  assert.match(problems, /required published asset absent: CNAME/);
+  assert.match(problems, /required published asset absent: index\.php\/messages\/index\.html/);
+});
