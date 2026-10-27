@@ -1,5 +1,24 @@
 # Current phase
 
+## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
+
+State (ECOG-P06): READINESS_REVIEW
+Risk (ECOG-P06): HIGH
+Status (ECOG-P06): READINESS_REVIEW / MANAGER SOURCE-CANDIDATE AUTHORIZATION PENDING
+Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/30
+Dependency: ECOG-P05 registrar transfer Issue #29 — PENDING
+Canonical Base: \`27051868f0ebb2432efe19e5f5b1634b4876c27d\`
+Feature Branch: \`phase/ecog-p06-indexing-readiness\`
+Pull Request: one Stage 1 DRAFT PR / UNMERGED
+Execution: Regular Chat / fresh Primary Builder
+P06 indexing-release authority: NOT GRANTED
+
+Only Stage 1 research/documentation is authorized: the exact 12-page self-canonical/OG/title/description/noindex and sitemap inventory; historic GSC anomaly; legacy, retired and 404 URL review; staging/Vercel header gates; proposed P06-specific dual-authority validators; independent P05 dependency, HIGH-risk release and rollback plan. Read \`docs/ecog-p06-search-indexing-readiness.md\` for the proposed contract and pending checks. Google Search Console's Oct 21 cross-domain canonical selection and Oct 26 robots-blocked live test are historical evidence, not current crawl status. Old 2014 sitemap.txt submission was removed; current sitemap.xml has not been submitted.
+
+At verified baseline all 12 intended pages retain \`noindex,nofollow\`, \`robots.txt\` remains sitewide \`Disallow: /\`, and P05 registrar transfer is unverified. Keep the P02 indexing authority and every P02/P03/P04 CLOSED section below byte-for-byte; the P06 phase uses its own scoped lifecycle names so existing P02 adversarial fixtures target their original historical fields. Do not add new generic phase or indexing authority field names above P02. There is no Stage 1 permission to modify source, robots, sitemap, canonical, validators/tests, deploy, or ask Google to index.
+
+Stage 1 changed-path boundary: ONLY \`.ai/CURRENT_PHASE.md\`, \`docs/PRODUCT_ROADMAP.md\`, and new \`docs/ecog-p06-search-indexing-readiness.md\`. Run a NEW exact-head FAST, then STOP for Manager at READINESS_REVIEW. Stage 2 source and test expansion requires written Manager permission. Before any future exact-SHA indexing publication: verified P05 completion, owner authorization, Manager exact-head FULL, immutable HIGH-risk freeze and FRESH independent HIGH-risk audit in a separate chat. Do not merge, publish, enable indexing, submit sitemap/indexing requests or alter infrastructure as part of Stage 1.
+
 ## ECOG-P04 — Facebook Hero Branding & Homepage Phone Visibility
 
 State (ECOG-P04): CLOSED

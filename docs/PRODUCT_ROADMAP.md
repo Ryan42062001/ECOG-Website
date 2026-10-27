@@ -209,3 +209,19 @@ P04 is **CLOSED / FACEBOOK HERO BRANDING & HOMEPAGE PHONE RELEASE VERIFIED** as 
 All pre-P04 roadmap text above remains exact, including P02 and P03 historical CLOSED evidence. P02's structured authority and P03's source closure remain protected. Active-page `noindex,nofollow` and `robots.txt` `Disallow: /` remain; Production Indexing, DNSSEC, registrar/EPP and infrastructure changes are NOT AUTHORIZED. No CNAME, sitemap, canonical/OG metadata, Pages settings, DNS, Cloudflare, TLS or production behavior is changed.
 
 Closure Sync requires a **NEW exact-head FAST**, Manager independent review and separate explicit protected-PR merge authorization. The Builder must STOP without FULL, freeze, audit, PR ready, merge, deployment or new-phase source work.
+
+
+## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
+
+- State (ECOG-P06): READINESS_REVIEW
+- Risk (ECOG-P06): HIGH
+- Status (ECOG-P06): READINESS_REVIEW / MANAGER SOURCE-CANDIDATE AUTHORIZATION PENDING
+- Contract: [Issue #30](https://github.com/Ryan42062001/ECOG-Website/issues/30)
+- Dependency: [P05 #29](https://github.com/Ryan42062001/ECOG-Website/issues/29) — registrar transfer PENDING
+- Canonical base: \`27051868f0ebb2432efe19e5f5b1634b4876c27d\`
+- Branch: \`phase/ecog-p06-indexing-readiness\` / one documentation-only DRAFT PR
+- Stage 1 authorized paths: \`.ai/CURRENT_PHASE.md\`, \`docs/PRODUCT_ROADMAP.md\`, \`docs/ecog-p06-search-indexing-readiness.md\` (new)
+
+The 12 intended sitemap URLs have page-specific title/description, HTTPS apex self-canonical equal to OG URL and active noindex,nofollow; sitewide robots Disallow remains and current sitemap has not been submitted. The Oct 21 Google cross-domain selected canonical is historical, the Oct 26 live inspection was robots-blocked, and the GSC verified property has no trusted current indexing counts. The obsolete 2014 sitemap.txt submission was removed. [Detailed 12-page matrix, legacy/retired/404/host audit, preview header gate, controlled validation and future rollback plan](docs/ecog-p06-search-indexing-readiness.md).
+
+Existing P02 historical indexing controls and 35 adversarial tests are immutable in Stage 1. Later code must add an explicitly scoped P06 indexing authority, preserve blocked state and fail-closed mixed states, with Manager-authorized expanded paths. Vercel response headers, www/apex redirect chains and legacy meta-refresh handling require verified decisions before any release. No Stage 1 Google request, source unblock, FULL, freeze, audit, merge or deployment. Future exact-SHA candidate needs HIGH-risk independent audit, verified P05 transfer, and separate explicit Ryan production-indexing authorization.
