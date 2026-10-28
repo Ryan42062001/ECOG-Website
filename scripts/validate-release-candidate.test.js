@@ -839,3 +839,103 @@ test('P06 generated-artifact checker rejects missing sitemap, CNAME and legacy r
   assert.match(problems, /required published asset absent: CNAME/);
   assert.match(problems, /required published asset absent: index\.php\/messages\/index\.html/);
 });
+
+
+// ECOG-P07: bounded post-launch navigation, belief card contrast and map choice
+// regressions. The original 73 P06/P02 adversarial and Jekyll tests above are
+// preserved byte-for-byte; no historical test/fixture contracts are weakened.
+const vmP07 = require('node:vm');
+const appleDirectionsP07 = 'https://maps.apple.com/directions?destination=11152%20Lincoln%20Highway%2C%20Everett%2C%20PA%2015537';
+const mapPagesP07 = [
+  ['index.html', 'https://www.google.com/maps/search/?api=1&amp;query=11152+Lincoln+Highway+Everett+PA+15537'],
+  ['new-here.html', 'https://www.google.com/maps/search/?api=1&amp;query=11152+Lincoln+Highway+Everett+PA+15537'],
+  ['contact.html', 'https://www.google.com/maps/search/?api=1&query=Everett+Church+of+God+11152+Lincoln+Highway+Everett+PA+15537']
+];
+function renderP07Header(pathname) {
+  const header = {innerHTML: ''};
+  const documentStub = {
+    querySelector: selector => selector === '[data-site-header]' ? header : null
+  };
+  const components = fs.readFileSync(path.join(checkoutRoot, 'assets/js/components.js'), 'utf8');
+  vmP07.runInNewContext(components, {
+    document: documentStub, window: {location: {pathname}}, Date
+  }, {filename: 'assets/js/components.js', timeout: 3000});
+  return header.innerHTML;
+}
+
+test('P07 shared navigation exposes Contact after Give on desktop and mobile markup', () => {
+  for (const path of ['/', '/contact.html', '/ministries/children.html']) {
+    const markup = renderP07Header(path);
+    const menu = markup.match(/<ul class="nav__links" id="site-menu">([\s\S]*?)<\/ul>/);
+    assert.ok(menu, 'shared #site-menu must exist for desktop and hamburger');
+    assert.equal((menu[1].match(/>Contact<\/a>/g) || []).length, 1,
+      'exactly one Contact link in shared primary nav');
+    assert.ok(menu[1].indexOf('>Give</a>') < menu[1].indexOf('>Contact</a>'),
+      'Contact must follow Give');
+    assert.match(markup, /aria-expanded="false" aria-controls="site-menu"/);
+  }
+});
+
+test('P07 Contact nav href and current-page semantics work on root and nested ministries', () => {
+  assert.match(renderP07Header('/contact.html'), /href="contact\.html" aria-current="page">Contact<\/a>/);
+  assert.match(renderP07Header('/ministries/children.html'), /href="\.\.\/contact\.html" >Contact<\/a>/);
+  assert.match(renderP07Header('/'), /href="contact\.html" >Contact<\/a>/);
+});
+
+test('P07 hamburger keeps keyboard Escape, aria state and responsive breakpoint', () => {
+  const js = fs.readFileSync(path.join(checkoutRoot, 'assets/js/main.js'), 'utf8');
+  const css = fs.readFileSync(path.join(checkoutRoot, 'assets/css/main.css'), 'utf8');
+  assert.match(js, /event\.key === 'Escape'/);
+  assert.match(js, /closeMenu\(\{ restoreFocus: true \}\)/);
+  assert.match(js, /toggle\.setAttribute\('aria-expanded', 'true'\)/);
+  assert.match(js, /event\.target\.closest\('a'\)/);
+  assert.match(css, /@media\(max-width:860px\).*?\.nav-toggle\{display:block\}/s);
+  assert.match(css, /\.nav__links\.is-open\{display:grid\}/);
+});
+
+test('P07 seven belief cards have scoped dark-ink contrast, doctrine HTML unchanged', () => {
+  const css = fs.readFileSync(path.join(checkoutRoot, 'assets/css/components.css'), 'utf8');
+  const html = fs.readFileSync(path.join(checkoutRoot, 'about.html'), 'utf8');
+  assert.match(css, /\.about-beliefs \.about-value-card\{color:var\(--color-ink\)\}/);
+  assert.match(css, /\.about-value-card p\{margin:0;color:var\(--color-muted\)\}/);
+  const beliefArea = html.slice(html.indexOf('about-beliefs'), html.indexOf('</section>', html.indexOf('about-beliefs')));
+  for (const title of [
+    'The Bible', 'God', 'Jesus Christ', 'Salvation',
+    'The Holy Spirit', 'The Church', 'Jesus Is Coming Back'
+  ]) {
+    assert.ok(beliefArea.includes('>' + title + '</h3>'), 'missing doctrinal heading ' + title);
+  }
+});
+
+test('P07 Apple Maps is first, Google Maps second and existing Google destinations unchanged', () => {
+  for (const [page, expectedGoogle] of mapPagesP07) {
+    const html = fs.readFileSync(path.join(checkoutRoot, page), 'utf8');
+    const group = html.match(/<div class="map-choice-links">([\s\S]*?)<\/div>/);
+    assert.ok(group, page + ' must have explicit two-option directions group');
+    const anchors = [...group[1].matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)];
+    assert.equal(anchors.length, 2, page + ' must present exactly two maps choices');
+    assert.match(anchors[0][2], /^Apple Maps/);
+    assert.match(anchors[1][2], /^Google Maps/);
+    assert.ok(anchors[0][1].includes('href="' + appleDirectionsP07 + '"'));
+    assert.ok(anchors[1][1].includes('href="' + expectedGoogle + '"'),
+      page + ' must preserve the ORIGINAL Google URL byte-for-byte');
+    for (const anchor of anchors) {
+      assert.match(anchor[1], /target="_blank"/);
+      assert.match(anchor[1], /rel="noopener noreferrer"/);
+      assert.match(anchor[2], /opens in a new tab/);
+    }
+    assert.equal((html.match(/maps\.apple\.com\/directions/g) || []).length, 1);
+    assert.equal((html.match(/www\.google\.com\/maps/g) || []).length, 1);
+  }
+});
+
+test('P07 map panels are explicit choices, never Google-exclusive click surfaces', () => {
+  for (const page of ['index.html', 'new-here.html']) {
+    const html = fs.readFileSync(path.join(checkoutRoot, page), 'utf8');
+    assert.doesNotMatch(html, /<a class="location-card__media[^"]*" href="https:\/\/www\.google\.com\/maps/);
+    assert.match(html, /class="location-card__media home-map-placeholder branded-link-panel branded-link-panel--map" role="group" aria-label="Directions to Everett Church of God"/);
+  }
+  const newHere = fs.readFileSync(path.join(checkoutRoot, 'new-here.html'), 'utf8');
+  assert.match(newHere, /href="#directions-choices">Choose a Maps App<\/a>/);
+  assert.match(newHere, /id="directions-choices"/);
+});
