@@ -1,5 +1,26 @@
 # Current phase
 
+## ECOG-P07 — Post-Launch Navigation, Belief Cards & Apple/Google Maps
+
+State (ECOG-P07): PREVIEW_READY
+Risk (ECOG-P07): MEDIUM
+Status (ECOG-P07): PREVIEW_READY / OWNER REVIEW PENDING
+Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/32
+Baseline Protected Main: `b8f5d1a13413d2145066e8dc7920048b83fe0233`
+Feature Branch: `phase/ecog-p07-post-launch-usability`
+Pull Request: ONE DRAFT / OPEN / UNMERGED (P07)
+Execution: Regular Chat / FRESH Primary Builder
+Owner Approval: NONPRODUCTION IMPLEMENTATION AND PREVIEW ONLY
+P07 Production Deployment / Merge Authority: NOT GRANTED
+
+P07 includes only three owner-requested improvements: shared desktop/mobile header **Contact** after Give, a scoped readable ink contrast for the seven About → What We Believe white-card headings, and two accessible external directions choices labeled **Apple Maps first**, **Google Maps second** on Home, New Here and Contact. The existing Google Maps destination links, the address 11152 Lincoln Highway, Everett, PA 15537, existing church content and original P06 indexing source are preserved. Desktop and mobile navigation retain existing 860px responsive breakpoint, semantic nav toggle, Escape/focus restoration and active link handling; owner must still visually verify fit around 860/1180px and phone devices.
+
+Issue #29 P05 is CLOSED. P06 PR #31 merged and protected main `b8f5d1a13413d2145066e8dc7920048b83fe0233` was successfully published by GitHub Pages; P06 Issue #30 remains OPEN and must stay historically and operationally independent under Google Search monitoring. This P07 draft does NOT change indexing, Jekyll exclusions, DNS, CNAME, sitemap, data feeds, donor payment links or production release status.
+
+P07 maximum authorized scope: seven specified product paths if needed, at most one existing test script and three documentation paths (11 total). The actual implemented set may be smaller. Historical P06, P02–P04 phase records and source authority below are preserved byte-for-byte; no topmost generic lifecycle field is introduced. NEW exact-head FAST must PASS the existing 73 tests plus focused P07 checks, the full validation union and the original Jekyll generated-artifact boundary check. Vercel owner preview must remain protected; provider configuration alone is not actual HTTP header proof.
+
+STOP at PREVIEW_READY for Product Owner preview and Manager review. No Builder FULL, freeze, independent audit, ready-for-review, merge, Pages production deployment, Google/Search Console submission, Cloudflare/Vercel/registrar settings, secret or other infrastructure actions.
+
 ## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
 State (ECOG-P06): PUNCH_LIST

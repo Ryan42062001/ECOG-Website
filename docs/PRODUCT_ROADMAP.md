@@ -257,3 +257,19 @@ The code-only remediation SHA `b7ad1d3900b8c52b531c0e03688bc0207816d2d1` passed 
 P06 source mode remains `INDEXABLE_CANDIDATE` on **DRAFT / UNMERGED** PR only. Production indexing release authority remains **NOT GRANTED**; protected `main` retains original noindex and robots Disallow. Passing Jekyll output tests proves a representative build, **not that existing live 200 engineering URLs have disappeared**; only a later separately authorized deployment permits production HTTP recheck. Existing preview SSO/noindex evidence applies to the earlier exact SHA; new preview protection must be rechecked. P05 registration transfer is operationally complete but final administrative assurances remain outstanding.
 
 **STOP for Manager**: new exact-head FULL and deterministic repeat, NEW immutable HIGH-risk freeze, FRESH independent re-audit, final P05 administrative control checks, and Ryan's separate exact-frozen-SHA protected merge/indexing authorization. No Builder FULL, freeze, audit, merge, publishing, sitemap submission, Search Console indexing request or infrastructure changes.
+
+
+## ECOG-P07 — Post-Launch Navigation, Belief Cards & Apple/Google Maps
+
+- State (ECOG-P07): PREVIEW_READY
+- Risk (ECOG-P07): MEDIUM
+- Status (ECOG-P07): PREVIEW_READY / OWNER REVIEW PENDING
+- Manager activation: [Issue #32](https://github.com/Ryan42062001/ECOG-Website/issues/32)
+- Starting protected production `main`: `b8f5d1a13413d2145066e8dc7920048b83fe0233`
+- P07 branch: `phase/ecog-p07-post-launch-usability` / ONE DRAFT PR / not merged
+- Scope: shared Contact nav, About belief heading contrast, clear Apple-first/Google-second directions options on Home, New Here and Contact.
+- Preserved: P06 Google search monitoring (Issue #30 OPEN), P05 #29 CLOSED, Jekyll `_config.yml`, 12 public SEO metas, robots, sitemap, CNAME, Events/Sermons JSON, payment status, prior source/doctrine and P06 historical tests.
+
+P07 is one coherent, nonproduction MEDIUM-risk owner-preview candidate under Speed Workflow V2.1. Add Contact after Give in the shared header renderer (desktop/mobile same link set; nested ministry pages retain relative-link calculation). Restore dark heading contrast only within `.about-beliefs .about-value-card`, preserving the seven complete doctrinal paragraphs, white cards and bright numbered About values section. Add explicit Apple Maps and original working Google Maps links, in that order, to Home, New Here and Contact. No provider SDK or tracking. External links open a new tab with `rel="noopener noreferrer"` and accessible notice. Existing mobile nav click/Escape/keyboard semantics and 860px breakpoint stay unchanged.
+
+Builder must run NEW exact-head FAST, all original 73 cases plus any bounded P07 assertions and full validation union, and verify no unauthorized source changes. Owner visually reviews desktop ~861/1180px plus hamburger/mobile, belief-card headings, and Apple/Google map handoff. Then Manager consolidates feedback and separately authorizes Phase Sync/FULL/freeze/fresh independent MEDIUM-risk audit, and only later explicit exact-SHA protected merge/production release. **STOP at PREVIEW_READY.**

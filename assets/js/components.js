@@ -8,7 +8,7 @@
   const current = path.endsWith('/') ? 'index.html' : lastSegment;
 
   const navItems = [
-    ['Home', 'index.html'], ['New Here', 'new-here.html'], ['About', 'about.html'], ['Ministries', 'ministries.html'], ['Messages', 'messages.html'], ['Events', 'events.html'], ['Give', 'give.html']
+    ['Home', 'index.html'], ['New Here', 'new-here.html'], ['About', 'about.html'], ['Ministries', 'ministries.html'], ['Messages', 'messages.html'], ['Events', 'events.html'], ['Give', 'give.html'], ['Contact', 'contact.html']
   ];
 
   const linkHref = (href) => href === 'index.html' ? homeHref : `${depth}${href}`;
