@@ -897,6 +897,7 @@ test('P07 seven belief cards have scoped dark-ink contrast, doctrine HTML unchan
   const css = fs.readFileSync(path.join(checkoutRoot, 'assets/css/components.css'), 'utf8');
   const html = fs.readFileSync(path.join(checkoutRoot, 'about.html'), 'utf8');
   assert.match(css, /\.about-beliefs \.about-value-card\{color:var\(--color-ink\)\}/);
+  assert.match(css, /\.about-beliefs \.about-value-card h3\{text-align:center\}/);
   assert.match(css, /\.about-value-card p\{margin:0;color:var\(--color-muted\)\}/);
   const beliefArea = html.slice(html.indexOf('about-beliefs'), html.indexOf('</section>', html.indexOf('about-beliefs')));
   for (const title of [

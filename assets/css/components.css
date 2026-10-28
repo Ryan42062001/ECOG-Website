@@ -34,6 +34,7 @@
 @media(max-width:620px){.cta-panel{padding:1.5rem}.info-tile{padding:1.2rem}.feature-card--compact{padding:1.25rem}.home-photo,.home-video-placeholder{min-height:17rem}.branded-link-panel{min-height:14rem;padding:1.5rem}.branded-link-panel__icon{width:3.6rem;height:3.6rem}.home-video-placeholder__play{width:3.6rem;height:3.6rem}.home-empty-state{padding:1.4rem}.home-events-section,.home-final-cta{padding-block:3.25rem}.visit-quick__grid{grid-template-columns:1fr}.visit-quick__grid>div{padding:1rem}.visit-quick__grid>div+div{border-left:0;border-top:1px solid rgba(7,26,43,.18)}.visit-photo{min-height:17rem}.visit-step{padding:1.5rem}.visit-final{padding-block:3.25rem}.visit-faq summary{padding-left:1rem}.visit-faq details p{padding-left:1rem;padding-right:1.5rem}.about-photo{min-height:17rem}.about-value-grid{grid-template-columns:1fr}.about-value-card{padding:1.45rem}.about-leader-placeholder__photo{min-height:17rem}.about-leader-placeholder__content{padding:1.5rem}.about-leader-card{padding:1.5rem}}
 /* ECOG-P07: belief cards are white within a dark section; restore readable heading contrast. */
 .about-beliefs .about-value-card{color:var(--color-ink)}
+.about-beliefs .about-value-card h3{text-align:center}
 /* Two explicit, keyboard-accessible map options; Apple Maps intentionally first. */
 .map-choice-links{display:grid;gap:.75rem;width:min(100%,20rem);margin:1.35rem auto 0}
 .map-choice-links .map-choice-link{display:flex;width:100%;min-height:3rem;align-items:center;justify-content:center;text-align:center}
