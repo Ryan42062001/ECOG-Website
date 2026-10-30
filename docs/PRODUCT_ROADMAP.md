@@ -261,26 +261,33 @@ P06 source mode remains `INDEXABLE_CANDIDATE` on **DRAFT / UNMERGED** PR only. P
 
 ## ECOG-P07 — Post-Launch Navigation, Belief Cards & Apple/Google Maps
 
-- State (ECOG-P07): FREEZE_READY
+- State (ECOG-P07): CLOSURE_READY
 - Risk (ECOG-P07): MEDIUM
-- Status (ECOG-P07): FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING
-- Manager activation: [Issue #32](https://github.com/Ryan42062001/ECOG-Website/issues/32)
-- Manager Phase Sync authority and exact owner acceptance: [PR #33 comment #6512501798](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512501798)
-- Protected production main: `b8f5d1a13413d2145066e8dc7920048b83fe0233` — unchanged
-- Owner-accepted product SHA: `9ba114575baf0a7b25b1b8084edd66e603f7307d`
-- Product [exact-head FAST #40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361): SUCCESS, **79/79**, complete validation union, FULL skipped
-- Protected preview: [owner-operated 3/3 anonymous 302 SSO + `X-Robots-Tag: noindex` #6512456973](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973)
-- Branch `phase/ecog-p07-post-launch-usability`; PR #33 **DRAFT / OPEN / UNMERGED**
-- Production protected merge / Pages deployment: **NOT AUTHORIZED**
+- Status (ECOG-P07): CLOSURE_READY / FINAL VALIDATION PENDING
+- Manager original contract: [Issue #32](https://github.com/Ryan42062001/ECOG-Website/issues/32)
+- Closure Sync authority: [Issue #32 #6513328213](https://github.com/Ryan42062001/ECOG-Website/issues/32#issuecomment-6513328213)
+- Original owner-accepted product SHA: `9ba114575baf0a7b25b1b8084edd66e603f7307d`
+- FROZEN / independently audited source SHA: `91c8a00eb0757dad94199eec2713de0d72acaf57`
+- Fresh independent [MEDIUM audit PASS #6512772175](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512772175) with no medium/blocker source defects
+- [Product Owner explicit EXACT-source production release permission #6512965830](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512965830)
+- Product PR [#33](https://github.com/Ryan42062001/ECOG-Website/pull/33): CLOSED / MERGED
+- Protected production merge SHA: `9c42eec7af733f6b8a71d612d3a17e0db1cedd81`
+- Exact merge-sha [postmerge FAST #40988687568](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40988687568): SUCCESS **79/79** plus complete validation union and real Jekyll publishing-boundary test
+- Exact merge-sha [Pages deployment #40988687355](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40988687355): SUCCESS (build and deploy)
+- [Owner live production HTTPS smoke #6513293212](https://github.com/Ryan42062001/ECOG-Website/issues/32#issuecomment-6513293212): **10/10 expected HTTP statuses PASS**
+- Owner live visual/device acceptance: **“Yes i verified that”**, captured in [Manager Closure Sync authorization #6513328213](https://github.com/Ryan42062001/ECOG-Website/issues/32#issuecomment-6513328213)
+- Closure docs: NEW branch `phase/ecog-p07-closure-sync` from `9c42eec7af733f6b8a71d612d3a17e0db1cedd81`, ONE new DRAFT PR (not merged, no production source edits)
+- P07 Issue #32: **OPEN / formal closure pending separate docs merge + postclosure verification**. P06 Issue #30 separately OPEN for Google Search indexing monitoring.
 
-### Owner-accepted P07 usability package
+### Verified released functionality
 
-The Product Owner explicitly approved the final immutable preview at `9ba114575baf0a7b25b1b8084edd66e603f7307d`, replying “Yep everything looks good.” The accepted three changes are **Contact after Give in the shared desktop/mobile header**, **seven dark and horizontally centered H3 headings on white About → What We Believe cards with all doctrinal paragraphs preserved and left-aligned**, and **clearly labeled Apple Maps FIRST / original Google Maps SECOND** directions options on Home, New Here and Contact. The final belief-heading punch-list change added only `.about-beliefs .about-value-card h3{text-align:center}` alongside the earlier scoped contrast correction; original About text is unchanged. This is owner preview acceptance, not independent exhaustive viewport, keyboard or platform coverage and not production release permission.
+The owner-accepted and audited P07 package is **deployed in production**: Contact after Give in shared desktop/mobile navigation; all seven readable dark, horizontally centered H3 belief headings in white About cards with unchanged doctrine text and left-aligned paragraphs; and clearly labeled Apple Maps FIRST, original Google Maps SECOND on Home, New Here and Contact. The owner's earlier exact-source preview had 3/3 tested unauthenticated **302 Vercel SSO + `X-Robots-Tag: noindex`** requests ([source evidence](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973)). The fresh MEDIUM-risk independent audit concluded PASS before owner-authorized release. Owner separately confirmed the LIVE visible features and map handoffs as observed, not as an exhaustive browser/platform certification.
 
-Owner-operated anonymous read-only HEAD responses for immutable preview root, immutable `/about.html`, and branch preview alias showed **HTTP 302 → Vercel SSO plus `X-Robots-Tag: noindex` on all three tested requests**, documented in [Manager evidence](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973). These tests concern the accepted product SHA, not authenticated 200 responses or any new docs-only preview SHA.
+The production [HTTP smoke evidence](https://github.com/Ryan42062001/ECOG-Website/issues/32#issuecomment-6513293212) measured **200** at `/`, `about.html`, `new-here.html`, `contact.html`, `robots.txt`, `sitemap.xml`, `data/events.json`, `data/sermons.json`, and **404** at `docs/PRODUCT_ROADMAP.md`, `scripts/validate-launch-state.js`. These are URL-status measurements, not claims of Google indexing, verified response bodies or exhaustive accessibility tests. The P06 original robots/sitemap, Jekyll exclusions, canonical/meta and public JSON assets remain unchanged; P06 #30 is still separate and OPEN.
 
-All **73 original P06/P02 tests plus six P07 regression tests** passed exact-head FAST [#40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361) — SUCCESS, 79/79. The production-matched Jekyll generated-artifact boundary remains part of the union; no P06 blocked/indexable fixtures were weakened. The follow-on Phase Sync changes **only** `.ai/CURRENT_PHASE.md` (top P07 section), this appended P07 roadmap section and `docs/ecog-p07-post-launch-usability.md`. The exact same nine P07 PR paths remain within the eleven-path maximum. Accepted product blobs, original roadmap before P07 and P06/P02–P04 phase history remain byte-identical; a distinct Phase Sync exact-head FAST must be verified and recorded on PR #33 after it runs.
+### Bounded Closure Sync — NOT FORMALLY CLOSED YET
 
-P05 Issue #29 is CLOSED. P06 PR #31 merged and production Pages/FAST passed at the protected `main` baseline `b8f5d1a13413d2145066e8dc7920048b83fe0233`; P06 Issue #30 is separately OPEN / LAUNCHED–GSC MONITORING. P07 has no authority to modify P06 Google indexing, `robots.txt`, `sitemap.xml`, `_config.yml`, CNAME, Events/Sermons JSON, payment provider, CI workflow or production infrastructure.
+This Closure Sync creates exactly one new docs-only DRAFT PR from `9c42eec7af733f6b8a71d612d3a17e0db1cedd81`, modifying **only** `.ai/CURRENT_PHASE.md` top P07 section, the appended P07 section of this roadmap and `docs/ecog-p07-post-launch-usability.md`. All **pre-P07 roadmap bytes** and P06/P02–P04 history are immutable. Every product code, image/asset, 79 tests, P06 indexed-candidate policy, robots, sitemap, CNAME, `_config.yml`, Events/Sermons JSON, 404/retired/legacy and CI workflow path remains identical to production `9c42eec7af733f6b8a71d612d3a17e0db1cedd81`. The NEW closure-docs HEAD must pass **NEW exact-head FAST and full validation union**, with run details posted on its draft PR after observation.
 
-**STOP at FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING.** Manager independently verifies new exact-head FAST, initiates any later FULL and deterministic repeat, declares an immutable MEDIUM-risk freeze and commissions a fresh independent Auditor in another chat. A separate explicit Ryan exact-frozen-SHA protected merge and Pages release approval is required; no Builder FULL, freeze, audit, PR-ready, merge, deploy, Search Console submission or infrastructure/provider action.
+**STOP: CLOSURE_READY / FINAL VALIDATION PENDING**. Manager reviews new SHA/diff/FAST, obtains separate Ryan **exact closure-docs SHA merge permission**, and only then may perform guarded protected merge, post-closure FAST/Pages verification and P07 Issue #32 CLOSED state transition. No Builder merge, ready-for-review, deployment, Google Search Console or production infrastructure/provider setting action.
+
