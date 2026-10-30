@@ -257,3 +257,30 @@ The code-only remediation SHA `b7ad1d3900b8c52b531c0e03688bc0207816d2d1` passed 
 P06 source mode remains `INDEXABLE_CANDIDATE` on **DRAFT / UNMERGED** PR only. Production indexing release authority remains **NOT GRANTED**; protected `main` retains original noindex and robots Disallow. Passing Jekyll output tests proves a representative build, **not that existing live 200 engineering URLs have disappeared**; only a later separately authorized deployment permits production HTTP recheck. Existing preview SSO/noindex evidence applies to the earlier exact SHA; new preview protection must be rechecked. P05 registration transfer is operationally complete but final administrative assurances remain outstanding.
 
 **STOP for Manager**: new exact-head FULL and deterministic repeat, NEW immutable HIGH-risk freeze, FRESH independent re-audit, final P05 administrative control checks, and Ryan's separate exact-frozen-SHA protected merge/indexing authorization. No Builder FULL, freeze, audit, merge, publishing, sitemap submission, Search Console indexing request or infrastructure changes.
+
+
+## ECOG-P07 — Post-Launch Navigation, Belief Cards & Apple/Google Maps
+
+- State (ECOG-P07): FREEZE_READY
+- Risk (ECOG-P07): MEDIUM
+- Status (ECOG-P07): FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING
+- Manager activation: [Issue #32](https://github.com/Ryan42062001/ECOG-Website/issues/32)
+- Manager Phase Sync authority and exact owner acceptance: [PR #33 comment #6512501798](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512501798)
+- Protected production main: `b8f5d1a13413d2145066e8dc7920048b83fe0233` — unchanged
+- Owner-accepted product SHA: `9ba114575baf0a7b25b1b8084edd66e603f7307d`
+- Product [exact-head FAST #40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361): SUCCESS, **79/79**, complete validation union, FULL skipped
+- Protected preview: [owner-operated 3/3 anonymous 302 SSO + `X-Robots-Tag: noindex` #6512456973](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973)
+- Branch `phase/ecog-p07-post-launch-usability`; PR #33 **DRAFT / OPEN / UNMERGED**
+- Production protected merge / Pages deployment: **NOT AUTHORIZED**
+
+### Owner-accepted P07 usability package
+
+The Product Owner explicitly approved the final immutable preview at `9ba114575baf0a7b25b1b8084edd66e603f7307d`, replying “Yep everything looks good.” The accepted three changes are **Contact after Give in the shared desktop/mobile header**, **seven dark and horizontally centered H3 headings on white About → What We Believe cards with all doctrinal paragraphs preserved and left-aligned**, and **clearly labeled Apple Maps FIRST / original Google Maps SECOND** directions options on Home, New Here and Contact. The final belief-heading punch-list change added only `.about-beliefs .about-value-card h3{text-align:center}` alongside the earlier scoped contrast correction; original About text is unchanged. This is owner preview acceptance, not independent exhaustive viewport, keyboard or platform coverage and not production release permission.
+
+Owner-operated anonymous read-only HEAD responses for immutable preview root, immutable `/about.html`, and branch preview alias showed **HTTP 302 → Vercel SSO plus `X-Robots-Tag: noindex` on all three tested requests**, documented in [Manager evidence](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973). These tests concern the accepted product SHA, not authenticated 200 responses or any new docs-only preview SHA.
+
+All **73 original P06/P02 tests plus six P07 regression tests** passed exact-head FAST [#40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361) — SUCCESS, 79/79. The production-matched Jekyll generated-artifact boundary remains part of the union; no P06 blocked/indexable fixtures were weakened. The follow-on Phase Sync changes **only** `.ai/CURRENT_PHASE.md` (top P07 section), this appended P07 roadmap section and `docs/ecog-p07-post-launch-usability.md`. The exact same nine P07 PR paths remain within the eleven-path maximum. Accepted product blobs, original roadmap before P07 and P06/P02–P04 phase history remain byte-identical; a distinct Phase Sync exact-head FAST must be verified and recorded on PR #33 after it runs.
+
+P05 Issue #29 is CLOSED. P06 PR #31 merged and production Pages/FAST passed at the protected `main` baseline `b8f5d1a13413d2145066e8dc7920048b83fe0233`; P06 Issue #30 is separately OPEN / LAUNCHED–GSC MONITORING. P07 has no authority to modify P06 Google indexing, `robots.txt`, `sitemap.xml`, `_config.yml`, CNAME, Events/Sermons JSON, payment provider, CI workflow or production infrastructure.
+
+**STOP at FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING.** Manager independently verifies new exact-head FAST, initiates any later FULL and deterministic repeat, declares an immutable MEDIUM-risk freeze and commissions a fresh independent Auditor in another chat. A separate explicit Ryan exact-frozen-SHA protected merge and Pages release approval is required; no Builder FULL, freeze, audit, PR-ready, merge, deploy, Search Console submission or infrastructure/provider action.
