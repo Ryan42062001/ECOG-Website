@@ -261,15 +261,26 @@ P06 source mode remains `INDEXABLE_CANDIDATE` on **DRAFT / UNMERGED** PR only. P
 
 ## ECOG-P07 — Post-Launch Navigation, Belief Cards & Apple/Google Maps
 
-- State (ECOG-P07): PREVIEW_READY
+- State (ECOG-P07): FREEZE_READY
 - Risk (ECOG-P07): MEDIUM
-- Status (ECOG-P07): PREVIEW_READY / OWNER REVIEW PENDING
+- Status (ECOG-P07): FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING
 - Manager activation: [Issue #32](https://github.com/Ryan42062001/ECOG-Website/issues/32)
-- Starting protected production `main`: `b8f5d1a13413d2145066e8dc7920048b83fe0233`
-- P07 branch: `phase/ecog-p07-post-launch-usability` / ONE DRAFT PR / not merged
-- Scope: shared Contact nav, About belief heading contrast, clear Apple-first/Google-second directions options on Home, New Here and Contact.
-- Preserved: P06 Google search monitoring (Issue #30 OPEN), P05 #29 CLOSED, Jekyll `_config.yml`, 12 public SEO metas, robots, sitemap, CNAME, Events/Sermons JSON, payment status, prior source/doctrine and P06 historical tests.
+- Manager Phase Sync authority and exact owner acceptance: [PR #33 comment #6512501798](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512501798)
+- Protected production main: `b8f5d1a13413d2145066e8dc7920048b83fe0233` — unchanged
+- Owner-accepted product SHA: `9ba114575baf0a7b25b1b8084edd66e603f7307d`
+- Product [exact-head FAST #40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361): SUCCESS, **79/79**, complete validation union, FULL skipped
+- Protected preview: [owner-operated 3/3 anonymous 302 SSO + `X-Robots-Tag: noindex` #6512456973](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973)
+- Branch `phase/ecog-p07-post-launch-usability`; PR #33 **DRAFT / OPEN / UNMERGED**
+- Production protected merge / Pages deployment: **NOT AUTHORIZED**
 
-P07 is one coherent, nonproduction MEDIUM-risk owner-preview candidate under Speed Workflow V2.1. Add Contact after Give in the shared header renderer (desktop/mobile same link set; nested ministry pages retain relative-link calculation). Restore dark heading contrast only within `.about-beliefs .about-value-card`, preserving the seven complete doctrinal paragraphs, white cards and bright numbered About values section. Add explicit Apple Maps and original working Google Maps links, in that order, to Home, New Here and Contact. No provider SDK or tracking. External links open a new tab with `rel="noopener noreferrer"` and accessible notice. Existing mobile nav click/Escape/keyboard semantics and 860px breakpoint stay unchanged.
+### Owner-accepted P07 usability package
 
-Builder must run NEW exact-head FAST, all original 73 cases plus any bounded P07 assertions and full validation union, and verify no unauthorized source changes. Owner visually reviews desktop ~861/1180px plus hamburger/mobile, belief-card headings, and Apple/Google map handoff. Then Manager consolidates feedback and separately authorizes Phase Sync/FULL/freeze/fresh independent MEDIUM-risk audit, and only later explicit exact-SHA protected merge/production release. **STOP at PREVIEW_READY.**
+The Product Owner explicitly approved the final immutable preview at `9ba114575baf0a7b25b1b8084edd66e603f7307d`, replying “Yep everything looks good.” The accepted three changes are **Contact after Give in the shared desktop/mobile header**, **seven dark and horizontally centered H3 headings on white About → What We Believe cards with all doctrinal paragraphs preserved and left-aligned**, and **clearly labeled Apple Maps FIRST / original Google Maps SECOND** directions options on Home, New Here and Contact. The final belief-heading punch-list change added only `.about-beliefs .about-value-card h3{text-align:center}` alongside the earlier scoped contrast correction; original About text is unchanged. This is owner preview acceptance, not independent exhaustive viewport, keyboard or platform coverage and not production release permission.
+
+Owner-operated anonymous read-only HEAD responses for immutable preview root, immutable `/about.html`, and branch preview alias showed **HTTP 302 → Vercel SSO plus `X-Robots-Tag: noindex` on all three tested requests**, documented in [Manager evidence](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973). These tests concern the accepted product SHA, not authenticated 200 responses or any new docs-only preview SHA.
+
+All **73 original P06/P02 tests plus six P07 regression tests** passed exact-head FAST [#40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361) — SUCCESS, 79/79. The production-matched Jekyll generated-artifact boundary remains part of the union; no P06 blocked/indexable fixtures were weakened. The follow-on Phase Sync changes **only** `.ai/CURRENT_PHASE.md` (top P07 section), this appended P07 roadmap section and `docs/ecog-p07-post-launch-usability.md`. The exact same nine P07 PR paths remain within the eleven-path maximum. Accepted product blobs, original roadmap before P07 and P06/P02–P04 phase history remain byte-identical; a distinct Phase Sync exact-head FAST must be verified and recorded on PR #33 after it runs.
+
+P05 Issue #29 is CLOSED. P06 PR #31 merged and production Pages/FAST passed at the protected `main` baseline `b8f5d1a13413d2145066e8dc7920048b83fe0233`; P06 Issue #30 is separately OPEN / LAUNCHED–GSC MONITORING. P07 has no authority to modify P06 Google indexing, `robots.txt`, `sitemap.xml`, `_config.yml`, CNAME, Events/Sermons JSON, payment provider, CI workflow or production infrastructure.
+
+**STOP at FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING.** Manager independently verifies new exact-head FAST, initiates any later FULL and deterministic repeat, declares an immutable MEDIUM-risk freeze and commissions a fresh independent Auditor in another chat. A separate explicit Ryan exact-frozen-SHA protected merge and Pages release approval is required; no Builder FULL, freeze, audit, PR-ready, merge, deploy, Search Console submission or infrastructure/provider action.

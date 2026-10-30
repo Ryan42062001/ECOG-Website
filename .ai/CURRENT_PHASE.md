@@ -2,24 +2,46 @@
 
 ## ECOG-P07 — Post-Launch Navigation, Belief Cards & Apple/Google Maps
 
-State (ECOG-P07): PREVIEW_READY
+State (ECOG-P07): FREEZE_READY
 Risk (ECOG-P07): MEDIUM
-Status (ECOG-P07): PREVIEW_READY / OWNER REVIEW PENDING
+Status (ECOG-P07): FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING
 Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/32
-Baseline Protected Main: `b8f5d1a13413d2145066e8dc7920048b83fe0233`
+Manager Phase Sync Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512501798
+Owner Exact-Head Preview Acceptance: https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512501798
+Preview Security Evidence: https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973
+Owner-Accepted Product SHA: `9ba114575baf0a7b25b1b8084edd66e603f7307d`
+Owner-Accepted Product FAST: [#40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361) — COMPLETED / SUCCESS, 79/79 tests, full validation union
+Protected Main Baseline: `b8f5d1a13413d2145066e8dc7920048b83fe0233`
 Feature Branch: `phase/ecog-p07-post-launch-usability`
-Pull Request: ONE DRAFT / OPEN / UNMERGED (P07)
-Execution: Regular Chat / FRESH Primary Builder
-Owner Approval: NONPRODUCTION IMPLEMENTATION AND PREVIEW ONLY
-P07 Production Deployment / Merge Authority: NOT GRANTED
+Pull Request: #33 — DRAFT / OPEN / UNMERGED
+Execution: Regular Chat / SAME P07 Primary Builder
+P07 Owner Visual Approval: ACCEPTED FOR EXACT PRODUCT SHA; NOT A RELEASE APPROVAL
+P07 Protected Merge / Pages Deployment Authority: NOT GRANTED
 
-P07 includes only three owner-requested improvements: shared desktop/mobile header **Contact** after Give, a scoped readable ink contrast for the seven About → What We Believe white-card headings, and two accessible external directions choices labeled **Apple Maps first**, **Google Maps second** on Home, New Here and Contact. The existing Google Maps destination links, the address 11152 Lincoln Highway, Everett, PA 15537, existing church content and original P06 indexing source are preserved. Desktop and mobile navigation retain existing 860px responsive breakpoint, semantic nav toggle, Escape/focus restoration and active link handling; owner must still visually verify fit around 860/1180px and phone devices.
+### Owner-accepted source and scope
 
-Issue #29 P05 is CLOSED. P06 PR #31 merged and protected main `b8f5d1a13413d2145066e8dc7920048b83fe0233` was successfully published by GitHub Pages; P06 Issue #30 remains OPEN and must stay historically and operationally independent under Google Search monitoring. This P07 draft does NOT change indexing, Jekyll exclusions, DNS, CNAME, sitemap, data feeds, donor payment links or production release status.
+Ryan explicitly answered “Yep everything looks good” after inspecting the final immutable owner preview `https://ecog-website-preview-ifs69gvr8-ryan-s-team9.vercel.app/` for exact product SHA `9ba114575baf0a7b25b1b8084edd66e603f7307d`. The acceptance covers the observed look and interactions of the three owner-requested improvements: Contact after Give in shared desktop/hamburger navigation; all seven white What We Believe cards with dark, horizontally centered H3 headings while the doctrinal paragraphs remain left-aligned and unchanged; and Apple Maps FIRST / Google Maps SECOND on Home, New Here and Contact. Earlier focused feedback confirmed an Apple Maps click worked and Contact appeared in the mobile hamburger menu. This is Product Owner preview acceptance, NOT an independently exhaustive multi-device, cross-browser, keyboard or all-platform maps audit.
 
-P07 maximum authorized scope: seven specified product paths if needed, at most one existing test script and three documentation paths (11 total). The actual implemented set may be smaller. Historical P06, P02–P04 phase records and source authority below are preserved byte-for-byte; no topmost generic lifecycle field is introduced. NEW exact-head FAST must PASS the existing 73 tests plus focused P07 checks, the full validation union and the original Jekyll generated-artifact boundary check. Vercel owner preview must remain protected; provider configuration alone is not actual HTTP header proof.
+The final P07 punch-list refinement at the accepted SHA was one narrowly scoped `assets/css/components.css` rule `.about-beliefs .about-value-card h3{text-align:center}` and one P07 test assertion; `about.html` and all seven doctrine paragraphs remained byte-for-byte unchanged. Existing dark-ink contrast `.about-beliefs .about-value-card{color:var(--color-ink)}` and original Google Maps URLs are preserved. The shared mobile menu, responsive breakpoints, Events/Sermons JSON and church factual/address/payment content are untouched by this documentation-only Phase Sync.
 
-STOP at PREVIEW_READY for Product Owner preview and Manager review. No Builder FULL, freeze, independent audit, ready-for-review, merge, Pages production deployment, Google/Search Console submission, Cloudflare/Vercel/registrar settings, secret or other infrastructure actions.
+The approved product HEAD `9ba114575baf0a7b25b1b8084edd66e603f7307d` passed NEW exact-head [FAST #40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361) with **79/79 tests (73 original + six P07), no failures**, release-shape, all site/full-site/legacy invariants, syntax/accessibility, launch state, performance and the original real-Jekyll generated-artifact boundary. FULL PHASE CI was SKIPPED. A distinct **NEW exact-head FAST for this later docs-only Phase Sync** is required and must be reported separately on PR #33 after it is observed, not mistaken for the product-source FAST.
+
+### Actual protected preview evidence
+
+Owner-operated PowerShell `curl.exe -sS -I --max-time 20` evidence, recorded in [PR comment #6512456973](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973), confirms **3/3** anonymous requests showed **HTTP 302 Found**, `Location: https://vercel.com/sso-api?...`, and **`X-Robots-Tag: noindex`**:
+1. Immutable preview root `https://ecog-website-preview-ifs69gvr8-ryan-s-team9.vercel.app/`
+2. Immutable preview `https://ecog-website-preview-ifs69gvr8-ryan-s-team9.vercel.app/about.html`
+3. Branch preview alias `https://ecog-website-preview-git-phase-ecog-p07-pos-6212df-ryan-s-team9.vercel.app/`
+
+The observed barrier is for anonymous requests on those three endpoints of the **owner-accepted product SHA**; it does not prove response headers on authenticated 200 content, every alias, or a later docs-only preview deployment. Vercel SSO configuration was enabled and no custom-domain bypass observed. Do not downgrade the owner-operated PASS to an unsupported UNVERIFIED claim for those three exact accepted-source requests; do not generalize it beyond what was tested.
+
+### Documentation-only Phase Sync and safeguards
+
+The SAME builder is authorized by [Manager comment #6512501798](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512501798) to change ONLY this top P07 lifecycle section, the appended P07 roadmap section, and `docs/ecog-p07-post-launch-usability.md`. **All nine cumulative PR changed paths remain the same nine (below the eleven-path maximum)**. All accepted HTML/CSS/JS, routes, maps, doctrine, tests (original 73 + six P07), existing P06/P02–P04 historical records below, pre-P07 roadmap history, `robots.txt`, `sitemap.xml`, `_config.yml`, `CNAME`, Events/Sermons data, Google indexing policy, CI workflow, DNS and infrastructure must remain byte-for-byte identical to `9ba114575baf0a7b25b1b8084edd66e603f7307d`.
+
+P05 Issue #29 is CLOSED. P06 PR #31 merged and protected production `main` `b8f5d1a13413d2145066e8dc7920048b83fe0233` was deployed previously; P06 Issue #30 remains independently OPEN / LAUNCHED–GSC MONITORING. P07 does not change indexing, re-submit a sitemap, or authorize another production deployment. The protected `main` SHA must stay unchanged.
+
+**STOP: FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING.** The Manager must verify this new exact docs-only HEAD and FAST, separately initiate NEW exact-head FULL/deterministic repeat, declare immutable MEDIUM-risk freeze, then commission a fresh independent read-only Auditor in a separate conversation. Only later may Ryan explicitly approve the exact frozen SHA for protected merge and Pages publication. No Builder FULL, freeze, audit, PR-ready transition, merge, deployment, provider/Google Search Console, Cloudflare, Vercel, DNS, registrar, secret or infrastructure change.
 
 ## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
