@@ -41,9 +41,9 @@ P05 Issue #29 is CLOSED. P06 Issue #30 stays **OPEN / LAUNCHED–GOOGLE INDEXING
 
 ## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
-State (ECOG-P06): PUNCH_LIST
+State (ECOG-P06): CLOSURE_READY
 Risk (ECOG-P06): HIGH
-Status (ECOG-P06): PUNCH_LIST REMEDIATION VERIFIED / MANAGER FULL, NEW FREEZE AND INDEPENDENT RE-AUDIT PENDING
+Status (ECOG-P06): CLOSURE_READY / GOOGLE HOMEPAGE INDEXED / FINAL VALIDATION PENDING
 Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/30
 Manager Stage 2A Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6431997735
 Manager Stage 2B Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432299293
@@ -54,13 +54,27 @@ Original Canonical Base: `27051868f0ebb2432efe19e5f5b1634b4876c27d`
 Owner-Accepted Product Source SHA: `6fb12ab5da5874dad0e0b1809ecf21c7fe84a722`
 Owner-Accepted Product FAST: [40439661687](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40439661687) — SUCCESS (68/68)
 Feature Branch: `phase/ecog-p06-indexing-readiness`
-Pull Request: #31 — DRAFT / OPEN / UNMERGED
+Pull Request: #31 — CLOSED / MERGED (historic feature PR)
 Execution: Regular Chat / SAME P06 Primary Builder
 P06 Candidate Source Mode: INDEXABLE_CANDIDATE
 P06 Production Indexing Release Authority: NOT GRANTED
 P05 Dependency: Issue #29 — REGISTRAR TRANSFER OPERATIONALLY CONFIRMED / FINAL OWNERSHIP, EMAIL, MFA AND BILLING ASSURANCES PENDING
 
-### Controlling P06 readiness state
+### Controlling current P06 closure disposition — homepage indexed / correct canonical
+
+**HIGH-RISK P06 SOURCE RELEASE COMPLETE, HOMEPAGE GOOGLE-INDEXED, FORMAL ISSUE CLOSURE STILL PENDING.** Manager's [closure-sync authorization](https://github.com/Ryan42062001/ECOG-Website/issues/30#issuecomment-6513629723) allows a NEW documentation-only draft PR, not production, Google or infrastructure mutations. The P06 body below records historical Stage 1/2A/2B/audit point-in-time readiness statements, **not current live production**. Its original pre-release source-mode and authority strings are intentionally retained for historical validator compatibility and should not be misconstrued as denying the already separately authorized production release.
+
+**Audited source and release:** Feature PR [#31](https://github.com/Ryan42062001/ECOG-Website/pull/31) is CLOSED/MERGED. A fresh independent HIGH-risk re-audit gave **PASS** for immutable source `d6d4ed138e68a28f817e887e2521e3baf3ee0737` ([Manager evidence #6457602870](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6457602870)), after exact-source FULL/deterministic validation and Jekyll engineering-file exclusion remediation. P05 Issue #29 was CLOSED before publication. Product Owner gave **separate exact-SHA release permission** [#6458597968](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6458597968), then PR #31 merged to `b8f5d1a13413d2145066e8dc7920048b83fe0233` and existing GitHub Pages pipeline deployed it. Owner live website checks verified **12/12 public intended HTML pages HTTP 200, `index,follow`, and correct self-canonical HTTPS apex** ([#6458719076](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6458719076)). Publishing-boundary remediation was confirmed on live production: engineering documents/scripts returned HTTP 404 while required browser JSON remained publicly accessible ([#6458770151](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6458770151)). P07 Issue #32 has separately CLOSED after release and documentation sync. **Current protected `main` is `0fb47ee16596296c618e107016a3c8990cbfaa07`**, unchanged by this closure candidate.
+
+**Owner Google Search Console — October 29, 2026:** URL Inspection for `https://everettchurchofgod.com/` shows **“Page is indexed” / “URL is on Google.”** Last crawl shown **Oct 29, 2026 at 10:11:36 AM** (no additional timezone metadata inferred); **Googlebot smartphone**, crawl allowed **YES**, page fetch **SUCCESSFUL**, indexing allowed **YES**. User-declared canonical is `https://everettchurchofgod.com/`; **Google-selected canonical: “Inspected URL”**, the correct current HTTPS apex homepage. This supersedes the previously reported stale October 21 indexed-data external canonical `https://liberationlighthousechurch.com/` for the current homepage record. That other domain is now listed as a **Referring page**, not as Google's current homepage canonical.
+
+**Sitemap and current limits:** Direct GSC **Indexing → Sitemaps** report: `https://everettchurchofgod.com/sitemap.xml` **Success**, submitted **Oct 27, 2026**, last read **Oct 27, 2026**, **12 discovered pages and 0 discovered videos**. **12 discovered is NOT 12 indexed. Only the homepage indexation is confirmed**, and the total sitewide indexed count plus the other eleven URLs' individual indexing states remain **UNKNOWN**. URL Inspection **Discovery → Sitemaps** simultaneously shows **“Temporary processing error”**; this is a localized diagnostic to monitor, **not proof that the independently successful Sitemaps report failed**. No ranking/traffic claim.
+
+**Ongoing non-blocking GSC monitoring:** Periodically review Page indexing coverage of the remaining eleven URLs, historical legacy redirect duplicates and Google-selected canonical changes, and recheck the transient URL Inspection sitemap diagnostic if persistent. If a sustained crawl/index/canonical regression arises, open separately authorized work. No additional Search Console submission, sitemap resubmission or Request Indexing is authorized by Closure Sync.
+
+**Closure docs-only gate:** NEW branch `phase/ecog-p06-closure-sync` starts from exact protected `main` `0fb47ee16596296c618e107016a3c8990cbfaa07`; only the P06 section here, the P06 section in `docs/PRODUCT_ROADMAP.md` and the current top summary in `docs/ecog-p06-search-indexing-readiness.md` may change. P07 and P02–P04 phase history, other roadmap phases, all HTML/CSS/JS, 79 tests, SEO/robots/sitemap, Jekyll config, CNAME, required JSON and workflow are byte-identical to `main`. Require NEW exact-head FAST/full validation union, then **STOP: CLOSURE_READY / FINAL VALIDATION PENDING / MANAGER REVIEW AND SEPARATE EXACT-SHA OWNER CLOSURE-DOCS MERGE AUTHORIZATION REQUIRED**. Do not run FULL, audit, freeze, merge, deploy, close Issue #30, touch Google Search Console or change infrastructure.
+
+### Historical P06 preproduction readiness snapshot
 
 Ryan explicitly accepted the unchanged visual/content design and the coherent prospective 12-page indexing candidate at exact product SHA `6fb12ab5da5874dad0e0b1809ecf21c7fe84a722`, as recorded by Manager in https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432931901. This is owner preview acceptance only: not independent testing of every route, device, dialer, keyboard interaction, or live public indexing; not authorization to merge, deploy, submit the sitemap, request indexing or modify infrastructure. The Manager authorized ONE documentation-only Phase Sync on the same draft PR via https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432931901.
 
@@ -76,7 +90,7 @@ Exactly **18 cumulative authorized PR paths** remain: the three P06 documentatio
 
 **STOP: FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING.** Manager independently reviews the documentation-only Phase Sync SHA and NEW exact-head FAST before deciding whether to run Manager-controlled FULL. Subsequent immutable HIGH-risk freeze and FRESH independent HIGH-risk audit in a different chat, administrative P05 completion, and Ryan's separately explicit **exact frozen SHA** protected-merge/production-indexing authorization are distinct future gates. No Builder FULL, freeze, auditor, PR ready transition, merge, deployment, Google sitemap submission/indexing request, DNS, registrar, Cloudflare, Vercel, Pages setting, secrets or infrastructure change.
 
-### Jekyll publish-boundary audit punch-list remediation — controls current stage
+### Historical Jekyll publishing-boundary audit punch-list remediation
 
 An Independent HIGH-risk audit identified a release-blocking publish-scope defect. Owner-operated production HTTP GET/HEAD evidence showed `/docs/PRODUCT_ROADMAP.md` and `/scripts/validate-launch-state.js` publicly served **HTTP 200** on protected `main`; directory-only 404 observations had been insufficient to establish individual-file safety. The Manager authorized a bounded nonproduction fix in https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6433412720. This is **not** an asserted secret leak; however enabling Google crawling would risk indexing engineering documents or validation code.
 

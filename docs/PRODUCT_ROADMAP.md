@@ -213,9 +213,25 @@ Closure Sync requires a **NEW exact-head FAST**, Manager independent review and 
 
 ## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
-- State (ECOG-P06): PUNCH_LIST
+- State (ECOG-P06): CLOSURE_READY
 - Risk (ECOG-P06): HIGH
-- Status (ECOG-P06): PUNCH_LIST REMEDIATION VERIFIED / MANAGER FULL, NEW FREEZE AND INDEPENDENT RE-AUDIT PENDING
+- Status (ECOG-P06): CLOSURE_READY / GOOGLE HOMEPAGE INDEXED / FINAL VALIDATION PENDING
+- Closure Sync Manager authority: [Issue #30 #6513629723](https://github.com/Ryan42062001/ECOG-Website/issues/30#issuecomment-6513629723)
+- Current protected production `main`: `0fb47ee16596296c618e107016a3c8990cbfaa07` unchanged; P06 feature PR #31 CLOSED/MERGED; P07 Issue #32 CLOSED; P06 Issue #30 OPEN.
+- Fresh independent HIGH-risk re-audit **PASS** at `d6d4ed138e68a28f817e887e2521e3baf3ee0737`; separately owner-authorized exact-SHA release [#6458597968](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6458597968); production merge `b8f5d1a13413d2145066e8dc7920048b83fe0233`, Pages deployed.
+- Live P06 owner checks: **12/12 HTML pages HTTP 200 + `index,follow` + correct HTTPS apex self-canonical**; engineering docs/scripts now **404**, Events/Sermons JSON accessible.
+- October 29, 2026 owner GSC: **HOME PAGE IS INDEXED** at `https://everettchurchofgod.com/`; Googlebot smartphone last crawl Oct 29 **10:11:36 AM**, crawl allowed YES, fetch SUCCESSFUL, indexing allowed YES.
+- Current Google-selected canonical: **Inspected URL** (`https://everettchurchofgod.com/`) matching user-declared canonical, replacing stale Oct 21 external-canonical indexed-data for the homepage. Unrelated external site remains a historical referring page only.
+- Direct Google Sitemaps report: submitted `https://everettchurchofgod.com/sitemap.xml`, **Success**, submitted/last read Oct 27, 2026; **12 discovered URLs, 0 videos — NOT 12 indexed**. Sitewide indexed count and non-homepage URL states remain **UNKNOWN**.
+- URL Inspection's Discovery → Sitemaps note **Temporary processing error** while direct Sitemap status remains Success; monitoring note only, not a failed submission or request to resubmit.
+- Closure state **CLOSURE_READY / FINAL VALIDATION PENDING**; new three-file DRAFT docs PR, NEW FAST, Manager review, separate exact-docs-SHA owner merge approval, postclosure checks, then Issue #30 closure.
+
+### Current P06 release and Search Console monitoring (controlling)
+
+P06 indexing/publication and correct homepage canonical objectives are verified. The other eleven sitemap URLs are discovered but not necessarily indexed; periodically monitor Page indexing, duplicate legacy routes/canonical selection and the URL Inspection sitemap diagnostic. No new Google sitemap/request/indexing operations or site modifications are authorized. The pre-release source/CI and earlier failed audit milestones **below** remain historical snapshots, not today's live site.
+
+### Historical P06 pre-release readiness and audit milestones
+
 - Manager contract: [Issue #30](https://github.com/Ryan42062001/ECOG-Website/issues/30)
 - Stage 2A authority: [#6431997735](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6431997735)
 - Stage 2B authority: [#6432299293](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6432299293)

@@ -1,18 +1,37 @@
 # ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
-## Current controlling disposition — PUNCH_LIST REMEDIATION VERIFIED / MANAGER FULL, NEW FREEZE AND INDEPENDENT RE-AUDIT PENDING
+## Current controlling disposition — HOMEPAGE INDEXED / CORRECT GOOGLE CANONICAL / CLOSURE_READY
 
-**HIGH-risk audit found a real Jekyll publish-boundary blocker.** Owner-operated direct-file HTTP responses on existing protected production `main` showed **HTTP 200** for `/docs/PRODUCT_ROADMAP.md` and `/scripts/validate-launch-state.js`. The previous freeze SHA `aa9ea1599b947f006d4947a9ed4fefd210fea3bc` is now **INVALIDATED / STALE** after remediation. Approval: [Manager punch list #6433412720](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6433412720). Owner approval of visual content and 12 intended pages remains historical preview acceptance, not authority for Google indexing or merge.
+**CLOSURE_READY / FINAL VALIDATION PENDING; Issue #30 remains OPEN.** The Manager [approved one bounded documentation-only closure PR](https://github.com/Ryan42062001/ECOG-Website/issues/30#issuecomment-6513629723). P06 engineering release and **homepage Google indexing** are verified, not whole-site indexing. The historical preparation, punch-list and audit records after this top summary are **preserved byte-for-byte** as snapshots and do not represent the current live P06 status.
 
-The single bounded remediation adds **only** root `_config.yml` beyond the original 18 cumulative paths. Its Jekyll `exclude` targets engineering-only `.ai/`, `.github/`, `.history/`, `docs/`, `scripts/`, `README.md` and `AGENTS.md`. Crucially, **`data/` is not excluded**; `data/events.json` and `data/sermons.json` are required by the Events/Messages browser JavaScript.
+### Approved P06 release and live safety evidence
 
-**Actual generated artifact proof:** CI executed an isolated `ghcr.io/actions/jekyll-build-pages:v1.0.13` build, the same builder image as production Pages, then inspected the real generated `_site` tree. It found no engineering docs/scripts or root governance files, and confirmed **all 12 public HTML pages, retired/404 files, 12 legacy routes, all required CSS/JS, both JSON files (byte-identical), CNAME, robots and sitemap**. New independent negative tests inserted engineering files and removed JSON, public/legacy pages or required assets from scratch copies of the generated artifact, checking that the validator detects the violations. **All 68 pre-existing adversarial/fixture test definitions remained intact.** Code-stage exact-head [FAST #40448024210](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40448024210) PASSED **73/73** and the full validation union, with FULL SKIPPED. Final documentation-sync FAST is independently required and recorded after observation.
+The independently HIGH-risk re-audited, immutable source `d6d4ed138e68a28f817e887e2521e3baf3ee0737` received a fresh independent **PASS** ([#6457602870](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6457602870)) after the previous publishing-boundary punch-list was remediated and exact-source FULL/deterministic validation completed. P05 Issue #29 CLOSED, and Ryan separately authorized this exact frozen SHA for production indexing ([#6458597968](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6458597968)). Original feature PR #31 is **CLOSED / MERGED** at `b8f5d1a13413d2145066e8dc7920048b83fe0233` and GitHub Pages deployed successfully. Owner's P06 live verification checked **all 12 intended pages HTTP 200 with `index,follow` and matching canonical** ([#6458719076](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6458719076)). Corrected live Jekyll publishing-boundary checks established `docs/PRODUCT_ROADMAP.md` and `scripts/validate-launch-state.js` **404**, required public JSON **200**, and intact robots/sitemap rules ([#6458770151](https://github.com/Ryan42062001/ECOG-Website/pull/31#issuecomment-6458770151)). Subsequent P07 owner-operated live HTTPS checks also passed [10/10 status probes](https://github.com/Ryan42062001/ECOG-Website/issues/32#issuecomment-6513293212). P07 Issue #32 is now **CLOSED**, independently from P06. Current protected main `0fb47ee16596296c618e107016a3c8990cbfaa07` has no product/source change in this closure candidate.
 
-**P06 controls unchanged:** `P06 Candidate Source Mode: INDEXABLE_CANDIDATE` on unmerged draft PR only; `P06 Production Indexing Release Authority: NOT GRANTED`. P02 historical Production Indexing NOT AUTHORIZED and P02/P03/P04 CLOSED history unchanged byte-for-byte. The twelve accepted public HTML blobs, approved branch `robots.txt`, existing browser JSON and CSS/JS, legacy/retired/404, `sitemap.xml`, CNAME and both validation scripts are unmodified from approved product source apart from the authorized P06 negative-test extension.
+### Owner GSC inspection — October 29, 2026
 
-**Evidence distinction:** A successful isolated Jekyll build is **NOT** a production deploy: existing live engineering-file 200 URLs may remain until separately authorized merge/Pages deployment and subsequent HTTP verification. Older owner screenshot evidence proves Vercel 302 SSO + `X-Robots-Tag: noindex` on unauthenticated *previous-SHA* preview redirects, not current preview 200 pages or a new-SHA response. P05 transfer is operationally complete in Cloudflare, but church registrar authorization, email, MFA/admin/access, billing and final P05 closure still pending.
+| Observed field | Google Search Console evidence |
+| --- | --- |
+| Inspected homepage | `https://everettchurchofgod.com/` |
+| Indexed | **Page is indexed / URL is on Google** |
+| Last crawl | **Oct 29, 2026, 10:11:36 AM** displayed; no separate timezone metadata established |
+| Crawler | **Googlebot smartphone** |
+| Crawl allowed / fetch / indexing allowed | **YES / SUCCESSFUL / YES** |
+| User-declared canonical | `https://everettchurchofgod.com/` |
+| Google-selected canonical | **Inspected URL** (correct homepage canonical) |
+| Direct submitted sitemap | `https://everettchurchofgod.com/sitemap.xml` |
+| Sitemaps report | **Success**, submitted/last read **Oct 27, 2026** |
+| Sitemap discovery | **12 pages, 0 videos discovered** |
+| URL Inspection Discovery → Sitemaps | **Temporary processing error**; not a failure of the separate successful report |
+| Other eleven URLs / total indexed count | **UNKNOWN** — discovery is not indexation |
 
-**Next independent Manager gates:** verify final Phase Sync SHA/FAST, run separately authorized exact-head FULL and deterministic repeat, NEW immutable HIGH-risk freeze and FRESH independent re-audit. Final P05 checks plus Ryan's separate exact-frozen-SHA release/production indexing consent are mandatory. **Builder STOP here; no FULL, freeze, audit, merge, deploy, sitemap/GSC request, Cloudflare/DNS/Vercel/registrar/settings or other infrastructure changes.**
+The historical October 21 external selected-canonical snapshot at `https://liberationlighthousechurch.com/` has been superseded for the **current Oct 29 indexed homepage record**: Google's selected canonical is now **Inspected URL**. That external URL remains listed only as an historical referring page. Being indexed does not guarantee ranking, impressions or stable future classification.
+
+### Monitoring handoff and documentation closure gate
+
+Periodically review GSC Page indexing for the other eleven URLs and watch for sustained changes in selected canonical, legacy duplicate handling and the transient URL Inspection sitemap note. Escalate actual regressions under a future separately authorized issue; do not request Google reindexing or resubmit a successful sitemap as part of this administrative closure.
+
+Exactly three authorized P06 docs-only paths on NEW `phase/ecog-p06-closure-sync` from `0fb47ee16596296c618e107016a3c8990cbfaa07`: P06 subsection of `.ai/CURRENT_PHASE.md`, P06 subsection of `docs/PRODUCT_ROADMAP.md`, and **this top controlling summary**. All historical records after this summary and every P07/P02–P04 historical text remain unchanged. Preserve all 79 tests, public HTML/CSS/JS, robots/sitemap/Jekyll, CNAME, JSON, workflows and production infrastructure. After **NEW exact-head FAST 79/79**, STOP for Manager review and Ryan's **separate exact closure-docs SHA authorization**. No Builder FULL, audit, merge, deployment, Search Console change or Issue #30 closure.
 
 ---
 
