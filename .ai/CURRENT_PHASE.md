@@ -2,46 +2,42 @@
 
 ## ECOG-P07 — Post-Launch Navigation, Belief Cards & Apple/Google Maps
 
-State (ECOG-P07): FREEZE_READY
+State (ECOG-P07): CLOSURE_READY
 Risk (ECOG-P07): MEDIUM
-Status (ECOG-P07): FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING
+Status (ECOG-P07): CLOSURE_READY / FINAL VALIDATION PENDING
 Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/32
-Manager Phase Sync Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512501798
-Owner Exact-Head Preview Acceptance: https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512501798
-Preview Security Evidence: https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973
+Manager Closure Sync Authorization: https://github.com/Ryan42062001/ECOG-Website/issues/32#issuecomment-6513328213
+Feature PR: #33 — CLOSED / MERGED
+Frozen Independently Audited Source SHA: `91c8a00eb0757dad94199eec2713de0d72acaf57`
 Owner-Accepted Product SHA: `9ba114575baf0a7b25b1b8084edd66e603f7307d`
-Owner-Accepted Product FAST: [#40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361) — COMPLETED / SUCCESS, 79/79 tests, full validation union
-Protected Main Baseline: `b8f5d1a13413d2145066e8dc7920048b83fe0233`
-Feature Branch: `phase/ecog-p07-post-launch-usability`
-Pull Request: #33 — DRAFT / OPEN / UNMERGED
+Production Merge SHA: `9c42eec7af733f6b8a71d612d3a17e0db1cedd81`
+Closure Sync Branch: `phase/ecog-p07-closure-sync`
+Closure Sync PR: ONE NEW DRAFT / OPEN / UNMERGED (documentation only)
 Execution: Regular Chat / SAME P07 Primary Builder
-P07 Owner Visual Approval: ACCEPTED FOR EXACT PRODUCT SHA; NOT A RELEASE APPROVAL
-P07 Protected Merge / Pages Deployment Authority: NOT GRANTED
+Owner Exact-SHA Production Release Authorization: https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512965830
+Independent MEDIUM Audit PASS: https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512772175
+Production Deployment: VERIFIED FOR MERGE SHA
+P07 Closure Authorization: NOT YET GRANTED
 
-### Owner-accepted source and scope
+### Production release, independent audit, and owner acceptance
 
-Ryan explicitly answered “Yep everything looks good” after inspecting the final immutable owner preview `https://ecog-website-preview-ifs69gvr8-ryan-s-team9.vercel.app/` for exact product SHA `9ba114575baf0a7b25b1b8084edd66e603f7307d`. The acceptance covers the observed look and interactions of the three owner-requested improvements: Contact after Give in shared desktop/hamburger navigation; all seven white What We Believe cards with dark, horizontally centered H3 headings while the doctrinal paragraphs remain left-aligned and unchanged; and Apple Maps FIRST / Google Maps SECOND on Home, New Here and Contact. Earlier focused feedback confirmed an Apple Maps click worked and Contact appeared in the mobile hamburger menu. This is Product Owner preview acceptance, NOT an independently exhaustive multi-device, cross-browser, keyboard or all-platform maps audit.
+P07's three approved usability improvements are already LIVE on the protected production merge `9c42eec7af733f6b8a71d612d3a17e0db1cedd81`. The Manager accepted a FRESH independent MEDIUM-risk read-only audit **PASS with no blocker or medium source defects**, against the immutable source `91c8a00eb0757dad94199eec2713de0d72acaf57`, following exact-source FAST [#40985314892](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40985314892) and FULL [#40985754753](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40985754753) SUCCESS and immutable freeze. The Product Owner separately and explicitly authorized *that frozen exact SHA* for protected merge and Pages release in [PR #33 comment #6512965830](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512965830). Merged PR #33 is **CLOSED / MERGED**, with protected merge commit `9c42eec7af733f6b8a71d612d3a17e0db1cedd81`; its source tree matches the audited frozen tree.
 
-The final P07 punch-list refinement at the accepted SHA was one narrowly scoped `assets/css/components.css` rule `.about-beliefs .about-value-card h3{text-align:center}` and one P07 test assertion; `about.html` and all seven doctrine paragraphs remained byte-for-byte unchanged. Existing dark-ink contrast `.about-beliefs .about-value-card{color:var(--color-ink)}` and original Google Maps URLs are preserved. The shared mobile menu, responsive breakpoints, Events/Sermons JSON and church factual/address/payment content are untouched by this documentation-only Phase Sync.
+The deployed three-feature package includes **Contact after Give** in the shared desktop/mobile header, **seven dark horizontally centered H3 headings** on the About → What We Believe white cards (original doctrine paragraphs and their alignment preserved), and clearly labeled **Apple Maps FIRST / original Google Maps SECOND** directions on Home, New Here and Contact. Ryan first accepted the exact product preview `9ba114575baf0a7b25b1b8084edd66e603f7307d`; after production deployment, the Owner expressly confirmed the live website visually and on tested devices: **“Yes i verified that”** in the Manager's [closure-sync authorization record](https://github.com/Ryan42062001/ECOG-Website/issues/32#issuecomment-6513328213). This is observed owner acceptance, not a claim of exhaustive cross-platform/keyboard testing.
 
-The approved product HEAD `9ba114575baf0a7b25b1b8084edd66e603f7307d` passed NEW exact-head [FAST #40627455361](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40627455361) with **79/79 tests (73 original + six P07), no failures**, release-shape, all site/full-site/legacy invariants, syntax/accessibility, launch state, performance and the original real-Jekyll generated-artifact boundary. FULL PHASE CI was SKIPPED. A distinct **NEW exact-head FAST for this later docs-only Phase Sync** is required and must be reported separately on PR #33 after it is observed, not mistaken for the product-source FAST.
+### Exact-merge production verification
 
-### Actual protected preview evidence
+The existing GitHub Actions [postmerge FAST #40988687568](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40988687568) **COMPLETED / SUCCESS at `9c42eec7af733f6b8a71d612d3a17e0db1cedd81`**, **79/79 tests**, full validation union and production-matched Jekyll publishing checks. The [Pages build and deployment #40988687355](https://github.com/Ryan42062001/ECOG-Website/actions/runs/40988687355) **COMPLETED / SUCCESS at the SAME merge SHA**; both build and deploy succeeded. Owner-operated production HTTP checks documented in [Issue #32 #6513293212](https://github.com/Ryan42062001/ECOG-Website/issues/32#issuecomment-6513293212) returned **10/10 expected statuses** at HTTPS apex: `/`, `/about.html`, `/new-here.html`, `/contact.html`, `/robots.txt`, `/sitemap.xml`, `/data/events.json` and `/data/sermons.json` **HTTP 200**; `/docs/PRODUCT_ROADMAP.md` and `/scripts/validate-launch-state.js` **HTTP 404**. These are observed HTTP status checks; no independent Google indexed-page count, response-body assertion or exhaustive device audit is implied.
 
-Owner-operated PowerShell `curl.exe -sS -I --max-time 20` evidence, recorded in [PR comment #6512456973](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973), confirms **3/3** anonymous requests showed **HTTP 302 Found**, `Location: https://vercel.com/sso-api?...`, and **`X-Robots-Tag: noindex`**:
-1. Immutable preview root `https://ecog-website-preview-ifs69gvr8-ryan-s-team9.vercel.app/`
-2. Immutable preview `https://ecog-website-preview-ifs69gvr8-ryan-s-team9.vercel.app/about.html`
-3. Branch preview alias `https://ecog-website-preview-git-phase-ecog-p07-pos-6212df-ryan-s-team9.vercel.app/`
+The earlier owner-accepted source preview had **3/3 unauthenticated 302 redirects to Vercel SSO with `X-Robots-Tag: noindex`** on immutable root, About and branch alias, recorded [here](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512456973). It establishes protection on the tested *source* preview URLs, not authenticated responses or new closure-docs previews.
 
-The observed barrier is for anonymous requests on those three endpoints of the **owner-accepted product SHA**; it does not prove response headers on authenticated 200 content, every alias, or a later docs-only preview deployment. Vercel SSO configuration was enabled and no custom-domain bypass observed. Do not downgrade the owner-operated PASS to an unsupported UNVERIFIED claim for those three exact accepted-source requests; do not generalize it beyond what was tested.
+### Documentation-only Closure Sync and next release gates
 
-### Documentation-only Phase Sync and safeguards
+The P07 Manager's [bounded Closure Sync contract](https://github.com/Ryan42062001/ECOG-Website/issues/32#issuecomment-6513328213) authorizes a **NEW** branch `phase/ecog-p07-closure-sync` from exact production `9c42eec7af733f6b8a71d612d3a17e0db1cedd81` and **ONE NEW DRAFT** documentation-only PR, rather than reopening merged PR #33 or editing protected main. This sync modifies **only this top P07 section**, the appended P07 roadmap section, and `docs/ecog-p07-post-launch-usability.md`. All text from the historical **ECOG-P06 section below through EOF remains byte-for-byte identical**. The full earlier roadmap, all HTML/CSS/JS, original 79 tests, indexed-candidate SEO source, `robots.txt`, `sitemap.xml`, Jekyll exclusions, CNAME, data/Events and Sermons JSON, legacy/retired/404 files, workflows and infrastructure remain unchanged from protected `9c42eec7af733f6b8a71d612d3a17e0db1cedd81`.
 
-The SAME builder is authorized by [Manager comment #6512501798](https://github.com/Ryan42062001/ECOG-Website/pull/33#issuecomment-6512501798) to change ONLY this top P07 lifecycle section, the appended P07 roadmap section, and `docs/ecog-p07-post-launch-usability.md`. **All nine cumulative PR changed paths remain the same nine (below the eleven-path maximum)**. All accepted HTML/CSS/JS, routes, maps, doctrine, tests (original 73 + six P07), existing P06/P02–P04 historical records below, pre-P07 roadmap history, `robots.txt`, `sitemap.xml`, `_config.yml`, `CNAME`, Events/Sermons data, Google indexing policy, CI workflow, DNS and infrastructure must remain byte-for-byte identical to `9ba114575baf0a7b25b1b8084edd66e603f7307d`.
+P05 Issue #29 is CLOSED. P06 Issue #30 stays **OPEN / LAUNCHED–GOOGLE INDEXING MONITORING** as an independent phase; the 10/10 HTTP smoke does **NOT** prove Google has indexed all twelve P06 pages or authorize Search Console changes.
 
-P05 Issue #29 is CLOSED. P06 PR #31 merged and protected production `main` `b8f5d1a13413d2145066e8dc7920048b83fe0233` was deployed previously; P06 Issue #30 remains independently OPEN / LAUNCHED–GSC MONITORING. P07 does not change indexing, re-submit a sitemap, or authorize another production deployment. The protected `main` SHA must stay unchanged.
-
-**STOP: FREEZE_READY / OWNER PREVIEW ACCEPTED / MANAGER FULL PENDING.** The Manager must verify this new exact docs-only HEAD and FAST, separately initiate NEW exact-head FULL/deterministic repeat, declare immutable MEDIUM-risk freeze, then commission a fresh independent read-only Auditor in a separate conversation. Only later may Ryan explicitly approve the exact frozen SHA for protected merge and Pages publication. No Builder FULL, freeze, audit, PR-ready transition, merge, deployment, provider/Google Search Console, Cloudflare, Vercel, DNS, registrar, secret or infrastructure change.
+**STOP: CLOSURE_READY / FINAL VALIDATION PENDING.** A NEW exact-head FAST and full validation union must succeed on the closure-docs commit; the Manager then independently reviews the exact three-file diff and requests **separate explicit owner exact-SHA permission to merge this closure-docs PR only**. P07 Issue #32 stays OPEN until that protected documentation merge, post-closure FAST/Pages verification and Manager closure decision. No Builder merge, PR-ready transition, deployment, Google/Cloudflare/DNS/registrar/Vercel/Pages setting change, infrastructure mutation or issue closure.
 
 ## ECOG-P06 — Google Search Indexing Readiness & Controlled Launch
 
