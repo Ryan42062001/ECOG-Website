@@ -41,3 +41,11 @@
 .service-strip--home .service-strip__phone:hover{color:#064267}
 @media(max-width:900px){.service-strip--home .service-strip__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.service-strip--home .service-strip__grid>div:nth-child(2){border-right:0}.service-strip--home .service-strip__grid>div:nth-child(-n+2){border-bottom:1px solid rgba(7,26,43,.18)}}
 @media(max-width:620px){.service-strip--home .service-strip__grid{grid-template-columns:1fr}.service-strip--home .service-strip__grid>div{border-right:0;border-bottom:1px solid rgba(7,26,43,.18)}.service-strip--home .service-strip__grid>div:last-child{border-bottom:0}}
+
+/* ECOG-P08: local high-contrast QR and accessible actions scoped to the homepage. */
+.service-strip--home .service-strip__give{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem}
+.service-strip--home .service-strip__give-qr{display:block;width:9.5rem;max-width:100%;height:auto;background:#fff;image-rendering:pixelated}
+.service-strip--home .service-strip__give-link{color:var(--color-dark);font-weight:850;text-decoration:underline;text-underline-offset:.2em}
+.service-strip--home .service-strip__give-link:hover{color:#064267}
+.service-strip--home .service-strip__give-link:focus-visible{outline:3px solid var(--color-dark);outline-offset:4px}
+.service-strip--home .service-strip__give-note{display:block;max-width:13rem;font-size:.75rem;line-height:1.4}

@@ -1,5 +1,34 @@
 # Current phase
 
+## ECOG-P08 — Homepage Phone Position & Verified Giving QR
+
+State (ECOG-P08): PREVIEW_READY
+Risk (ECOG-P08): HIGH for donor destination / LOW for layout
+Status (ECOG-P08): PREVIEW_READY / PASTOR RECIPIENT VERIFICATION AND OWNER REVIEW PENDING
+Manager Contract: https://github.com/Ryan42062001/ECOG-Website/issues/37
+Manager Builder Activation: https://github.com/Ryan42062001/ECOG-Website/issues/37#issuecomment-6783047049
+Protected Main Baseline: f04e7ef6f49f5113fe99eafa4535c8a1c38b202c
+Feature Branch: phase/ecog-p08-homepage-giving-qr
+Pull Request: ONE DRAFT / OPEN / UNMERGED (nonproduction)
+Owner Source Authorization: NONPRODUCTION IMPLEMENTATION ONLY
+Production Merge / Receiving Account Approval: NOT GRANTED
+
+### Current P08 candidate — limited portal identity
+
+Ryan supplied the pastor's official “Scan to GIVE” QR poster. Its decoded target is EXACTLY https://everettcog.churchcenter.com/home — the Church Center HOME portal, not a verified direct donation form. The locally generated static SVG QR uses high-contrast black/white modules with four-module white quiet zone. A rasterized copy was independently decoded using OpenCV QRCodeDetector, yielding the same URL exactly. SHA-256 of the independently decoded SVG: 3982d43a3de6f874a566ff7a31fab1527cc5925125c6409fb37b0109e00db094. No external QR generation provider, link shortener, tracker, embed or runtime dependency is added. This verifies encoded bytes but NOT bank/recipient identity.
+
+Home strip retains Sunday Worship 10:00 AM first and Wednesday Bible Study 7:00 PM second, moves the unchanged Call Us 814-652-9287 / tel:+18146529287 into the THIRD cell, and gives the fourth cell to a Church Center QR plus a keyboard-focusable clickable Open Church Center portal link. Wording says Choose Give there, if available. The prior grid layout remains four cells on desktop, two columns at 900px and below and stacked at 620px and below; P08 CSS affects this homepage strip only. The Giving page includes the same external portal action, conditional instructions, church telephone and contact alternatives, and existing static-site no-card/bank-storage assurance. No ECOG-hosted donor input form.
+
+Eight P08 source paths maximum: index.html, give.html, assets/css/main.css (P08 scoped additions), assets/images/giving-church-center-qr.svg (one new local QR), scripts/validate-release-candidate.test.js (six appended P08 tests; 79 original definitions preserved), this new top P08 section, one appended P08 docs/PRODUCT_ROADMAP.md section, and new docs/ecog-p08-homepage-giving-qr.md. The entire preexisting P07/P06/P02–P04 phase history below stays byte-for-byte unchanged. All preexisting indexing/SEO/robots/sitemap/Jekyll, navigation/maps/doctrine, JSON feeds, original workflow/CI and protected production main are unaffected.
+
+### Donor-destination blocking release gate
+
+The pastor or another authorized church admin must independently verify that the Church Center portal belongs to Everett Church of God, the intended receiving/bank account is correct, and a visitor can navigate to the actual available giving form. A church-branded poster, the QR payload and a provider homepage are NOT independent verification of the payment recipient. Ryan must inspect owner preview desktop/tablet/mobile sizing, physical scan and click destinations, phone action and Give-page copy without submitting a real gift.
+
+One fresh INDEPENDENT focused HIGH-impact donor-link and QR audit in another conversation follows owner preview under merged Progress-First Policy. Fix BLOCKER/CRITICAL/HIGH before affected merge/release, request targeted fresh re-audit as needed, and track MEDIUM/LOW/NIT in the final audit backlog. The Builder does not commission itself as the auditor. Before even requesting release, new exact-head FAST (79 prior + six P08), complete validation union and real Jekyll QR publication proof must pass; the Vercel exact-head preview must remain protected by unauthenticated SSO/noindex, proven by response headers rather than project setting alone.
+
+STOP AT PREVIEW_READY / PASTOR RECIPIENT VALIDATION REQUIRED. No automatic merge, FULL without Manager authority, production deploy, donor transaction, QR destination substitution, Church Center administration changes, Search Console, Cloudflare/DNS/Vercel/GitHub settings or issue closure.
+
 ## ECOG-P07 — Post-Launch Navigation, Belief Cards & Apple/Google Maps
 
 State (ECOG-P07): CLOSURE_READY

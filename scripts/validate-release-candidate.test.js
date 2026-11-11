@@ -940,3 +940,97 @@ test('P07 map panels are explicit choices, never Google-exclusive click surfaces
   assert.match(newHere, /href="#directions-choices">Choose a Maps App<\/a>/);
   assert.match(newHere, /id="directions-choices"/);
 });
+
+
+// ECOG-P08: donor destination, QR bytes and source integrity. Historical tests
+// above remain byte-for-byte unchanged. These are NOT recipient bank checks.
+const {createHash: p08Hash} = require('node:crypto');
+const p08Portal = 'https://everettcog.churchcenter.com/home';
+const p08SvgPath = 'assets/images/giving-church-center-qr.svg';
+const p08SvgSha256 = '3982d43a3de6f874a566ff7a31fab1527cc5925125c6409fb37b0109e00db094';
+// SVG was independently decoded with OpenCV QRCodeDetector after rasterization.
+// SHA-256 pins that exact decoded pattern, not a verified financial recipient.
+function p08Home() {return fs.readFileSync(path.join(checkoutRoot,'index.html'),'utf8')}
+function p08Give() {return fs.readFileSync(path.join(checkoutRoot,'give.html'),'utf8')}
+function p08Svg() {return fs.readFileSync(path.join(checkoutRoot,p08SvgPath))}
+function p08SourceProblems(home,give,svg) {
+  const problems=[];
+  if(!home.includes('href="tel:+18146529287">814-652-9287</a>')) problems.push('phone href/text changed');
+  if(!home.includes('href="'+p08Portal+'"')) problems.push('homepage Church Center portal mismatch');
+  if(!give.includes('href="'+p08Portal+'"')) problems.push('Give page Church Center portal mismatch');
+  if(home.includes('churchcenter.com/giving')||give.includes('churchcenter.com/giving')) problems.push('unverified giving path');
+  if(!home.includes('src="'+p08SvgPath+'"')) problems.push('homepage QR asset missing');
+  if(p08Hash('sha256').update(svg).digest('hex')!==p08SvgSha256) problems.push('QR image differs from independently decoded bytes');
+  return problems;
+}
+
+test('P08 homepage strip has four exact cells, phone third and local Church Center QR fourth',()=>{
+  const home=p08Home();
+  const section=home.match(/<section class="service-strip service-strip--home"[\s\S]*?<\/section>/);
+  assert.ok(section,'homepage four-box strip');
+  const four=section[0].match(/<div(?: class="service-strip__give")?>/g)||[];
+  assert.equal(four.length,4,'four service-strip cells, excluding grid wrapper');
+  const labels=['Sunday Worship','Wednesday Bible Study','Call Us','Give Online'];
+  const positions=labels.map(label=>section[0].indexOf('>'+label+'</span>'));
+  assert.ok(positions.every(x=>x>=0)&&positions.every((v,i)=>i===0||v>positions[i-1]),'exact box order');
+  assert.equal((section[0].match(/tel:\+18146529287/g)||[]).length,1);
+  assert.match(section[0],/814-652-9287<\/a>/);
+  assert.match(section[0],/alt="QR code opening the pastor-provided Church Center home portal"/);
+  assert.match(section[0],/href="https:\/\/everettcog\.churchcenter\.com\/home" target="_blank" rel="noopener noreferrer"/);
+  assert.match(section[0],/Open Church Center<span class="sr-only"> \(opens in a new tab\)<\/span>/);
+  assert.match(section[0],/Choose Give there, if available/);
+  assert.deepEqual(p08SourceProblems(home,p08Give(),p08Svg()),[]);
+});
+
+test('P08 independently decoded QR SVG bytes, four-module quiet zone and no scripts preserved',()=>{
+  const svg=p08Svg();
+  assert.equal(p08Hash('sha256').update(svg).digest('hex'),p08SvgSha256);
+  const xml=svg.toString('utf8');
+  assert.match(xml,/viewBox="0 0 41 41"/);
+  assert.match(xml,/<rect width="41" height="41" fill="#fff"\/>/);
+  assert.match(xml,/fill="#000" shape-rendering="crispEdges"/);
+  assert.doesNotMatch(xml,/<script\b|<foreignObject\b|(?:href|onload|onclick)=/i);
+  const runs=[...xml.matchAll(/M(\d+) (\d+)h(\d+)v1h-(\d+)z/g)];
+  assert.equal(runs.length,296);
+  for(const m of runs){
+    const x=Number(m[1]),y=Number(m[2]),width=Number(m[3]);
+    assert.equal(width,Number(m[4]));
+    assert.ok(x>=4&&y>=4&&y<37&&x+width<=37,'4-module quiet zone intact');
+  }
+});
+
+test('P08 giving page correctly identifies home portal and retains safer alternatives',()=>{
+  const give=p08Give();
+  assert.match(give,/Visit the Church Center portal/);
+  assert.match(give,/choose Give if that option is available/);
+  assert.match(give,/This is not a direct donation form/);
+  assert.match(give,/href="https:\/\/everettcog\.churchcenter\.com\/home" target="_blank" rel="noopener noreferrer"/);
+  assert.match(give,/href="tel:\+18146529287"/);
+  assert.match(give,/href="contact.html"/);
+  assert.match(give,/will not collect or store your card, bank account/);
+  assert.doesNotMatch(give,/<form\b|<input\b|churchcenter\.com\/giving|secure giving link is being prepared|verified giving link will open/i);
+});
+
+test('P08 homepage QR CSS preserves desktop four, tablet two and mobile one with focus',()=>{
+  const css=fs.readFileSync(path.join(checkoutRoot,'assets/css/main.css'),'utf8');
+  assert.match(css,/\.service-strip--home \.service-strip__grid\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)\}/);
+  assert.match(css,/@media\(max-width:900px\)\{\.service-strip--home \.service-strip__grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/);
+  assert.match(css,/@media\(max-width:620px\)\{\.service-strip--home \.service-strip__grid\{grid-template-columns:1fr\}/);
+  assert.match(css,/\.service-strip--home \.service-strip__give-qr\{[^}]*width:9\.5rem;max-width:100%;height:auto/);
+  assert.match(css,/\.service-strip--home \.service-strip__give-link:focus-visible\{outline:3px/);
+});
+
+test('P08 production-matched Jekyll generated output includes exact QR asset',()=>{
+  const root=buildActualPagesOutput();
+  const output=path.join(root,p08SvgPath);
+  assert.ok(fs.existsSync(output)&&fs.statSync(output).isFile(),'Jekyll did not publish local QR SVG');
+  assert.equal(p08Hash('sha256').update(fs.readFileSync(output)).digest('hex'),p08SvgSha256);
+});
+
+test('P08 negative mutation checks catch changed provider, telephone and QR payload',()=>{
+  const home=p08Home(),give=p08Give(),svg=p08Svg();
+  assert.match(p08SourceProblems(home.replace(p08Portal,'https://example.invalid/home'),give,svg).join('\n'),/homepage Church Center portal mismatch/);
+  assert.match(p08SourceProblems(home,give.replace(p08Portal,'https://example.invalid/home'),svg).join('\n'),/Give page Church Center portal mismatch/);
+  assert.match(p08SourceProblems(home.replace('tel:+18146529287','tel:+18005550199'),give,svg).join('\n'),/phone href\/text changed/);
+  assert.match(p08SourceProblems(home,give,Buffer.from(svg.toString().replace('fill="#000"','fill="#333"'))).join('\n'),/QR image differs/);
+});
