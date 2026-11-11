@@ -307,3 +307,21 @@ This Closure Sync creates exactly one new docs-only DRAFT PR from `9c42eec7af733
 
 **STOP: CLOSURE_READY / FINAL VALIDATION PENDING**. Manager reviews new SHA/diff/FAST, obtains separate Ryan **exact closure-docs SHA merge permission**, and only then may perform guarded protected merge, post-closure FAST/Pages verification and P07 Issue #32 CLOSED state transition. No Builder merge, ready-for-review, deployment, Google Search Console or production infrastructure/provider setting action.
 
+
+## ECOG-P08 — Homepage Phone Position & Verified Giving QR
+
+- State (ECOG-P08): PREVIEW_READY — nonproduction owner review
+- Risk: HIGH for real-money donor destination; LOW for homepage cell order/layout
+- Binding Manager source authority: Issue #37, comment https://github.com/Ryan42062001/ECOG-Website/issues/37#issuecomment-6783047049
+- Protected production baseline: f04e7ef6f49f5113fe99eafa4535c8a1c38b202c, unchanged
+- Branch: phase/ecog-p08-homepage-giving-qr; one DRAFT PR, unmerged
+- QR and visible provider link: https://everettcog.churchcenter.com/home (Church Center HOME portal, not a confirmed direct donation form)
+- Recipient and actual donation availability: UNVERIFIED; pastor/authorized admin and Owner must independently confirm before any production release
+
+The four homepage service cells are Sunday Worship (10:00 AM), Wednesday Bible Study (7:00 PM), Call Us (unchanged 814-652-9287 / tel:+18146529287), and Give Online / Church Center QR, in that order. The former Join Us city-only cell leaves the strip; church address and directions elsewhere stay unchanged. The QR is one local high-contrast SVG with an embedded four-module quiet zone, generated from the exact pastor-supplied poster destination, independently decoded to the same full URL with OpenCV. SHA-256 of the QR image is 3982d43a3de6f874a566ff7a31fab1527cc5925125c6409fb37b0109e00db094. There is also a real keyboard-accessible direct external portal link. The original homepage 4 / tablet 2 / mobile stacked grid remains.
+
+The Give page describes the pastor-provided Church Center HOME portal, not an independently bank-verified giving form. Users may select Give within Church Center if available; telephone/contact alternate channels and the static ECOG site's no-payment-data-collection statement remain. No third-party QR images, redirect tracking, provider SDK, runtime dependency or on-site payment form was added.
+
+MAX eight changed paths under Issue #37: index.html; give.html; assets/css/main.css; assets/images/giving-church-center-qr.svg; scripts/validate-release-candidate.test.js (79 original tests byte-for-byte preserved, six P08 cases appended); .ai/CURRENT_PHASE.md top P08 section only; this appended P08 roadmap section only; and new docs/ecog-p08-homepage-giving-qr.md. All P07/P06/P02–P04 history, P06 Google indexing/robots/sitemap, Jekyll exclusions, CNAME, P07 maps/navigation, church doctrine, Events/Sermons JSON, 404/legacy/retired and workflows remain unchanged.
+
+Verification: NEW exact-head FAST must pass 85/85 expected tests, validation union and Jekyll-generated site inclusion of the QR. Review exact-SHA SSO/noindex Preview as a separate HTTP observation and test actual desktop/tablet/mobile scan/handoff with the Owner. Then have ONE FRESH focused independent donor-link/security/QR auditor in a separate chat (not the Builder), fix BLOCKER/CRITICAL/HIGH and targeted re-audit, track non-high findings per merged Progress-First Policy. Only separate explicit Ryan exact-SHA production merge authority after pastor receiving-account and Give-flow verification. STOP at PREVIEW_READY, no FULL/merge/deploy/provider/Google settings.
