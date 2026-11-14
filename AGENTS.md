@@ -1,3 +1,5 @@
+> **Owner-requested AI collaboration policy (proposed 2026-11-13):** [AI Collaboration Workflow](docs/AI_COLLABORATION_WORKFLOW.md) assigns Claude Code as default Builder, ChatGPT Work Cloud Browser as independent preview QA, and ChatGPT as a separate risk-based reviewer/manager. It supersedes only the older *role/execution-mode defaults* after this governance change is reviewed and merged; all existing release, CI, church-content, donor/payment, and explicit Owner approval requirements remain binding. This draft is not itself deployment authority.
+
 # ECOG Website agent instructions
 
 ## Owner progress-first override — 2026-11-07 (refined)
