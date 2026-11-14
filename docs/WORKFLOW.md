@@ -1,3 +1,5 @@
+> **Proposed 2026-11-13 AI role amendment (effective only after approved merge):** Read [AI_COLLABORATION_WORKFLOW.md](AI_COLLABORATION_WORKFLOW.md) for Claude Code primary coding, Work Cloud Browser preview QA, ChatGPT independent review and fallback Codex. The older "regular Chat primary builder / Work only as Super Builder" **role allocation** is superseded for these roles, but all existing Speed Workflow V2.1, progress-first audit, CI, phase, permission, donor-safety and explicit Owner merge/deployment safeguards are unchanged. Work's *coding/computer-use escalation* still requires separate scope approval; routine authorized read-only Preview QA is the designated Work function. Do not regard this pending draft as active policy on `main`.
+
 # Speed Workflow V2.1
 
 ## 2026-11-07 Owner sequencing amendment — focused phase audits, comprehensive final audit
